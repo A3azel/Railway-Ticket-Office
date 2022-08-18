@@ -1,18 +1,18 @@
-package entity;
+package com.example.springbootpetproject.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Table(name = "purchased_tickets")
 @Data
 @NoArgsConstructor
-public class Orders {
+public class Orders implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -24,10 +24,17 @@ public class Orders {
     @Column(name = "order_time")
     private LocalDateTime orderTime;
 
+    @Column(name = "count_of_purchased_tickets")
+    private int countOfPurchasedTickets;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "train_id")
-    private Set<Train> trainSet;
+    /*@OneToMany(mappedBy = "train_id")
+    private Set<Train> trainSet;*/
+
+    @OneToOne
+    @JoinColumn(name = "train_id")
+    private Train train;
 }

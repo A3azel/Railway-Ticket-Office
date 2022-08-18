@@ -1,9 +1,12 @@
-package repository;
+package com.example.springbootpetproject.repository;
 
-import entity.Station;
+import com.example.springbootpetproject.entity.Station;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface StationRepository extends JpaRepository<Station,Long> {
+    List<Station> getStationByCity_CityName(String cityName);
 }

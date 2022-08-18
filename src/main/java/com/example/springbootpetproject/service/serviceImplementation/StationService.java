@@ -1,13 +1,14 @@
-package service.serviceImplementation;
+package com.example.springbootpetproject.service.serviceImplementation;
 
-import entity.Station;
+import com.example.springbootpetproject.entity.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import repository.StationRepository;
-import service.serviceInterfaces.StationServiceInterface;
+import com.example.springbootpetproject.repository.StationRepository;
+import com.example.springbootpetproject.service.serviceInterfaces.StationServiceInterface;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -35,5 +36,10 @@ public class StationService implements StationServiceInterface {
     public boolean deleteStation(Long id) {
         stationRepository.deleteById(id);
         return false;
+    }
+
+    @Override
+    public List<Station> getAllStationInCity(String cityName) {
+        return stationRepository.getStationByCity_CityName(cityName);
     }
 }

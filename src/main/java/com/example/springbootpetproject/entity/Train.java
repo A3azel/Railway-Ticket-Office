@@ -1,9 +1,10 @@
-package entity;
+package com.example.springbootpetproject.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,16 +13,15 @@ import java.time.LocalTime;
 @Table(name = "train_info")
 @Data
 @NoArgsConstructor
-public class Train {
+public class Train implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
     @Column(name = "train_number", nullable = false)
-    private int trainNumber;
+    private String trainNumber;
 
-    //@Column(name = "start_station_id", nullable = false)
     @OneToOne
     @JoinColumn(name = "start_station_id")
     private Station startStation;
@@ -32,7 +32,6 @@ public class Train {
     @Column(name = "travel_time", nullable = false)
     private LocalTime travelTime;
 
-    //@Column(name = "arrival_station_id" ,nullable = false)
     @OneToOne
     @JoinColumn(name = "arrival_station_id")
     private Station arrivalStation;
