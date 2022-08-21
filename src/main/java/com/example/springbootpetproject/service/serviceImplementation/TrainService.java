@@ -33,6 +33,10 @@ public class TrainService implements TrainServiceInterface {
 
     }
 
+    public List<Train> getAllTrain(){
+        return trainRepository.findAll();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<Train> getAllWayBetweenCities(String senderCity, String cityOfArrival) {

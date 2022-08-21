@@ -1,7 +1,7 @@
 package com.example.springbootpetproject.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +13,11 @@ import java.time.LocalTime;
 @Table(name = "train_info")
 @Data
 @NoArgsConstructor
+/*@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString*/
 public class Train implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
