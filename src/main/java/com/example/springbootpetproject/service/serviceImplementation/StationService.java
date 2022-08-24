@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Service
 public class StationService implements StationServiceInterface {
-    public final StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     @Autowired
     public StationService(StationRepository stationRepository) {

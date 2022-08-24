@@ -27,6 +27,7 @@ public class Train implements Serializable {
     @Column(name = "train_number", nullable = false)
     private String trainNumber;
 
+    //@ManyToOne(fetch = FetchType.LAZY)
     @OneToOne
     @JoinColumn(name = "start_station_id")
     private Station startStation;
@@ -37,6 +38,7 @@ public class Train implements Serializable {
     @Column(name = "travel_time", nullable = false)
     private LocalTime travelTime;
 
+    //@ManyToOne(fetch = FetchType.LAZY)
     @OneToOne
     @JoinColumn(name = "arrival_station_id")
     private Station arrivalStation;

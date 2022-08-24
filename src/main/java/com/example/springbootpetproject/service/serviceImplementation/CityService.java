@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public class CityService implements CityServiceInterface {
-    public final CityRepository cityRepository;
+    private final CityRepository cityRepository;
 
     @Autowired
     public CityService(CityRepository cityRepository) {

@@ -11,8 +11,7 @@ import java.util.List;
 
 @Service
 public class UserService implements UserServiceInterface {
-
-    public final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -56,5 +55,10 @@ public class UserService implements UserServiceInterface {
     @Transactional(readOnly = true)
     public User getUserByEmailAndPassword(String email, String password) {
         return userRepository.getUserByUserEmailAndPassword(email, password);
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

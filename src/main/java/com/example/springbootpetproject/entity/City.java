@@ -9,13 +9,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "cities")
-@Data
-@NoArgsConstructor
-/*@Getter
+//@Data
+//@NoArgsConstructor
+@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString*/
+//@ToString
 public class City implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

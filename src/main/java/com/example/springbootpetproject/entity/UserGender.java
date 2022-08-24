@@ -1,5 +1,5 @@
 package com.example.springbootpetproject.entity;
 
 public enum UserGender {
-    Man, Woman, NotSpecified
+    S,MAN, WOMAN, NOT_SPECIFIED
 }

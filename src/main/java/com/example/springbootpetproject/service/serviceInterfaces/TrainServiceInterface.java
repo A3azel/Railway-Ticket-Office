@@ -11,6 +11,8 @@ public interface TrainServiceInterface {
 
     void updateTrain(Train train);
 
+    Train getTrainByName(String trainName);
+
     List<Train> getAllWayBetweenCities(String senderCity, String cityOfArrival);
 
     List<Train> getAllWayBetweenCitiesInTime(String senderCity, String cityOfArrival, LocalDateTime departureTime);

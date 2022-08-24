@@ -16,5 +16,7 @@ public interface UserServiceInterface {
 
     User getUserByEmailAndPassword(String email, String password);
 
+    User findUserByUsername(String username);
+
 
 }

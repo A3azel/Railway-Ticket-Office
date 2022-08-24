@@ -13,14 +13,7 @@ import java.util.List;
 
 @Repository
 public interface TrainRepository extends JpaRepository<Train,Long> {
-    List<Train> getAllByStartStation_CityAndArrivalStation_City(City senderCity, City cityOfArrival);
-
-    List<Train> getByStartStation_CityAndArrivalStation_CityAndDepartureTime(City senderCity, City cityOfArrival, LocalDateTime departureTime);
-
-    List<Train> getAllByStartStationAndArrivalStation_City(Station startStation, City cityOfArrival);
-
-    List<Train> getAllByStartStationAndArrivalStation(Station startStation, Station ArrivalStation);
-    //
+    Train getTrainByTrainNumber(String trainNumber);
     List<Train> getAllByStartStation_City_CityNameAndArrivalStation_City_CityName(String senderCity, String cityOfArrival);
     List<Train> getByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTime(String senderCity, String cityOfArrival, LocalDateTime departureTime);
     List<Train> getAllByStartStation_StationNameAndArrivalStation_City_CityName(String startStation,String cityOfArrival);

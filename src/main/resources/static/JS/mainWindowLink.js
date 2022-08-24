@@ -1,10 +1,12 @@
-(function ready(){
+(function addPopularDirections(){
     "use strict";
-    const firstLink = document.querySelector("#Київ-Львів");
-    firstLink.addEventListener("click",function () {
+    const clickButton = document.querySelector(".popularDirections");
+    clickButton.addEventListener("click",function () {
+        const key = event.target.value;
+        let coupleOfCities = key.split("-");
         let startCity = document.querySelector("#from");
-        startCity.value = "Київ";
+        startCity.value = coupleOfCities[0];
         let arrivalCity = document.querySelector("#where");
-        arrivalCity.value = "Львів";
+        arrivalCity.value = coupleOfCities[1];
     });
 }());

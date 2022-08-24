@@ -12,8 +12,7 @@ import java.util.List;
 
 @Service
 public class TrainService implements TrainServiceInterface {
-
-    public final TrainRepository trainRepository;
+    private final TrainRepository trainRepository;
 
     @Autowired
     public TrainService(TrainRepository trainRepository) {
@@ -31,6 +30,11 @@ public class TrainService implements TrainServiceInterface {
     public void updateTrain(Train train) {
         trainRepository.save(train);
 
+    }
+
+    @Override
+    public Train getTrainByName(String trainName) {
+        return trainRepository.getTrainByTrainNumber(trainName);
     }
 
     public List<Train> getAllTrain(){
