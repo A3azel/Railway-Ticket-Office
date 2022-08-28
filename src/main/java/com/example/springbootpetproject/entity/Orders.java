@@ -1,12 +1,15 @@
 package com.example.springbootpetproject.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "purchased_tickets")
@@ -27,8 +30,10 @@ public class Orders implements Serializable {
     @Column(name = "count_of_purchased_tickets")
     private int countOfPurchasedTickets;
 
-    @OneToOne
+    //@OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     /*@OneToMany(mappedBy = "train_id")
@@ -37,4 +42,10 @@ public class Orders implements Serializable {
     @OneToOne
     @JoinColumn(name = "train_id")
     private Train train;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_type_id")
+    @JsonBackReference
+    private TicketType ticketType;
+
 }

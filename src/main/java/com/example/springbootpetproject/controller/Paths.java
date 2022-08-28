@@ -10,5 +10,7 @@ public class Paths {
     static final String All_TRAINS_BETWEEN_CITIES_FILE = "allTrainsRunningBetweenCities";
     static final String All_TRAINS_BETWEEN_CITIES_PAGE = "/train/between";
 
+    static final String PERSONAL_OFFICE_PAGE = "personalOffice";
+
 
 }

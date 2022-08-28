@@ -1,0 +1,7 @@
+.row {
+    display: block;
+}
+.col-6{
+    padding: 0;
+    float: left;
+}

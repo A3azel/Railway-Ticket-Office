@@ -37,14 +37,6 @@ public class TrainController {
         return All_TRAINS_BETWEEN_CITIES_FILE;
     }
 
-    /*@GetMapping(value = "/ggg", params = "byTicket")
-    public String byTicket(HttpServletRequest request, RedirectAttributes redirectAttributes){
-        Train train = trainService.getTrainByName(request.getParameter("byTicket"));
-        System.out.println(train);
-        redirectAttributes.addFlashAttribute("selectedTrain",train);
-        return "redirect:/order";
-    }*/
-
     @GetMapping("/info")
     public String getInfoAboutChangedTrain(HttpServletRequest request, Model model){
         Train train = trainService.getTrainByName(request.getParameter("infoAboutTicket"));

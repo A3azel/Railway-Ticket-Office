@@ -5,6 +5,7 @@ import com.example.springbootpetproject.repository.CityRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.CityServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,11 +19,13 @@ public class CityService implements CityServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<City> getAllCity() {
         return cityRepository.findAll();
     }
 
     @Override
+    @Transactional
     public void addCity(City city) {
         cityRepository.save(city);
     }

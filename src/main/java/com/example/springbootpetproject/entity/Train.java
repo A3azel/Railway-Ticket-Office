@@ -54,4 +54,6 @@ public class Train implements Serializable {
 
     @Column(name = "link_to_rote_page")
     private String linkToRotePage;
+
+
 }

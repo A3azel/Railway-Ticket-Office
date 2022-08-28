@@ -4,6 +4,7 @@ import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.entity.Train;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,7 @@ public interface TrainRepository extends JpaRepository<Train,Long> {
 
 
 
+    @Modifying
     @Query(
             value = "UPDATE train_info SET number_of_free_seats = (number_of_free_seats - :countOfPurchasedTickets) where train_number = :trainNumber",
             nativeQuery = true)

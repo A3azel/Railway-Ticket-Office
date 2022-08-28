@@ -3,6 +3,9 @@ package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.entity.Orders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.OrdersRepository;
@@ -39,5 +42,18 @@ public class OrdersService implements OrdersServiceInterface {
     @Transactional(readOnly = true)
     public List<Orders> getAllUserOrders(Long id) {
         return ordersRepository.getAllByUser_Id(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Orders> getAllUserOrdersByUserName(String username) {
+        return ordersRepository.getAllByUser_username(username);
+    }
+
+    //
+    @Transactional(readOnly = true)
+    public Page<Orders> getAllUserOrdersByUserNamePage(String username, Pageable pageable, int pageNumber) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+        return ordersRepository.getAllByUser_username(username, changePageable);
     }
 }

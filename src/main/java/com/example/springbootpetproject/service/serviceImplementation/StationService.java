@@ -39,6 +39,7 @@ public class StationService implements StationServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Station> getAllStationInCity(String cityName) {
         return stationRepository.getStationByCity_CityName(cityName);
     }

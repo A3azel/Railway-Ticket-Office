@@ -1,7 +1,7 @@
 package com.example.springbootpetproject.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
@@ -10,11 +10,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Data
 //@Builder
-@NoArgsConstructor
 @Table(name = "user_info")
 public class User implements Serializable {
     @Id
@@ -65,4 +66,41 @@ public class User implements Serializable {
     @UniqueElements
     @Email
     private String userEmail;
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Set<Orders> ordersSet;
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private Set<UserComments> userCommentsSet;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return id == user.id && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && userRole == user.userRole && userGender == user.userGender && Objects.equals(userPhone, user.userPhone) && Objects.equals(userEmail, user.userEmail) && Objects.equals(userCommentsSet, user.userCommentsSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, firstName, lastName, password, userRole, userGender, userPhone, userEmail, userCommentsSet);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", userRole=" + userRole +
+                ", userGender=" + userGender +
+                ", userPhone='" + userPhone + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userCommentsSet=" + userCommentsSet +
+                '}';
+    }
 }

@@ -21,7 +21,7 @@ public class UserService implements UserServiceInterface {
     @Override
     @Transactional
     public boolean addUser(User user) {
-        if(userRepository.existsUserByUserEmail(user.getUserEmail())){
+        if(findUserByUsername(user.getUsername()) == null){
             return false;
         }
         userRepository.save(user);
@@ -52,12 +52,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public User getUserByEmailAndPassword(String email, String password) {
-        return userRepository.getUserByUserEmailAndPassword(email, password);
-    }
-
-    @Override
+    @Transactional
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }

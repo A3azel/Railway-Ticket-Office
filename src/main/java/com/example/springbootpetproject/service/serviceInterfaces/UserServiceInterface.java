@@ -14,8 +14,6 @@ public interface UserServiceInterface {
 
     List<User> getAllUsers();
 
-    User getUserByEmailAndPassword(String email, String password);
-
     User findUserByUsername(String username);
 
 
