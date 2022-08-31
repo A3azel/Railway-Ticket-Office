@@ -16,5 +16,9 @@ public interface UserServiceInterface {
 
     User findUserByUsername(String username);
 
+    boolean existsUserByUserEmail(String email);
+
+    boolean existsUserByUsername(String username);
+
 
 }

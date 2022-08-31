@@ -3,58 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>railway ticket office</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link href="/CSS/carouselEdits.css" rel="stylesheet">
-
 </head>
 <body>
 
 <div th:include="header::head"></div>
-
-<!--<header>
-    <nav class="navbar navbar-expand-lg navbar navbar-light" style="background-color: #e3f2fd;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img th:src="@{/Icons/train-freight-front-fill.svg}" alt="" width="30" height="24" class="d-inline-block align-text-top">
-                Bootstrap
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn btn-outline-primary" type="button">Log in</button>
-                    <button class="btn btn-primary" type="button">Sing-Up</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>-->
 
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -117,106 +73,59 @@
                     <button type="button" value="Дніпро-Львів" class="btn btn-outline-secondary">Дніпро <i class="bi bi-arrow-left-right"></i> Львів</button>
                 </div>
         </div>
-        <form action="/train/between" method="get">
+        <form action="/train/between/page/1" method="get">
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text">Звідки</span>
-                    <input type="text" class="form-control" id="from" name="startCity" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    <input type="text" class="form-control" id="from" name="cityOfDeparture" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                 </div>
             </div>
 
             <div class="col-sm-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" >Куди</span>
-                    <input type="text" class="form-control" id="where" name="endCity" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                    <input type="text" class="form-control" id="where" name="cityOfArrival" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                 </div>
             </div>
         </div>
-            <div class="form-row text-center">
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-2">
+                    <label for="startDate" style="padding-bottom:20px">Виберіть дату відправлення</label>
+                    <input id="startDate" name="selectedDates" class="form-control" type="date" />
+                </div>
+                <div class="col col-lg-2">
+                    <label for="startTime" style="padding-bottom:20px">Виберіть час відправлення</label>
+                    <input  id="startTime" name="selectedTime" class="form-control" type="time" value="00:00" />
+                </div>
+            </div>
+            <div class="form-row text-center" style="padding-top: 20px">
                 <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-lg" >
+                    <button type="submit" class="btn btn-primary btn-lg" >
                         <span class="icon">
                             <i class="bi bi-cursor-fill"></i>
                         </span> Пошук
-                        </button>
+                    </button>
                 </div>
             </div>
         </form>
     </div>
 </section>
+
 <div th:include="footer::foot"></div>
 
 <!-- add to the footer: mt-auto position-sticky top-100-->
-<!--<footer class="bg-expand-lg  text-center text-white" style="background-color: #e3f2fd; margin-top: 50px">
-    &lt;!&ndash; Grid container &ndash;&gt;
-    <div class="container p-4 pb-0">
-        &lt;!&ndash; Section: Social media &ndash;&gt;
-        <section class="mb-4">
-            &lt;!&ndash; Facebook &ndash;&gt;
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-facebook"></i>
-            </a>
 
-            &lt;!&ndash; Twitter &ndash;&gt;
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-twitter"></i>
-            </a>
 
-            &lt;!&ndash; Google &ndash;&gt;
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-google"></i>
-            </a>
-
-            &lt;!&ndash; Instagram &ndash;&gt;
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-instagram"></i>
-            </a>
-
-            &lt;!&ndash; Linkedin &ndash;&gt;
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-linkedin"></i>
-            </a>
-
-            &lt;!&ndash; Github &ndash;&gt;
-            <a class="btn btn-outline-dark btn-floating m-1" href="https://github.com/A3azel/Railway-Ticket-Office.git" role="button">
-                <i class="bi bi-github"></i>
-            </a>
-        </section>
-        &lt;!&ndash; Section: Social media &ndash;&gt;
-    </div>
-    &lt;!&ndash; Grid container &ndash;&gt;
-
-    &lt;!&ndash; Copyright &ndash;&gt;
-    <div class="text-center text-dark p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        © 2022 Copyright:
-        <a class="text-dark" href="#">MDBootstrap.com</a>
-    </div>
-    &lt;!&ndash; Copyright &ndash;&gt;
-</footer>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
 
 </script>
 <script th:src="@{/JS/mainWindowLink.js}" defer="defer"></script>
 
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(function(){
-        $("#header").load("test.html");
-    });
-
-</script>-->
-
-
-<!--<script>
-    const firstLink = document.querySelector("#Київ-Львів");
-    firstLink.addEventListener("click",function () {
-        let startCity = document.querySelector("#from");
-        startCity.value = "Київ";
-        let arrivalCity = document.querySelector("#where");
-        arrivalCity.value = "Львів";
-    });
-</script>-->
-
+    var dataElement = document.getElementById('startDate');
+    dataElement.valueAsDate = new Date();
+    dataElement.setAttribute('min', new Date() );
+</script>
 </body>
 </html>

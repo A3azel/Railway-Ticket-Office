@@ -3,6 +3,8 @@ package com.example.springbootpetproject.repository;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.entity.Train;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,10 +18,14 @@ import java.util.List;
 public interface TrainRepository extends JpaRepository<Train,Long> {
     Train getTrainByTrainNumber(String trainNumber);
     List<Train> getAllByStartStation_City_CityNameAndArrivalStation_City_CityName(String senderCity, String cityOfArrival);
-    List<Train> getByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTime(String senderCity, String cityOfArrival, LocalDateTime departureTime);
+
+    Page<Train> findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
+            String senderCity, String cityOfArrival, LocalDateTime selectedDates, LocalDateTime finalDates, Pageable pageable);
+
     List<Train> getAllByStartStation_StationNameAndArrivalStation_City_CityName(String startStation,String cityOfArrival);
     List<Train> getAllByStartStation_StationNameAndArrivalStation_StationName(String startStation, String ArrivalStation);
 
+    Page<Train> getAllByStartStation_City_CityNameAndArrivalStation_City_CityName(String senderCity, String cityOfArrival, Pageable pageable);
 
 
     @Modifying

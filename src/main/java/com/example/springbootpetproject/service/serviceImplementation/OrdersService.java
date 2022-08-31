@@ -44,15 +44,16 @@ public class OrdersService implements OrdersServiceInterface {
         return ordersRepository.getAllByUser_Id(id);
     }
 
-    @Override
+    /*@Override
     @Transactional(readOnly = true)
     public List<Orders> getAllUserOrdersByUserName(String username) {
         return ordersRepository.getAllByUser_username(username);
-    }
+    }*/
 
     //
+    @Override
     @Transactional(readOnly = true)
-    public Page<Orders> getAllUserOrdersByUserNamePage(String username, Pageable pageable, int pageNumber) {
+    public Page<Orders> getAllUserOrdersByUserName(String username, Pageable pageable, int pageNumber) {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
         return ordersRepository.getAllByUser_username(username, changePageable);
     }

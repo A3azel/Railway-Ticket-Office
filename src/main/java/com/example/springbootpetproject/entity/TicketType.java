@@ -23,7 +23,7 @@ public class TicketType implements Serializable {
     private String ticketType;
 
     @Column(name = "ticket_price_factor")
-    private float ticketPriceFactor;
+    private double ticketPriceFactor;
 
     @OneToMany(mappedBy = "ticketType")
     @JsonManagedReference
@@ -34,7 +34,7 @@ public class TicketType implements Serializable {
         if (this == o) return true;
         if (!(o instanceof TicketType)) return false;
         TicketType that = (TicketType) o;
-        return id == that.id && Float.compare(that.ticketPriceFactor, ticketPriceFactor) == 0 && Objects.equals(ticketType, that.ticketType);
+        return id == that.id && Double.compare(that.ticketPriceFactor, ticketPriceFactor) == 0 && Objects.equals(ticketType, that.ticketType);
     }
 
     @Override

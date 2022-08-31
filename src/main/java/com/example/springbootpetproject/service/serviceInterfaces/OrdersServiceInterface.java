@@ -13,6 +13,5 @@ public interface OrdersServiceInterface {
 
     List<Orders> getAllUserOrders(Long id);
 
-    List<Orders> getAllUserOrdersByUserName(String username);
-
+    Page<Orders> getAllUserOrdersByUserName(String username, Pageable pageable, int pageNumber);
 }

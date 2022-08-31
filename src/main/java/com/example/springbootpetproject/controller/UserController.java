@@ -2,7 +2,9 @@ package com.example.springbootpetproject.controller;
 
 import com.example.springbootpetproject.entity.Orders;
 import com.example.springbootpetproject.entity.User;
+import com.example.springbootpetproject.entity.UserComments;
 import com.example.springbootpetproject.service.serviceImplementation.OrdersService;
+import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;
 import com.example.springbootpetproject.service.serviceImplementation.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.example.springbootpetproject.controller.Paths.PERSONAL_OFFICE_PAGE;
 
@@ -28,11 +28,13 @@ import static com.example.springbootpetproject.controller.Paths.PERSONAL_OFFICE_
 public class UserController {
     private final UserService userService;
     private final OrdersService ordersService;
+    private final UserCommentsService userCommentsService;
 
     @Autowired
-    public UserController(UserService userService, OrdersService ordersService) {
+    public UserController(UserService userService, OrdersService ordersService, UserCommentsService userCommentsService) {
         this.userService = userService;
         this.ordersService = ordersService;
+        this.userCommentsService = userCommentsService;
     }
 
     @GetMapping
@@ -44,27 +46,19 @@ public class UserController {
 
     @GetMapping("/changePassword")
     public String getChangePasswordPage(){
-        return null;
+        return "changePassword";
     }
 
     @PostMapping("/changePassword")
     public String getChangePassword(){
-        return null;
+        return "redirect:/user";
     }
-
-    /*@GetMapping("/myOrders")
-    public String getMyOrdersPage(Model model, Principal principal){
-        List<Orders> ordersList =  ordersService.getAllUserOrdersByUserName(principal.getName());
-        System.out.println(ordersList);
-        model.addAttribute("ordersList",ordersList);
-        return "allUserPurchasedTickets";
-    }*/
 
     @GetMapping("/myOrders/page/{pageNumber}")
     public String getMyOrdersPage(Model model, Principal principal
-            ,@PageableDefault(sort = "id", direction = Sort.Direction.ASC, size = 2) Pageable pageable
+            ,@PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
             ,@PathVariable("pageNumber") int pageNumber){
-        Page<Orders> ordersList =  ordersService.getAllUserOrdersByUserNamePage(principal.getName(),pageable,pageNumber);
+        Page<Orders> ordersList =  ordersService.getAllUserOrdersByUserName(principal.getName(),pageable,pageNumber);
         List<Orders> ordersListContext = ordersList.getContent();
         /*int totalPages = ordersList.getTotalPages();
         if (totalPages > 0) {
@@ -80,8 +74,14 @@ public class UserController {
     }
 
     @GetMapping("/myOrders/{id}")
-    public String getMyOrdersById(Model model, @PathVariable("id") long id){
-        return null;
+    public String getMyOrdersById(Model model, @PathVariable("id") long id, Principal principal){
+        Orders selectedOrder = ordersService.getOrderById(id);
+        UserComments comment = userCommentsService.findByUserNameAndTrainNumber(principal.getName(),selectedOrder.getTrain().getTrainNumber());
+        if(selectedOrder.getUser().getUsername().equals(principal.getName())){
+            model.addAttribute("selectedOrder",selectedOrder);
+            model.addAttribute("comment",comment);
+        }
+        return "userSelectedOrder";
     }
 
 }

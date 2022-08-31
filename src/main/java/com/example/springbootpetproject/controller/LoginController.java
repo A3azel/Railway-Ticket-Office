@@ -1,10 +1,12 @@
 package com.example.springbootpetproject.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static com.example.springbootpetproject.controller.Paths.LOGIN_FILE;
 
+@Controller
 @RequestMapping("/login")
 public class LoginController {
 

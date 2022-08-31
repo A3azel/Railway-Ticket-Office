@@ -12,5 +12,7 @@ public class Paths {
 
     static final String PERSONAL_OFFICE_PAGE = "personalOffice";
 
+    static final String USER_MY_ORDERS_PAGE = "/user/myOrders/page/";
+
 
 }

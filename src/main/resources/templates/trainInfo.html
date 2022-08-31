@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" >
     <title>Info</title>
@@ -8,56 +8,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-lg navbar navbar-light" style="background-color: #e3f2fd;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img th:src="@{/Icons/train-freight-front-fill.svg}" alt="" width="30" height="24" class="d-inline-block align-text-top">
-                Bootstrap
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button class="btn btn-outline-primary" type="button">Log in</button>
-                    <button class="btn btn-primary" type="button">Sing-Up</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
 
+<div th:include="header::head"></div>
 
-
-<section>
+<!--<section>
     <table class="table table-bordered table-striped text-center" style="margin: 20px">
         <thead class="table-info">
         <tr>
             <th scope="col">Потяг</th>
             <th scope="col">Звідки/Куди</th>
+            <th scope="col">Станція відправлення</th>
+            <th scope="col">Станція прибуття</th>
             <th scope="col">Дата</th>
             <th scope="col">Час <br/> Відправлення/Прибуття</th>
             <th scope="col">Час в дорозі</th>
@@ -68,6 +29,8 @@
         <tr>
             <td th:utext="${selectedTrain.trainNumber}"></td>
             <td th:utext="${selectedTrain.startStation.city.cityName} + '/' + ${selectedTrain.arrivalStation.city.cityName}"></td>
+            <td th:text="${selectedTrain.startStation.stationName}"></td>
+            <td th:text="${selectedTrain.arrivalStation.stationName}"></td>
             <td th:utext="Відправдення + ' ' + ${#temporals.format(selectedTrain.departureTime, 'dd-MM-yyyy')}
             + '<br>' +
             Прибуття + ' ' + ${#temporals.format(selectedTrain.arrivalTime, 'dd-MM-yyyy')}"></td>
@@ -81,70 +44,132 @@
         </tr>
         </tbody>
     </table>
-</section>
+</section>-->
 
-    <div class="container">
+<div class="row mainRow">
+    <div class="col-lg-6" style="margin: 20px">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Номер потяга</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedTrain.trainNumber}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Звідки/Куди</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedTrain.startStation.city.cityName} + '/' + ${selectedTrain.arrivalStation.city.cityName}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Станція відправлення</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedTrain.startStation.stationName}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Станція прибуття</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedTrain.arrivalStation.stationName}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Дата <br/> Відправлення/Прибуття</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "Відправдення + ' ' + ${#temporals.format(selectedTrain.departureTime, 'dd-MM-yyyy')}
+                        + '/' +
+                        Прибуття + ' ' + ${#temporals.format(selectedTrain.arrivalTime, 'dd-MM-yyyy')}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Час <br/> Відправлення/Прибуття</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${#temporals.format(selectedTrain.departureTime, 'HH:mm')}
+            + '/' +
+            ${#temporals.format(selectedTrain.arrivalTime, 'HH:mm')}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Час в дорозі</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedTrain.travelTime}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Кількість вільних місць</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedTrain.numberOfFreeSeats}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Ціна квитка</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedTrain.priseOfTicket + '₴'}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
         <div class="row">
-            <div class="col-6" style="height: 175px; width: 250px">
+            <div class="col-12" style="height: 225px; width: 300px">
+                <div class="col-sm-4"><p>Маршрут</p></div>
                 <div id="map">
 
                 </div>
-                .col-6</div>
-            <div class="col-6" style="height: 250px">
-                .col-6
             </div>
-            <div class="col-6" style="height: 75px">.col-6</div>
+
+            <div class="col-12">
+                <div class="col-sm-4"><p>Коментарі</p></div>
+                <p id = "comment">
+
+                </p>
+            </div>
         </div>
     </div>
+</div>
 
+<div th:include="footer::foot"></div>
 
-<footer class="bg-expand-lg  text-center text-white" style="background-color: #e3f2fd; margin-top: 50px">
-    <!-- Grid container -->
-    <div class="container p-4 pb-0">
-        <!-- Section: Social media -->
-        <section class="mb-4">
-            <!-- Facebook -->
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-facebook"></i>
-            </a>
-
-            <!-- Twitter -->
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-twitter"></i>
-            </a>
-
-            <!-- Google -->
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-google"></i>
-            </a>
-
-            <!-- Instagram -->
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-instagram"></i>
-            </a>
-
-            <!-- Linkedin -->
-            <a class="btn btn-outline-dark btn-floating m-1" href="#!" role="button">
-                <i class="bi bi-linkedin"></i>
-            </a>
-
-            <!-- Github -->
-            <a class="btn btn-outline-dark btn-floating m-1" href="https://github.com/A3azel/Railway-Ticket-Office.git" role="button">
-                <i class="bi bi-github"></i>
-            </a>
-        </section>
-        <!-- Section: Social media -->
-    </div>
-    <!-- Grid container -->
-
-    <!-- Copyright -->
-    <div class="text-center text-dark p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        © 2022 Copyright:
-        <a class="text-dark" href="#">MDBootstrap.com</a>
-    </div>
-    <!-- Copyright -->
-</footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script th:inline="javascript">
+    var test =  /*[[${userCommentsList}]]*/ {};
+        for (i=0; i<test.length; i++) {
+            console.log(test[i].userComments);
+            $('#comment').text(test[0].userComments);
+            $('#comment').fadeIn(4000);
+            $('#comment').delay(7000);
+            $('#comment').fadeOut(4000);
+        }
 </script>
 </body>
 </html>

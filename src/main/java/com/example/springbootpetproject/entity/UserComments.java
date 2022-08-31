@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_comments")
@@ -19,6 +20,9 @@ public class UserComments implements Serializable {
 
     @Column(name = "user_comment")
     private String userComments;
+
+    @Column(name = "publication_time")
+    private LocalDateTime publicationTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

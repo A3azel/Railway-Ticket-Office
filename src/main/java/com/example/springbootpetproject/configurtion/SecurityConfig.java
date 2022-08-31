@@ -9,23 +9,23 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImp userDetailsServiceImp;
+    private final CustomBCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public SecurityConfig(UserDetailsServiceImp userDetailsServiceImp) {
+    public SecurityConfig(UserDetailsServiceImp userDetailsServiceImp, CustomBCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDetailsServiceImp = userDetailsServiceImp;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                    .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/order/**","/user/**").authenticated()
                     .antMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                     .and()
                 .formLogin()
-                    //.loginPage("/login")
+                    .loginPage("/login")
                     .permitAll()
                     .and()
                 .logout()
@@ -45,14 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    protected PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(12);
-    }
-
-    @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder.passwordEncoder());
         daoAuthenticationProvider.setUserDetailsService(userDetailsServiceImp);
         return daoAuthenticationProvider;
     }

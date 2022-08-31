@@ -12,7 +12,7 @@ import java.util.List;
 public interface OrdersRepository extends JpaRepository<Orders,Long> {
     List<Orders> getAllByUser_Id(Long Id);
 
-    List<Orders> getAllByUser_username(String username);
+    //List<Orders> getAllByUser_username(String username);
 
     //
     Page<Orders> getAllByUser_username(String username, Pageable pageable);
