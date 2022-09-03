@@ -10,4 +10,6 @@ public interface StationServiceInterface {
     boolean deleteStation(Long id);
 
     List<Station> getAllStationInCity(String cityName);
+
+    Station findStationByStationName(String stationName);
 }

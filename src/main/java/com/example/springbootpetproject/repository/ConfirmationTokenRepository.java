@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, Long> {
     ConfirmationToken findByToken(String token);
 
+    void deleteByToken(String token);
+
     @Modifying
     @Query(value = "UPDATE confirmation_token SET confirmed_at = :updateTime WHERE token = :token", nativeQuery = true)
     int updateConfirmedAt(@Param("token") String token

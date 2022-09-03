@@ -73,7 +73,7 @@
                     <button type="button" value="Дніпро-Львів" class="btn btn-outline-secondary">Дніпро <i class="bi bi-arrow-left-right"></i> Львів</button>
                 </div>
         </div>
-        <form action="/train/between/page/1" method="get">
+        <form th:action="@{/train/between/page/1}" method="get">
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="input-group mb-3">
@@ -121,11 +121,5 @@
 
 </script>
 <script th:src="@{/JS/mainWindowLink.js}" defer="defer"></script>
-
-<script>
-    var dataElement = document.getElementById('startDate');
-    dataElement.valueAsDate = new Date();
-    dataElement.setAttribute('min', new Date() );
-</script>
 </body>
 </html>

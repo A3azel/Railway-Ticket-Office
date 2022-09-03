@@ -43,4 +43,14 @@ public class StationService implements StationServiceInterface {
     public List<Station> getAllStationInCity(String cityName) {
         return stationRepository.getStationByCity_CityName(cityName);
     }
+
+    @Override
+    public Station findStationByStationName(String stationName) {
+        Station station = stationRepository.findByStationName(stationName);
+        if(station!= null){
+            return station;
+        }
+        throw new IllegalArgumentException("Станцію не знайдено");
+
+    }
 }

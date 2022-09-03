@@ -54,6 +54,9 @@ public class User implements Serializable/*, UserDetails*/ {
     @Column(name = "user_count_of_money")
     private BigDecimal userCountOfMoney;
 
+    @Column(name = "acount_verified")
+    private boolean accountVerified;
+
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "role_id")
     @NotNull
@@ -88,6 +91,9 @@ public class User implements Serializable/*, UserDetails*/ {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private Set<UserComments> userCommentsSet;
+
+    @OneToMany(mappedBy = "user")
+    private Set<ConfirmationToken> confirmationTokens;
 
     public User(String username, String firstName, String lastName, String password, UserGender userGender, String userEmail) {
         this.username = username;

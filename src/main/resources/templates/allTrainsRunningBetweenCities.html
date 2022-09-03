@@ -48,7 +48,7 @@
                             </form>
                         </div>
                         <div class="col">
-                            <form action="/train/info" method="get">
+                            <form th:action="@{/train/info}" method="get">
                                 <button type="submit" th:value="${train.trainNumber}" class="btn btn-outline-info" name="infoAboutTicket">Інформація</button>
                             </form>
                         </div>

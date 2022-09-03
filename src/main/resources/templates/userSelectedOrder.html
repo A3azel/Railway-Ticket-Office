@@ -119,7 +119,7 @@
                         <p class="mb-0">Ціна замовлення</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:utext = "${selectedOrder.orderPrise}"></p>
+                        <p class="text-muted mb-0" th:utext = "${selectedOrder.orderPrise}+ ' ₴'"></p>
                     </div>
                 </div>
             </div>
@@ -127,22 +127,27 @@
     </div>
     <div class="col-lg-6">
         <div class="row">
-            <th:block th:if="${comment == null}">
-                <form>
+            <th:block th:if="${comment }!= null">
+                <form method="post" th:action="@{'/comments/update/' + ${selectedOrder.train.trainNumber}}">
                     <div class="mb-3">
-                        <label for="comment" class="form-label">Додайте відгук про поїздку</label>
-                        <textarea class="form-control" id="comment" rows="6" name="text" maxlength="5000" placeholder="Ваш відгук...">
-                        </textarea>
-                        <button type="button" class="btn btn-outline-primary">Опублікувати</button>
+                        <label for="changeComment" class="form-label">Змінити відгук</label>
+                        <textarea class="form-control" id="changeComment" rows="6" name="newComment" maxlength="5000" placeholder="Ваш відгук..."></textarea>
+                        <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-primary" style="margin:20px" >Змінити</button>
+                    </div>
+                </form>
+                <form method="post" th:action="@{'/comments/delete/' + ${selectedOrder.train.trainNumber}}">
+                    <div class="mb-3">
+                        <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-danger" style="margin-left:20px">Видалити</button>
                     </div>
                 </form>
             </th:block>
-            <th:block th:unless="${comment == null}">
-                <form>
+            <th:block th:unless="${comment }!= null">
+                <form th:action="@{'/comments/add/' + ${selectedOrder.train.trainNumber}}" method="post">
                     <div class="mb-3">
-                        <label for="changeComment" class="form-label">Змінити відгук</label>
-                        <textarea class="form-control" id="changeComment" rows="6" name="text" maxlength="5000" placeholder="Ваш відгук..."></textarea>
-                        <button type="button" class="btn btn-outline-primary">Змінити</button>
+                        <label for="comment" class="form-label">Додайте відгук про поїздку</label>
+                        <textarea class="form-control" id="comment" rows="6" name="userComment" maxlength="5000" placeholder="Ваш відгук...">
+                        </textarea>
+                        <button type="submit" class="btn btn-outline-success" th:value="${selectedOrder.id}" name="id" style="margin:20px">Опублікувати</button>
                     </div>
                 </form>
             </th:block>
@@ -191,10 +196,11 @@
 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!--th:src="@{/JS/showUserComment.js}" defer="defer"-->
 <script th:inline="javascript">
-    var userComment =  /*[[${comment}]]*/ {};
-    if(userComment != null){
-        $('#changeComment').text(userComment.userComments);
+    var userComment =  /*[[${comment.userComments}]]*/ {};
+    if(userComment !== 'null'){
+        $('#changeComment').text(userComment);
     }
 </script>
 </body>

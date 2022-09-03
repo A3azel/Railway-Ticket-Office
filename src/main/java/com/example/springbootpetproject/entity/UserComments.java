@@ -32,4 +32,11 @@ public class UserComments implements Serializable {
     @OneToOne
     @JoinColumn(name = "train_id")
     private Train train;
+
+    public UserComments(String userComments, LocalDateTime publicationTime, User user, Train train) {
+        this.userComments = userComments;
+        this.publicationTime = publicationTime;
+        this.user = user;
+        this.train = train;
+    }
 }

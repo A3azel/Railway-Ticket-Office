@@ -35,4 +35,8 @@ public class ConfirmationTokenService implements ConfirmationTokenInterface {
     public int updateConfirmedAt(String token) {
         return confirmationTokenRepository.updateConfirmedAt(token,LocalDateTime.now());
     }
+
+    public void deleteToken(String token){
+        confirmationTokenRepository.deleteByToken(token);
+    }
 }

@@ -3,14 +3,19 @@ package com.example.springbootpetproject.service.serviceImplementation;
 import com.example.springbootpetproject.configurtion.CustomBCryptPasswordEncoder;
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
+import com.example.springbootpetproject.entity.UserRole;
 import com.example.springbootpetproject.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.UserRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.UserServiceInterface;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -30,26 +35,28 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional
-    public boolean addUser(User user) {
+    public String addUser(User user) {
         if(existsUserByUsername(user.getUsername())){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Login вже використовується");
         }
         if(existsUserByUserEmail(user.getUserEmail())){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Email вже використовується");
         }
         if(Validator.isEmail(user.getUserEmail())){
-
+            throw new IllegalArgumentException("Не коректний Email");
         }
         if(Validator.isNameOrSurname(user.getFirstName())){
-
+            throw new IllegalArgumentException("Не коректне імя");
         }
         if(Validator.isNameOrSurname(user.getLastName())){
-
+            throw new IllegalArgumentException("Не коректне прізвище");
         }
 
         String encodePassword = bCryptPasswordEncoder.passwordEncoder().encode(user.getPassword());
 
         user.setPassword(encodePassword);
+
+        user.setUserRole(UserRole.USER);
 
         userRepository.save(user);
 
@@ -64,8 +71,9 @@ public class UserService implements UserServiceInterface {
 
         confirmationTokenService.saveToken(confirmationToken);
 
-        return true;
+        return token;
     }
+
 
     @Override
     @Transactional
@@ -86,8 +94,9 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(Pageable pageable, int pageNumber) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+        return userRepository.findAll(changePageable);
     }
 
     @Override
@@ -107,4 +116,34 @@ public class UserService implements UserServiceInterface {
     public boolean existsUserByUsername(String username) {
         return userRepository.existsUserByUsername(username);
     }
+
+    @Override
+    @Transactional
+    public void save(User user){
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void topUpAccount(BigDecimal money,String userName) {
+        if(money.compareTo(BigDecimal.valueOf(0))<=0){
+            throw new IllegalArgumentException("Гроші не можуть бути відємними");
+        }
+        userRepository.topUpAccount(money,userName);
+    }
+
+    @Override
+    @Transactional
+    public void spendMoney(BigDecimal money,String userName) {
+        userRepository.spendMoney(money,userName);
+    }
+
+    @Override
+    @Transactional
+    public void setUserVerification(String username) {
+        boolean oldAccountVerificationStatus = userRepository.findByUsername(username).isAccountVerified();
+        userRepository.setUserVerification(!oldAccountVerificationStatus,username);
+    }
+
+
 }

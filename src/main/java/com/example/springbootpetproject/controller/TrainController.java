@@ -110,10 +110,6 @@ public class TrainController {
         return new ResponseEntity<>(trainService.getAllWayBetweenStations("Київ Центр","Львів Центр"), HttpStatus.OK);
     }
 
-    @GetMapping("/allTrain")
-    public ResponseEntity<List<Train>> getAll(){
-        return new ResponseEntity<>(trainService.getAllTrain(), HttpStatus.OK);
-    }
 
     /*public LocalDateTime getFinalDate(String date){
         LocalDateTime localDateTime = LocalDateTime.parse(date);
@@ -125,12 +121,12 @@ public class TrainController {
         return finalDates;
     }*/
 
-    public LocalDateTime getFinalDate(Date date) {
+    /*public LocalDateTime getFinalDate(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, DAYS_A_WEEK);
         LocalDateTime finalDates = LocalDateTime.ofInstant(calendar.getTime().toInstant(), ZoneId.systemDefault());
         return finalDates;
-    }
+    }*/
 
 }

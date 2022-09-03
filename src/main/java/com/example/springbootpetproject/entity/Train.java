@@ -52,8 +52,4 @@ public class Train implements Serializable {
     @Column(name = "prise_of_ticket", nullable = false)
     private BigDecimal priseOfTicket;
 
-    @Column(name = "link_to_rote_page")
-    private String linkToRotePage;
-
-
 }

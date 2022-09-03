@@ -9,6 +9,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -41,8 +43,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .clearAuthentication(true)
                     .deleteCookies("JSESSIONID")*/
                     .logoutSuccessUrl("/")
-                    .permitAll();
+                    .permitAll()
+                /*.and()
+                    .sessionManagement()
+                    .invalidSessionUrl("/")
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(true)
+                    .sessionRegistry(sessionRegistry())*/;
     }
+
+    /*@Bean(name = "sessionRegistry")
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }*/
 
     @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider(){

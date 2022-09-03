@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
@@ -82,6 +84,15 @@ public class UserController {
             model.addAttribute("comment",comment);
         }
         return "userSelectedOrder";
+    }
+
+    @PostMapping("/topUpAccount")
+    public String topUpTheAccount(HttpServletRequest request,Principal principal){
+        String username = principal.getName();
+        String moneyString = request.getParameter("countOfMoney");
+        BigDecimal money = BigDecimal.valueOf(Long.parseLong(moneyString));
+        userService.topUpAccount(money,username);
+        return "redirect:/user";
     }
 
 }

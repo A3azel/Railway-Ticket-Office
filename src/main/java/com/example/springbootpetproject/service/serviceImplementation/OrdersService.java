@@ -57,4 +57,9 @@ public class OrdersService implements OrdersServiceInterface {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
         return ordersRepository.getAllByUser_username(username, changePageable);
     }
+
+    @Override
+    public boolean exitByUserNameAndTrainName(String userName, String trainName) {
+        return ordersRepository.existsOrdersByUser_usernameAndTrain_TrainNumber(userName, trainName);
+    }
 }

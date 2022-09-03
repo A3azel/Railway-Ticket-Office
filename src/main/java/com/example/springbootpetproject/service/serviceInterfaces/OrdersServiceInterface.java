@@ -14,4 +14,6 @@ public interface OrdersServiceInterface {
     List<Orders> getAllUserOrders(Long id);
 
     Page<Orders> getAllUserOrdersByUserName(String username, Pageable pageable, int pageNumber);
+
+    boolean exitByUserNameAndTrainName(String userName, String trainName);
 }

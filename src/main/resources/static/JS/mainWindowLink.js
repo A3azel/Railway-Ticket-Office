@@ -10,3 +10,10 @@
         arrivalCity.value = coupleOfCities[1];
     });
 }());
+
+(function setDate(){
+    "use strict";
+    const dataElement = document.getElementById('startDate');
+    dataElement.valueAsDate = new Date();
+    dataElement.setAttribute('min', new Date() );
+}());

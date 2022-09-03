@@ -31,10 +31,6 @@ public class ConfirmationToken implements Serializable {
     @NotNull
     private LocalDateTime expiresAt;
 
-    @Column(name = "confirmed_at")
-    private LocalDateTime confirmedAt;
-
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

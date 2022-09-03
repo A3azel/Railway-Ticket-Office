@@ -10,16 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.TrainRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.TrainServiceInterface;
 
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
 public class TrainService implements TrainServiceInterface {
     private final TrainRepository trainRepository;
+    private final StationService stationService;
 
     @Autowired
-    public TrainService(TrainRepository trainRepository) {
+    public TrainService(TrainRepository trainRepository, StationService stationService) {
         this.trainRepository = trainRepository;
+        this.stationService = stationService;
     }
 
     @Override
@@ -30,19 +36,49 @@ public class TrainService implements TrainServiceInterface {
 
     @Override
     @Transactional
-    public void updateTrain(Train train) {
-        trainRepository.save(train);
-
+    public void updateTrain(String id, String trainNumber, String startStation, String departureData,String departureTime, String travelTime,
+                            String arrivalStation,String arrivalData, String arrivalTime, String numberOfFreeSeats, String priseOfTicket) {
+        Train updateTrain = findTrainByID(Long.parseLong(id));
+        updateTrain.setTrainNumber(trainNumber);
+        updateTrain.setStartStation(stationService.findStationByStationName(startStation));
+        LocalDate selectedDates = LocalDate.parse(departureData);
+        LocalTime selectedTime = LocalTime.parse(departureTime);
+        LocalDateTime departureLocalDateTime = LocalDateTime.of(selectedDates,selectedTime);
+        updateTrain.setDepartureTime(departureLocalDateTime);
+        //updateTrain.setDepartureTime(LocalDateTime.parse(departureTime));
+        updateTrain.setTravelTime(LocalTime.parse(travelTime));
+        updateTrain.setArrivalStation(stationService.findStationByStationName(arrivalStation));
+        LocalDate selectedArrivalDates = LocalDate.parse(arrivalData);
+        LocalTime selectedArrivalTime = LocalTime.parse(arrivalTime);
+        LocalDateTime arrivalLocalDateTime = LocalDateTime.of(selectedArrivalDates,selectedArrivalTime);
+        updateTrain.setArrivalTime(arrivalLocalDateTime);
+        //updateTrain.setArrivalTime(LocalDateTime.parse(arrivalTime));
+        updateTrain.setNumberOfFreeSeats(Integer.parseInt(numberOfFreeSeats));
+        double priseOfTicketDouble = Double.parseDouble(priseOfTicket);
+        updateTrain.setPriseOfTicket(BigDecimal.valueOf(priseOfTicketDouble));
+        if(priseOfTicketDouble<0){
+            throw new IllegalArgumentException("Ціна не може бути мньше нуля");
+        }
+        trainRepository.save(updateTrain);
     }
 
+
     @Override
+    @Transactional
     public Train getTrainByName(String trainName) {
         return trainRepository.getTrainByTrainNumber(trainName);
     }
 
+    @Transactional
+    public Train findTrainByID(Long id){
+        return trainRepository.findTrainById(id);
+    }
+
     @Override
-    public List<Train> getAllTrain(){
-        return trainRepository.findAll();
+    @Transactional(readOnly = true)
+    public Page<Train> getAllTrain(Pageable pageable, int pageNumber){
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+        return trainRepository.findAll(changePageable);
     }
 
     @Override

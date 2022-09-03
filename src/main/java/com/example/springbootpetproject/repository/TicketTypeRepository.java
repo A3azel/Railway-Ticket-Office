@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TicketTypeRepository extends JpaRepository<TicketType,Long> {
+
     boolean deleteTicketTypeByTicketType(String ticketName);
 
     @Modifying

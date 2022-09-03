@@ -3,6 +3,7 @@ package com.example.springbootpetproject.repository;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.entity.Train;
+import com.example.springbootpetproject.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,6 +28,9 @@ public interface TrainRepository extends JpaRepository<Train,Long> {
 
     Page<Train> getAllByStartStation_City_CityNameAndArrivalStation_City_CityName(String senderCity, String cityOfArrival, Pageable pageable);
 
+    Page<Train> findAll(Pageable pageable);
+
+    Train findTrainById(Long id);
 
     @Modifying
     @Query(

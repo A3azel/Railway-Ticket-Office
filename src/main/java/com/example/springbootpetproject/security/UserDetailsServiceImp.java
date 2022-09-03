@@ -30,8 +30,15 @@ public class UserDetailsServiceImp implements UserDetailsService {
         if(user == null){
             throw new UsernameNotFoundException(String.format("User with name '%s' dose not find",username));
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword()
-                ,mapRolesToAuthority(user.getUserRole()));
+        boolean enabled = !user.isAccountVerified();
+       /* return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword()
+                ,mapRolesToAuthority(user.getUserRole()));*/
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
+                .password(user.getPassword())
+                .disabled(enabled)
+                .authorities(mapRolesToAuthority(user.getUserRole())).build();
+
+        return userDetails;
     }
 
     //Collection<UserRole> roles
