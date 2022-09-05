@@ -10,6 +10,18 @@
 <body>
 
 <div th:include="header::head"></div>
+<div class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin: 20px">
+    <form th:action="@{/admin/train/find/byTrainNumber}" method="get">
+        <label>Пошук потягу</label>
+            <label>
+                <input type="text" name="wantedTrain" class="form-control" placeholder="Введіть номер потягу..."/>
+            </label>
+        <button type="submit" class="btn btn-outline-success">Пошук</button>
+    </form>
+    <form th:action="@{/admin/add/train}" method="get">
+        <button type="submit" class="btn btn-outline-primary">Додати потяг</button>
+    </form>
+</div>
 
 <table class="table table-bordered table-striped text-center" style="margin: 20px">
     <thead class="table-info">
@@ -21,38 +33,29 @@
         <th scope="col">Час в дорозі</th>
         <th scope="col">Кількість вільних місць</th>
         <th scope="col">Ціна квитка</th>
-        <th scope="col">Змінити / <br/> Інформація про маршрут</th>
+        <th scope="col">Змінити</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="train : ${trainList}">
-        <td th:utext="${train.trainNumber}"></td>
-        <td th:utext="${train.startStation.city.cityName} + '/' + ${train.arrivalStation.city.cityName}"></td>
+        <td th:text="${train.trainNumber}"></td>
+        <td th:text="${train.startStation.city.cityName} + '/' + ${train.arrivalStation.city.cityName}"></td>
         <td th:utext="Відправдення + ' ' + ${#temporals.format(train.departureTime, 'dd-MM-yyyy')}
             + '<br>' +
             Прибуття + ' ' + ${#temporals.format(train.arrivalTime, 'dd-MM-yyyy')}"></td>
-        <td th:utext="${#temporals.format(train.departureTime, 'HH:mm')}
+        <td th:text="${#temporals.format(train.departureTime, 'HH:mm')}
             + '/' +
             ${#temporals.format(train.arrivalTime, 'HH:mm')}"></td>
-        <td th:utext="${train.travelTime}"></td>
+        <td th:text="${train.travelTime}"></td>
         <td>
-            <div th:utext="${train.numberOfFreeSeats}"></div>
+            <div th:text="${train.numberOfFreeSeats}"></div>
         </td>
-        <td th:utext="${train.priseOfTicket}"></td>
+        <td th:text="${train.priseOfTicket} + ' ₴'"></td>
         <td>
-            <div class="container" style="width:250px; text-align:end;">
-                <div class="row">
-                    <div class="col">
+            <div class="d-grid gap-1 d-md-flex justify-content-md-center">
                         <form th:action="@{'/admin/train/' + ${train.id}}" method="get">
                             <button type="submit" class="btn btn-outline-primary">Змінити</button>
                         </form>
-                    </div>
-                    <div class="col">
-                        <form th:action="@{/train/info}" method="get">
-                            <button type="submit" th:value="${train.trainNumber}" class="btn btn-outline-info" name="infoAboutTicket">Інформація</button>
-                        </form>
-                    </div>
-                </div>
             </div>
         </td>
     </tr>
@@ -63,7 +66,7 @@
     <ul class="pagination justify-content-center">
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${1}}">First</a>
+                <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${1}}">First</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -74,7 +77,7 @@
         <!-- Previous -->
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 1}}">Previous</a>
+                <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${pageNumber - 1}}">Previous</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -92,7 +95,7 @@
                 </th:block>
                 <th:block th:unless="${i} == ${pageNumber}">
                     <li class="page-item">
-                        <a class="page-link" th:href = "@{'/train/between/page/' + ${i}}">[[${i}]]</a>
+                        <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${i}}">[[${i}]]</a>
                     </li>
                 </th:block>
             </th:block>
@@ -101,19 +104,19 @@
         <th:block th:if="${pageable.getTotalPages()} >  10">
             <th:block th:if="${pageNumber <= 5 || pageNumber > pageable.getTotalPages()-4}">
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/train/between/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${i}}">[[${i}]]</a>
                 </li>
 
-                <a class="page-link" th:href = "@{'/train/between/page/' + '6'}">...</a>
+                <a class="page-link" th:href = "@{'/admin/all/trains/page/' + '6'}">...</a>
 
                 <li th:each="i : ${#numbers.sequence(pageable.getTotalPages()-4,pageable.getTotalPages())}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/train/between/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/admin/allTrains/page/' + ${i}}">[[${i}]]</a>
                 </li>
             </th:block>
 
             <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
                 <li th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 5}}">...</a>
+                    <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${pageNumber - 5}}">...</a>
                 </li>
             </th:block>
 
@@ -122,7 +125,7 @@
         <!-- Next -->
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber + 1}}">Next</a>
+                <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${pageNumber + 1}}">Next</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
@@ -133,7 +136,7 @@
 
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageable.getTotalPages()}}">Last</a>
+                <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${pageable.getTotalPages()}}">Last</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">

@@ -2,6 +2,9 @@ package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.entity.Station;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.StationRepository;
@@ -40,8 +43,9 @@ public class StationService implements StationServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Station> getAllStationInCity(String cityName) {
-        return stationRepository.getStationByCity_CityName(cityName);
+    public Page<Station> getAllStationInCity(String cityName, Pageable pageable, int pageNumber) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+        return stationRepository.getStationByCity_CityName(cityName,changePageable);
     }
 
     @Override

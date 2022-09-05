@@ -1,11 +1,10 @@
 package com.example.springbootpetproject.controller;
 
+import com.example.springbootpetproject.entity.City;
+import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.entity.User;
-import com.example.springbootpetproject.service.serviceImplementation.OrdersService;
-import com.example.springbootpetproject.service.serviceImplementation.TrainService;
-import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;
-import com.example.springbootpetproject.service.serviceImplementation.UserService;
+import com.example.springbootpetproject.service.serviceImplementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,13 +27,17 @@ public class AdminController {
     private final OrdersService ordersService;
     private final UserCommentsService userCommentsService;
     private final TrainService trainService;
+    private final CityService cityService;
+    private final StationService stationService;
 
     @Autowired
-    public AdminController(UserService userService, OrdersService ordersService, UserCommentsService userCommentsService, TrainService trainService) {
+    public AdminController(UserService userService, OrdersService ordersService, UserCommentsService userCommentsService, TrainService trainService, CityService cityService, StationService stationService) {
         this.userService = userService;
         this.ordersService = ordersService;
         this.userCommentsService = userCommentsService;
         this.trainService = trainService;
+        this.cityService = cityService;
+        this.stationService = stationService;
     }
 
     @GetMapping
@@ -42,7 +45,8 @@ public class AdminController {
         return "";
     }
 
-    @GetMapping("/allUsers/page/{pageNumber}")
+    // User
+    @GetMapping("/all/users/page/{pageNumber}")
     public String getAllUsersForAdmin(Model model
             , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
             , @PathVariable("pageNumber") int pageNumber){
@@ -61,7 +65,16 @@ public class AdminController {
         return "InfoAboutUserForAdmin";
     }
 
-    @GetMapping("/allTrains/page/{pageNumber}")
+    @PostMapping("/changStatus/{userName}")
+    public String changeUserStatus(HttpServletRequest request, @PathVariable("userName") String userName){
+        userService.setUserVerification(userName);
+        String pageNumber = request.getParameter("infoAboutPage");
+        return "redirect:/admin/all/users/page/" + pageNumber;
+
+    }
+
+    // Trains
+    @GetMapping("/all/trains/page/{pageNumber}")
     public String getAllTrainsForAdmin(Model model
             , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
             , @PathVariable("pageNumber") int pageNumber){
@@ -73,27 +86,17 @@ public class AdminController {
         return "allTrainsForAdmin";
     }
 
-    @GetMapping("/allStation")
-    public String getAllStationForAdmin(){
-        return null;
-    }
-
-    @GetMapping("/allTickets")
-    public String getAllTicketsForAdmin(){
-        return null;
-    }
-
-    @PostMapping("/changStatus/{userName}")
-    public String changeUserStatus(HttpServletRequest request, @PathVariable("userName") String userName){
-        userService.setUserVerification(userName);
-        String pageNumber = request.getParameter("infoAboutPage");
-        return "redirect:/admin/allUsers/page/" + pageNumber;
-
-    }
-
     @GetMapping("/train/{id}")
-    public String getTrainForAdmin(Model model, @PathVariable("id") String id){
+    public String getTrainForAdminByID(Model model, @PathVariable("id") String id){
         Train selectedTrain = trainService.findTrainByID(Long.parseLong(id));
+        model.addAttribute("selectedTrain",selectedTrain);
+        return "changeTrainDetails";
+    }
+
+    @GetMapping("/train/find/byTrainNumber")
+    public String getTrainForAdminByTrainNumber(HttpServletRequest request,Model model){
+        String trainNumber = request.getParameter("wantedTrain");
+        Train selectedTrain = trainService.findTrainByTrainNumber(trainNumber);
         model.addAttribute("selectedTrain",selectedTrain);
         return "changeTrainDetails";
     }
@@ -114,6 +117,72 @@ public class AdminController {
         trainService.updateTrain(id,trainNumber,startStation,departureData,departureTime,travelTime,arrivalStation,arrivalData,arrivalTime,numberOfFreeSeats,priseOfTicket);
         return "redirect:/admin/train/" + id;
     }
+
+    @GetMapping("/add/train")
+    public String getPageToAddTrain(){
+        return "addTrain";
+    }
+
+    @PostMapping("/add/train")
+    public String addTrain(HttpServletRequest request){
+        String trainNumber = request.getParameter("trainNumber");
+        String startStation = request.getParameter("startStation");
+        String departureData = request.getParameter("departureData");
+        String departureTime = request.getParameter("departureTime");
+        String travelTime = request.getParameter("travelTime");
+        String arrivalStation = request.getParameter("arrivalStation");
+        String arrivalData = request.getParameter("arrivalData");
+        String arrivalTime = request.getParameter("arrivalTime");
+        String numberOfFreeSeats = request.getParameter("numberOfFreeSeats");
+        String priseOfTicket = request.getParameter("priseOfTicket");
+        trainService.addTrain(trainNumber,startStation,departureData,departureTime,
+                travelTime,arrivalStation,arrivalData,arrivalTime,numberOfFreeSeats,priseOfTicket);
+        return "redirect:/admin/all/trains/page/1";
+    }
+
+    @PostMapping("/delete/train/{id}")
+    public String deleteTrain(@PathVariable("id") Long id){
+        trainService.deleteTrainByID(id);
+        return "redirect:/admin/all/trains/page/1";
+    }
+
+
+    // Cites and Stations
+    @GetMapping("/all/cites/page/{pageNumber}")
+    public String getAllCites(Model model
+            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber){
+        Page<City> cityPage = cityService.findAllCity(pageable,pageNumber);
+        List<City> cityList = cityPage.getContent();
+        model.addAttribute("pageNumber",pageNumber);
+        model.addAttribute("pageable",cityPage);
+        model.addAttribute("cityList",cityList);
+        return "allCitesForAdmin";
+    }
+
+    @GetMapping("/all/stations/page/{pageNumber}")
+    public String getAllStations(HttpServletRequest request,Model model
+            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber){
+        String city = request.getParameter("cityName");
+        Page<Station> stationPage = stationService.getAllStationInCity(city,pageable,pageNumber);
+        List<Station> stationList = stationPage.getContent();
+        model.addAttribute("pageNumber",pageNumber);
+        model.addAttribute("pageable",stationPage);
+        model.addAttribute("stationList",stationList);
+        return "allStations";
+    }
+
+    @GetMapping("/add/newCity")
+    public String pageAddNewCity(){
+        return null;
+    }
+
+    @PostMapping("/add/newCity")
+    public String addNewCity(){
+        return null;
+    }
+
 
 
 }

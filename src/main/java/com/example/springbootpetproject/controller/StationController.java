@@ -22,9 +22,4 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Station>> getAll(){
-        List<Station> list =stationService.getAllStationInCity("Київ");
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
 }

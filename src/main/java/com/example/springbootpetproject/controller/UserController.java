@@ -43,7 +43,10 @@ public class UserController {
     public String getUserPage(Model model, Principal principal){
         User user = userService.findUserByUsername(principal.getName());
         model.addAttribute("selectedUser",user);
-        return PERSONAL_OFFICE_PAGE;
+        if(user.getUserRole().name().equals("USER")){
+            return PERSONAL_OFFICE_PAGE;
+        }
+        return "adminPersonalOffice";
     }
 
     @GetMapping("/changePassword")

@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface TrainServiceInterface {
 
-    void addTrain(Train train);
+    void addTrain(String trainNumber, String startStation, String departureData,String departureTime, String travelTime,
+                  String arrivalStation,String arrivalData, String arrivalTime, String numberOfFreeSeats, String priseOfTicket);
 
     void updateTrain(String id, String trainNumber,String startStation, String departureData,String departureTime, String travelTime,
                      String arrivalStation,String arrivalData, String arrivalTime, String numberOfFreeSeats, String priseOfTicket);
@@ -30,6 +31,10 @@ public interface TrainServiceInterface {
     List<Train> getAllWayBetweenStationAndCity(String startStation,String cityOfArrival);
 
     List<Train> getAllWayBetweenStations(String startStation, String ArrivalStation);
+
+    Train findTrainByTrainNumber(String trainNumber);
+
+    void deleteTrainByID(Long id);
 
 
 }
