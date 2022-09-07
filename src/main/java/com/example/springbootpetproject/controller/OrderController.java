@@ -1,8 +1,10 @@
 package com.example.springbootpetproject.controller;
 
 import com.example.springbootpetproject.entity.Orders;
+import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.entity.TicketType;
 import com.example.springbootpetproject.entity.Train;
+import com.example.springbootpetproject.service.serviceImplementation.RouteService;
 import com.example.springbootpetproject.service.serviceImplementation.TicketTypeService;
 import com.example.springbootpetproject.service.serviceImplementation.TrainService;
 import com.example.springbootpetproject.service.serviceImplementation.UserService;
@@ -23,28 +25,29 @@ public class OrderController {
     private final TrainService trainService;
     private final TicketTypeService ticketTypeService;
     private final UserService userService;
+    private final RouteService routeService;
 
     @Autowired
-    public OrderController(TrainService trainService, TicketTypeService ticketTypeService, UserService userService) {
+    public OrderController(TrainService trainService, TicketTypeService ticketTypeService, UserService userService, RouteService routeService) {
         this.trainService = trainService;
         this.ticketTypeService = ticketTypeService;
         this.userService = userService;
+        this.routeService = routeService;
     }
 
-    @GetMapping("/{trainNumber}")
-    public String goToOrder(@PathVariable("trainNumber") String trainNumber, Model model){
-        Train selectedTrain = trainService.getTrainByName(trainNumber);
+    @GetMapping("/{id}")
+    public String goToOrder(@PathVariable("id") Long id, Model model){
+        Route selectedRoute = routeService.findById(id);
         List<TicketType> ticketTypeList = ticketTypeService.getAllTicketTypes();
-        model.addAttribute("selectedTrain",selectedTrain);
-        model.addAttribute("countSeats",selectedTrain.getNumberOfFreeSeats());
+        model.addAttribute("selectedRoute",selectedRoute);
         model.addAttribute("ticketTypeList",ticketTypeList);
         return "issuingTicket";
     }
 
-    @PostMapping("/{trainNumber}")
-    public String makeAnOrder(@PathVariable("trainNumber") String trainNumber, Principal principal){
+    @PostMapping("/{id}")
+    public String makeAnOrder(@PathVariable("id") Long id, Principal principal){
         Orders order = new Orders();
 
-        return "redirect:/order/"+trainNumber;
+        return "redirect:/order/"+id;
     }
 }

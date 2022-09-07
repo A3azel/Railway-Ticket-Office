@@ -67,10 +67,6 @@ public class User implements Serializable/*, UserDetails*/ {
     @NotNull
     private UserGender userGender;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_status")
-    private UserStatus userStatus;
-
     @Column(name = "user_phone")
     @NotEmpty
     @NotNull

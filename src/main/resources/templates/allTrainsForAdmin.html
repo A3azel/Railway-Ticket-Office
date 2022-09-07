@@ -27,35 +27,22 @@
     <thead class="table-info">
     <tr>
         <th scope="col">Потяг</th>
-        <th scope="col">Звідки/Куди</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Час <br/> Відправлення/Прибуття</th>
-        <th scope="col">Час в дорозі</th>
-        <th scope="col">Кількість вільних місць</th>
-        <th scope="col">Ціна квитка</th>
-        <th scope="col">Змінити</th>
+        <th scope="col">Кількість вільних місць <br/> Купе/Люкс</th>
+        <th scope="col">Оновити данні/Видалити</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="train : ${trainList}">
         <td th:text="${train.trainNumber}"></td>
-        <td th:text="${train.startStation.city.cityName} + '/' + ${train.arrivalStation.city.cityName}"></td>
-        <td th:utext="Відправдення + ' ' + ${#temporals.format(train.departureTime, 'dd-MM-yyyy')}
-            + '<br>' +
-            Прибуття + ' ' + ${#temporals.format(train.arrivalTime, 'dd-MM-yyyy')}"></td>
-        <td th:text="${#temporals.format(train.departureTime, 'HH:mm')}
-            + '/' +
-            ${#temporals.format(train.arrivalTime, 'HH:mm')}"></td>
-        <td th:text="${train.travelTime}"></td>
+        <td th:text="${train.numberOfCompartmentSeats} + ' / ' + ${train.numberOfSuiteSeats}"></td>
         <td>
-            <div th:text="${train.numberOfFreeSeats}"></div>
-        </td>
-        <td th:text="${train.priseOfTicket} + ' ₴'"></td>
-        <td>
-            <div class="d-grid gap-1 d-md-flex justify-content-md-center">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                         <form th:action="@{'/admin/train/' + ${train.id}}" method="get">
-                            <button type="submit" class="btn btn-outline-primary">Змінити</button>
+                            <button type="submit" class="btn btn-outline-primary">Оновити данні</button>
                         </form>
+                <form th:action="@{'/admin/delete/train/' + ${train.id}}" method="post">
+                    <button type="submit" class="btn btn-outline-danger">Видалити</button>
+                </form>
             </div>
         </td>
     </tr>

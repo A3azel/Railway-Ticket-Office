@@ -10,4 +10,6 @@ public interface CityServiceInterface {
     Page<City> findAllCity(Pageable pageable, int pageNumber);
 
     void addCity(City city);
+
+    City findByCityName(String cityName);
 }

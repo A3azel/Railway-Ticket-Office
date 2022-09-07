@@ -13,4 +13,6 @@ public interface StationRepository extends JpaRepository<Station,Long> {
     Page<Station> getStationByCity_CityName(String cityName,Pageable pageable);
 
     Station findByStationName(String stationName);
+
+    void deleteById(Long id);
 }

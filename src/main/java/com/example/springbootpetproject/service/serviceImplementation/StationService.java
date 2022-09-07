@@ -36,9 +36,8 @@ public class StationService implements StationServiceInterface {
 
     @Override
     @Transactional
-    public boolean deleteStation(Long id) {
+    public void deleteStation(Long id) {
         stationRepository.deleteById(id);
-        return false;
     }
 
     @Override

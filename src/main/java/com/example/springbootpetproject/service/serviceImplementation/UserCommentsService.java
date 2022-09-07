@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,34 +22,47 @@ public class UserCommentsService implements UserCommentsServiceInterface {
     }
 
     @Override
+    @Transactional
     public void addComment(UserComments userComments) {
         userCommentsRepository.save(userComments);
     }
 
     @Override
+    @Transactional
     public void setComment(UserComments userComments) {
         userCommentsRepository.save(userComments);
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long id) {
         userCommentsRepository.deleteById(id);
 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserComments> findAllCommentsForTrain(String trainNumber, Pageable pageable, int pageNumber) {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
         return userCommentsRepository.findAllByTrain_TrainNumber(trainNumber,changePageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserComments findByUserNameAndTrainNumber(String username, String trainNumber) {
         return userCommentsRepository.findByUserUsernameAndTrainTrainNumber(username, trainNumber);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserComments> findByTrainNumber(String trainNumber) {
         return userCommentsRepository.findByTrain_TrainNumber(trainNumber);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserComments> findAllUserComments(String userName, Pageable pageable, int pageNumber) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+        return userCommentsRepository.findAllByUserUsername(userName,changePageable);
     }
 }

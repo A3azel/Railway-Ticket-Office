@@ -11,41 +11,6 @@
 
 <div th:include="header::head"></div>
 
-<!--<section>
-    <table class="table table-bordered table-striped text-center" style="margin: 20px">
-        <thead class="table-info">
-        <tr>
-            <th scope="col">Потяг</th>
-            <th scope="col">Звідки/Куди</th>
-            <th scope="col">Станція відправлення</th>
-            <th scope="col">Станція прибуття</th>
-            <th scope="col">Дата</th>
-            <th scope="col">Час <br/> Відправлення/Прибуття</th>
-            <th scope="col">Час в дорозі</th>
-            <th scope="col">Кількість вільних місць</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:utext="${selectedTrain.trainNumber}"></td>
-            <td th:utext="${selectedTrain.startStation.city.cityName} + '/' + ${selectedTrain.arrivalStation.city.cityName}"></td>
-            <td th:text="${selectedTrain.startStation.stationName}"></td>
-            <td th:text="${selectedTrain.arrivalStation.stationName}"></td>
-            <td th:utext="Відправдення + ' ' + ${#temporals.format(selectedTrain.departureTime, 'dd-MM-yyyy')}
-            + '<br>' +
-            Прибуття + ' ' + ${#temporals.format(selectedTrain.arrivalTime, 'dd-MM-yyyy')}"></td>
-            <td th:utext="${#temporals.format(selectedTrain.departureTime, 'HH:mm')}
-            + '/' +
-            ${#temporals.format(selectedTrain.arrivalTime, 'HH:mm')}"></td>
-            <td th:utext="${selectedTrain.travelTime}"></td>
-            <td>
-                <div th:utext="${selectedTrain.numberOfFreeSeats}"></div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</section>-->
-
 <div class="row mainRow">
     <div class="col-lg-6" style="margin: 20px">
         <div class="card mb-4">
@@ -55,7 +20,7 @@
                         <p class="mb-0">Номер потяга</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${selectedTrain.trainNumber}"></p>
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.train.trainNumber}"></p>
                     </div>
                 </div>
                 <hr>
@@ -64,7 +29,7 @@
                         <p class="mb-0">Звідки/Куди</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${selectedTrain.startStation.city.cityName} + '/' + ${selectedTrain.arrivalStation.city.cityName}"></p>
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.startStation.city.cityName} + '/' + ${selectedRoute.arrivalStation.city.cityName}"></p>
                     </div>
                 </div>
                 <hr>
@@ -73,7 +38,7 @@
                         <p class="mb-0">Станція відправлення</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${selectedTrain.startStation.stationName}"></p>
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.startStation.stationName}"></p>
                     </div>
                 </div>
                 <hr>
@@ -82,7 +47,7 @@
                         <p class="mb-0">Станція прибуття</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${selectedTrain.arrivalStation.stationName}"></p>
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.arrivalStation.stationName}"></p>
                     </div>
                 </div>
                 <hr>
@@ -91,9 +56,9 @@
                         <p class="mb-0">Дата <br/> Відправлення/Прибуття</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "Відправдення + ' ' + ${#temporals.format(selectedTrain.departureTime, 'dd-MM-yyyy')}
-                        + '/' +
-                        Прибуття + ' ' + ${#temporals.format(selectedTrain.arrivalTime, 'dd-MM-yyyy')}"></p>
+                        <p class="text-muted mb-0" th:text = "Відправдення + ' ' + ${#temporals.format(selectedRoute.departureTime, 'dd-MM-yyyy')}
+                        + ' / ' +
+                        Прибуття + ' ' + ${#temporals.format(selectedRoute.arrivalTime, 'dd-MM-yyyy')}"></p>
                     </div>
                 </div>
                 <hr>
@@ -102,9 +67,9 @@
                         <p class="mb-0">Час <br/> Відправлення/Прибуття</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${#temporals.format(selectedTrain.departureTime, 'HH:mm')}
+                        <p class="text-muted mb-0" th:text = "${#temporals.format(selectedRoute.departureTime, 'HH:mm')}
             + '/' +
-            ${#temporals.format(selectedTrain.arrivalTime, 'HH:mm')}"></p>
+            ${#temporals.format(selectedRoute.arrivalTime, 'HH:mm')}"></p>
                     </div>
                 </div>
                 <hr>
@@ -113,25 +78,43 @@
                         <p class="mb-0">Час в дорозі</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${selectedTrain.travelTime}"></p>
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.travelTime}"></p>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Кількість вільних місць</p>
+                        <p class="mb-0">Кількість вільних купе місць</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${selectedTrain.numberOfFreeSeats}"></p>
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.numberOfCompartmentFreeSeats}"></p>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Ціна квитка</p>
+                        <p class="mb-0">Ціна купе місця</p>
                     </div>
                     <div class="col-sm-8">
-                        <p class="text-muted mb-0" th:text = "${selectedTrain.priseOfTicket + '₴'}"></p>
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.priseOfCompartmentTicket} + ' ₴'"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Кількість вільних люкс місць</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.numberOfSuiteFreeSeats}"></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p class="mb-0">Ціна люкс місця</p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="text-muted mb-0" th:text = "${selectedRoute.priseOfSuiteTicket} + ' ₴'"></p>
                     </div>
                 </div>
             </div>

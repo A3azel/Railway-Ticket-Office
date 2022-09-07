@@ -14,8 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-@Repository
+/*@Repository
 public interface TrainRepository extends JpaRepository<Train,Long> {
     Train getTrainByTrainNumber(String trainNumber);
     List<Train> getAllByStartStation_City_CityNameAndArrivalStation_City_CityName(String senderCity, String cityOfArrival);
@@ -41,6 +40,35 @@ public interface TrainRepository extends JpaRepository<Train,Long> {
             value = "UPDATE train_info SET number_of_free_seats = (number_of_free_seats - :countOfPurchasedTickets) where train_number = :trainNumber",
             nativeQuery = true)
     void reduceTheNumberOfSeats(
+            @Param("trainNumber") String trainNumber,
+            @Param("countOfPurchasedTickets") int countOfPurchasedTickets);
+}*/
+
+
+@Repository
+public interface TrainRepository extends JpaRepository<Train,Long> {
+
+    Page<Train> findAll(Pageable pageable);
+
+    Train findTrainById(Long id);
+
+    Train findTrainByTrainNumber(String trainNumber);
+
+    void deleteById(Long id);
+
+    @Modifying
+    @Query(
+            value = "UPDATE train_info SET number_of_compartment_seats = (number_of_compartment_seats - :countOfPurchasedTickets) where train_number = :trainNumber",
+            nativeQuery = true)
+    void reduceTheNumberOfCompartmentSeats(
+            @Param("trainNumber") String trainNumber,
+            @Param("countOfPurchasedTickets") int countOfPurchasedTickets);
+
+    @Modifying
+    @Query(
+            value = "UPDATE train_info SET number_of_suite_seats = (number_of_suite_seats - :countOfPurchasedTickets) where train_number = :trainNumber",
+            nativeQuery = true)
+    void reduceTheNumberOfSuiteSeats(
             @Param("trainNumber") String trainNumber,
             @Param("countOfPurchasedTickets") int countOfPurchasedTickets);
 }

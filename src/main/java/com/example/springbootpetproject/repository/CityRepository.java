@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface CityRepository extends JpaRepository<City,Long> {
 
     Page<City> findAll(Pageable pageable);
+
+    City findByCityName(String cityName);
 }

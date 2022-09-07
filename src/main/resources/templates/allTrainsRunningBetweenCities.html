@@ -19,37 +19,36 @@
         <th scope="col">Дата</th>
         <th scope="col">Час <br/> Відправлення/Прибуття</th>
         <th scope="col">Час в дорозі</th>
-        <th scope="col">Кількість вільних місць</th>
-        <th scope="col">Ціна квитка</th>
+        <th scope="col">Кількість вільних місць <br/> Купе/Люкс</th>
+        <th scope="col">Ціна квитка <br/> Купе/Люкс</th>
         <th scope="col">Придбати квиток/ <br/> Інформація про маршрут</th>
     </tr>
     </thead>
     <tbody>
-        <tr th:each="train : ${trainList}">
-            <td th:utext="${train.trainNumber}"></td>
-            <td th:utext="${train.startStation.city.cityName} + '/' + ${train.arrivalStation.city.cityName}"></td>
-            <td th:utext="Відправдення + ' ' + ${#temporals.format(train.departureTime, 'dd-MM-yyyy')}
+        <tr th:each="route : ${routeList}">
+            <td th:utext="${route.train.trainNumber}"></td>
+            <td th:utext="${route.startStation.city.cityName} + '/' + ${route.arrivalStation.city.cityName}"></td>
+            <td th:utext="Відправдення + ' ' + ${#temporals.format(route.departureTime, 'dd-MM-yyyy')}
             + '<br>' +
-            Прибуття + ' ' + ${#temporals.format(train.arrivalTime, 'dd-MM-yyyy')}"></td>
-            <td th:utext="${#temporals.format(train.departureTime, 'HH:mm')}
+            Прибуття + ' ' + ${#temporals.format(route.arrivalTime, 'dd-MM-yyyy')}"></td>
+            <td th:utext="${#temporals.format(route.departureTime, 'HH:mm')}
             + '/' +
-            ${#temporals.format(train.arrivalTime, 'HH:mm')}"></td>
-            <td th:utext="${train.travelTime}"></td>
-            <td>
-                    <div th:utext="${train.numberOfFreeSeats}"></div>
+            ${#temporals.format(route.arrivalTime, 'HH:mm')}"></td>
+            <td th:utext="${route.travelTime}"></td>
+            <td th:utext="${route.numberOfCompartmentFreeSeats} + '/' + ${route.numberOfSuiteFreeSeats}">
             </td>
-            <td th:utext="${train.priseOfTicket}"></td>
+            <td th:utext="${route.priseOfCompartmentTicket} + '/' + ${route.priseOfSuiteTicket}"></td>
             <td>
                 <div class="container" style="width:250px; text-align:end;">
                     <div class="row">
                         <div class="col">
-                            <form th:action="'/order/' + ${train.trainNumber}" method="get">
+                            <form th:action="@{'/order/' + ${route.id}}" method="get">
                                 <button type="submit" class="btn btn-outline-primary">Купити</button>
                             </form>
                         </div>
                         <div class="col">
                             <form th:action="@{/train/info}" method="get">
-                                <button type="submit" th:value="${train.trainNumber}" class="btn btn-outline-info" name="infoAboutTicket">Інформація</button>
+                                <button type="submit" th:value="${route.id}" class="btn btn-outline-info" name="id">Інформація</button>
                             </form>
                         </div>
                     </div>

@@ -1,9 +1,6 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.entity.City;
-import com.example.springbootpetproject.entity.Station;
-import com.example.springbootpetproject.entity.Train;
-import com.example.springbootpetproject.entity.User;
+import com.example.springbootpetproject.entity.*;
 import com.example.springbootpetproject.service.serviceImplementation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,13 +9,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -29,15 +27,17 @@ public class AdminController {
     private final TrainService trainService;
     private final CityService cityService;
     private final StationService stationService;
+    private final RouteService routeService;
 
     @Autowired
-    public AdminController(UserService userService, OrdersService ordersService, UserCommentsService userCommentsService, TrainService trainService, CityService cityService, StationService stationService) {
+    public AdminController(UserService userService, OrdersService ordersService, UserCommentsService userCommentsService, TrainService trainService, CityService cityService, StationService stationService, RouteService routeService) {
         this.userService = userService;
         this.ordersService = ordersService;
         this.userCommentsService = userCommentsService;
         this.trainService = trainService;
         this.cityService = cityService;
         this.stationService = stationService;
+        this.routeService = routeService;
     }
 
     @GetMapping
@@ -62,7 +62,7 @@ public class AdminController {
     public String getSelectedUser(Model model, @PathVariable("userName") String userName){
         User user = userService.findUserByUsername(userName);
         model.addAttribute("selectedUser", user);
-        return "InfoAboutUserForAdmin";
+        return "userInfoForAdmin";
     }
 
     @PostMapping("/changStatus/{userName}")
@@ -70,7 +70,29 @@ public class AdminController {
         userService.setUserVerification(userName);
         String pageNumber = request.getParameter("infoAboutPage");
         return "redirect:/admin/all/users/page/" + pageNumber;
+    }
 
+    @GetMapping("/selectedUser/order")
+    public String getAllUserOrdersForAdmin(){
+        return null;
+    }
+
+    @GetMapping("/selectedUser/{userName}/comment/page{pageNumber}")
+    public String getAllUserCommentsForAdmin(@PathVariable("userName") String userName, Model model
+            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber){
+        Page<UserComments> userCommentsPage = userCommentsService.findAllUserComments(userName,pageable,pageNumber);
+        List<UserComments> userCommentsList = userCommentsPage.getContent();
+        model.addAttribute("pageNumber",pageNumber);
+        model.addAttribute("pageable",userCommentsPage);
+        model.addAttribute("userCommentsList",userCommentsList);
+        return "allUserComments";
+    }
+
+    @PostMapping("/selectedUser/comment/{id}")
+    public String deleteUserComment(Model model,@PathVariable("id")Long id){
+
+        return null;
     }
 
     // Trains
@@ -102,19 +124,14 @@ public class AdminController {
     }
 
     @PostMapping("/updateInfoAboutTrain")
-    public String updateInfoAboutTrain(HttpServletRequest request){
-        String id = request.getParameter("id");
-        String trainNumber = request.getParameter("trainNumber");
-        String startStation = request.getParameter("startStation");
-        String departureData = request.getParameter("departureData");
-        String departureTime = request.getParameter("departureTime");
-        String travelTime = request.getParameter("travelTime");
-        String arrivalStation = request.getParameter("arrivalStation");
-        String arrivalData = request.getParameter("arrivalData");
-        String arrivalTime = request.getParameter("arrivalTime");
-        String numberOfFreeSeats = request.getParameter("numberOfFreeSeats");
-        String priseOfTicket = request.getParameter("priseOfTicket");
-        trainService.updateTrain(id,trainNumber,startStation,departureData,departureTime,travelTime,arrivalStation,arrivalData,arrivalTime,numberOfFreeSeats,priseOfTicket);
+    public String updateInfoAboutTrain(@RequestParam("id") Long id, @RequestParam("trainNumber") String trainNumber
+            ,@RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats
+            ,@RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats){
+        Train oldTrain = trainService.findTrainByID(id);
+        oldTrain.setTrainNumber(trainNumber);
+        oldTrain.setNumberOfCompartmentSeats(numberOfCompartmentSeats);
+        oldTrain.setNumberOfSuiteSeats(numberOfSuiteSeats);
+        trainService.updateTrain(oldTrain);
         return "redirect:/admin/train/" + id;
     }
 
@@ -124,19 +141,14 @@ public class AdminController {
     }
 
     @PostMapping("/add/train")
-    public String addTrain(HttpServletRequest request){
-        String trainNumber = request.getParameter("trainNumber");
-        String startStation = request.getParameter("startStation");
-        String departureData = request.getParameter("departureData");
-        String departureTime = request.getParameter("departureTime");
-        String travelTime = request.getParameter("travelTime");
-        String arrivalStation = request.getParameter("arrivalStation");
-        String arrivalData = request.getParameter("arrivalData");
-        String arrivalTime = request.getParameter("arrivalTime");
-        String numberOfFreeSeats = request.getParameter("numberOfFreeSeats");
-        String priseOfTicket = request.getParameter("priseOfTicket");
-        trainService.addTrain(trainNumber,startStation,departureData,departureTime,
-                travelTime,arrivalStation,arrivalData,arrivalTime,numberOfFreeSeats,priseOfTicket);
+    public String addTrain(@RequestParam("trainNumber") String trainNumber
+            ,@RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats
+            ,@RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats){
+        Train newTrain = new Train();
+        newTrain.setTrainNumber(trainNumber);
+        newTrain.setNumberOfCompartmentSeats(numberOfCompartmentSeats);
+        newTrain.setNumberOfSuiteSeats(numberOfSuiteSeats);
+        trainService.addTrain(newTrain);
         return "redirect:/admin/all/trains/page/1";
     }
 
@@ -146,6 +158,67 @@ public class AdminController {
         return "redirect:/admin/all/trains/page/1";
     }
 
+    //Route
+    @GetMapping("/all/route/page/{pageNumber}")
+    public String getAllRouteForAdmin(Model model
+            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber){
+        Page<Route> routePage = routeService.getAll(pageable,pageNumber);
+        List<Route> routeList = routePage.getContent();
+        model.addAttribute("pageNumber",pageNumber);
+        model.addAttribute("pageable",routePage);
+        model.addAttribute("routeList",routeList);
+        return "allRoute";
+    }
+
+    @PostMapping("/delete/route/{id}")
+    public String deleteRoute(@PathVariable("id") Long id){
+        routeService.deleteRoute(id);
+        return "redirect:/admin/all/route/page/1";
+    }
+
+    @GetMapping("/route/change/{id}")
+    public String getRouteForAdminByID(Model model, @PathVariable("id") Long id){
+        Route selectedRoute = routeService.findById(id);
+        model.addAttribute("selectedRoute",selectedRoute);
+        return "changeRouteDetails";
+    }
+
+    @PostMapping("/route/change/{id}")
+    public String updateRoute(@RequestParam Map<String,String> allParam,@PathVariable("id") Long id){
+        routeService.updateRoute(allParam);
+        return "redirect:/admin/route/change/" + id;
+    }
+
+    @GetMapping("/add/route")
+    public String getPageToAddRoute(){
+        return "addRoute";
+    }
+
+    /*@PostMapping("/add/route")
+    public String addRoute(@RequestParam("trainNumber") String trainNumber, @RequestParam("startStation") String startStation
+            , @RequestParam("arrivalStation") String arrivalStation, @RequestParam("dateOfDispatch") LocalDate dateOfDispatch
+            , @RequestParam("dateOfArrival") LocalDate dateOfArrival, @RequestParam("timeOfDispatch") LocalTime timeOfDispatch
+            , @RequestParam("timeOfArrival") LocalTime timeOfArrival, @RequestParam("travelTime") LocalTime travelTime
+            , @RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats, @RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats
+            ,@RequestParam("priseOfCompartmentTicket") BigDecimal priseOfCompartmentTicket, @RequestParam("priseOfSuiteTicket") BigDecimal priseOfSuiteTicket){
+        routeService.addRoute(trainNumber, startStation, arrivalStation, dateOfDispatch, dateOfArrival, timeOfDispatch, timeOfArrival, travelTime
+                , numberOfCompartmentSeats, numberOfSuiteSeats,priseOfCompartmentTicket, priseOfSuiteTicket);
+        return "redirect:/admin/all/route/page/1";
+    }*/
+
+    @PostMapping("/add/route")
+    public String addRoute(@RequestParam Map<String,String> allParam){
+        routeService.addRoute(allParam);
+        return "redirect:/admin/all/route/page/1";
+    }
+
+    @GetMapping("/find/route")
+    public String findRouteByID(Model model, @RequestParam("id") Long id){
+        Route selectedRoute = routeService.findById(id);
+        model.addAttribute("selectedRoute",selectedRoute);
+        return "changeRouteDetails";
+    }
 
     // Cites and Stations
     @GetMapping("/all/cites/page/{pageNumber}")
@@ -160,17 +233,22 @@ public class AdminController {
         return "allCitesForAdmin";
     }
 
-    @GetMapping("/all/stations/page/{pageNumber}")
-    public String getAllStations(HttpServletRequest request,Model model
+    @GetMapping("/all/stations/{cityName}/page/{pageNumber}")
+    public String getAllStations(Model model
             , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            , @PathVariable("pageNumber") int pageNumber){
-        String city = request.getParameter("cityName");
-        Page<Station> stationPage = stationService.getAllStationInCity(city,pageable,pageNumber);
+            , @PathVariable("pageNumber") int pageNumber, @PathVariable("cityName") String cityName){
+        Page<Station> stationPage = stationService.getAllStationInCity(cityName,pageable,pageNumber);
         List<Station> stationList = stationPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",stationPage);
         model.addAttribute("stationList",stationList);
         return "allStations";
+    }
+
+    @GetMapping("/find/City")
+    public String findCity(HttpServletRequest request){
+        String city = request.getParameter("city");
+        return "redirect:/admin/all/stations/" + city + "/page/1";
     }
 
     @GetMapping("/add/newCity")
@@ -181,6 +259,28 @@ public class AdminController {
     @PostMapping("/add/newCity")
     public String addNewCity(){
         return null;
+    }
+
+    @PostMapping("/delete/{cityName}/station/{id}")
+    public String deleteStation(@PathVariable("id") Long id, @PathVariable("cityName") String cityName){
+        stationService.deleteStation(id);
+        return "redirect:/admin/all/cites/page/1";
+    }
+
+    @GetMapping("/add/station/{cityName}")
+    public String pageAddStation(@PathVariable("cityName") String cityName, Model model){
+        model.addAttribute("cityName",cityName);
+        return "addStation";
+    }
+
+    @PostMapping("/add/station")
+    public String addStation(HttpServletRequest request){
+        Station newStation = new Station();
+        String cityName = request.getParameter("cityName");
+        newStation.setStationName(request.getParameter("stationName"));
+        newStation.setCity(cityService.findByCityName(cityName));
+        stationService.addStation(newStation);
+        return "redirect:/admin/all/cites/page/1";
     }
 
 

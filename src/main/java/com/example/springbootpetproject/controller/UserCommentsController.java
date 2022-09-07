@@ -36,7 +36,7 @@ public class UserCommentsController {
     public String postComment(HttpServletRequest request, Principal principal, @PathVariable("trainNumber") String trainNumber){
         String userComment = request.getParameter("userComment");
         User user = userService.findUserByUsername(principal.getName());
-        Train train = trainService.getTrainByName(trainNumber);
+        Train train = trainService.findTrainByTrainNumber(trainNumber);
         UserComments userCommentObj = new UserComments(userComment, LocalDateTime.now(),user,train);
         if(ordersService.exitByUserNameAndTrainName(principal.getName(),trainNumber) && !userComment.equals("")){
             userCommentsService.addComment(userCommentObj);

@@ -20,4 +20,6 @@ public interface UserCommentsServiceInterface {
 
     List<UserComments> findByTrainNumber(String trainNumber);
 
+    Page<UserComments> findAllUserComments(String userName, Pageable pageable, int pageNumber);
+
 }

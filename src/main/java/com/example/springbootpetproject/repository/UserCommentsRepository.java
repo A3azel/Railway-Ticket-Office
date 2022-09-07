@@ -16,4 +16,6 @@ public interface UserCommentsRepository extends JpaRepository<UserComments,Long>
     UserComments findByUserUsernameAndTrainTrainNumber(String username, String trainNumber);
 
     List<UserComments> findByTrain_TrainNumber(String trainNumber);
+
+    Page<UserComments> findAllByUserUsername(String userName, Pageable pageable);
 }

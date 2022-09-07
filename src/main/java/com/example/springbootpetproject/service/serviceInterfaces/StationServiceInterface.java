@@ -9,7 +9,7 @@ import java.util.List;
 public interface StationServiceInterface {
     boolean addStation(Station station);
 
-    boolean deleteStation(Long id);
+    void deleteStation(Long id);
 
     Page<Station> getAllStationInCity(String cityName, Pageable pageable, int pageNumber);
 

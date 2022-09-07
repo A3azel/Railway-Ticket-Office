@@ -28,8 +28,8 @@ public class OrdersService implements OrdersServiceInterface {
     @Override
     @Transactional
     public void addOrder(Orders order) {
-        trainRepository.reduceTheNumberOfSeats(order.getTrain().getTrainNumber(),order.getCountOfPurchasedTickets());
-        ordersRepository.save(order);
+        //trainRepository.reduceTheNumberOfSeats(order.getTrain().getTrainNumber(),order.getCountOfPurchasedTickets());
+        //ordersRepository.save(order);
     }
 
     @Override

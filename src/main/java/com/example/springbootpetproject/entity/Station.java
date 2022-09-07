@@ -28,8 +28,6 @@ public class Station implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
-    //backup option (not recommended)
-    //@JsonIgnore
     @JsonBackReference
     private City city;
 }

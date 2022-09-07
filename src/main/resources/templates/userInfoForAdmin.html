@@ -17,7 +17,6 @@
         <div class="col-lg-4">
             <div class="card mb-4">
                 <div class="card-body text-center">
-                    <!-- With ENUM you should add method name() -->
                     <th:block th:switch="${selectedUser.userGender.name()}">
 
                         <th:block th:case = "'MAN'">
@@ -36,18 +35,13 @@
                         </th:block>
 
                     </th:block>
-                    <!--<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-                         class="rounded-circle img-fluid" style="width: 150px;">-->
                     <h5 class="my-3" th:utext = "${selectedUser.firstName} + ' ' + ${selectedUser.lastName}">
                     </h5>
                     <p class="text-muted mb-1"  th:utext = "${selectedUser.userRole}"></p>
                     <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
-                    <div class="d-flex justify-content-center mb-1">
-                        <form method="post" action="/logout">
-                            <button type="submit" class="btn btn-outline-primary ms-1">
-                                <i class="bi bi-door-open-fill"></i>
-                                Logout
-                            </button>
+                    <div class="d-flex justify-content-center mb-2">
+                        <form method="post">
+                            <button type="submit" class="btn btn-outline-danger">Заблокувати</button>
                         </form>
                     </div>
                 </div>
@@ -91,24 +85,25 @@
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userPhone}"></p>
                         </div>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Balance</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:utext = "${selectedUser.userCountOfMoney} + ' ₴'"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="d-grid gap-5 d-md-flex justify-content-md-start">
-                <form th:action="@{/admin/all/users/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список кристувачів</button>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <form method="get">
+                    <button type="submit"  class="btn btn-outline-secondary">Список оформлених білетів</button>
                 </form>
-                <form th:action="@{/admin/all/trains/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список потягів</button>
+                <form method="get">
+                    <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">Залишені коментарі</button>
                 </form>
-                <form th:action="@{/admin/all/cites/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список міст</button>
-                </form>
-                <form th:action="@{/admin/all/route/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список маршрутів</button>
-                </form>
-                <form th:action="@{/user/changePassword}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Переглянути кристувачів</button>
-                </form>
+
             </div>
         </div>
     </div>

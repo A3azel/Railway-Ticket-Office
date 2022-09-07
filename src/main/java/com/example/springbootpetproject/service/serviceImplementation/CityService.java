@@ -33,4 +33,9 @@ public class CityService implements CityServiceInterface {
     public void addCity(City city) {
         cityRepository.save(city);
     }
+
+    @Override
+    public City findByCityName(String cityName) {
+        return cityRepository.findByCityName(cityName);
+    }
 }

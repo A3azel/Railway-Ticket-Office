@@ -39,16 +39,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                     .and()
                 .logout()
-                    /*.invalidateHttpSession(true)
+                    .invalidateHttpSession(true)
                     .clearAuthentication(true)
-                    .deleteCookies("JSESSIONID")*/
+                    /*.deleteCookies("JSESSIONID")*/
                     .logoutSuccessUrl("/")
                     .permitAll()
-                /*.and()
+                .and()
                     .sessionManagement()
                     .invalidSessionUrl("/")
                     .maximumSessions(1)
-                    .maxSessionsPreventsLogin(true)
+                    /*.maxSessionsPreventsLogin(true)
                     .sessionRegistry(sessionRegistry())*/;
     }
 
