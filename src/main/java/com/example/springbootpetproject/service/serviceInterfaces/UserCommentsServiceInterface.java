@@ -14,12 +14,12 @@ public interface UserCommentsServiceInterface {
 
     void deleteComment(Long id);
 
-    Page<UserComments> findAllCommentsForTrain(String trainNumber, Pageable pageable, int pageNumber);
+    Page<UserComments> findAllCommentsForTrain(String trainNumber, Pageable pageable, int pageNumber, String direction, String sort);
 
     UserComments findByUserNameAndTrainNumber(String username, String trainNumber);
 
     List<UserComments> findByTrainNumber(String trainNumber);
 
-    Page<UserComments> findAllUserComments(String userName, Pageable pageable, int pageNumber);
+    Page<UserComments> findAllUserComments(String userName, Pageable pageable, int pageNumber, String direction, String sort);
 
 }

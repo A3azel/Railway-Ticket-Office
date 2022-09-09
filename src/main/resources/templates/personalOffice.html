@@ -44,12 +44,12 @@
                     <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
                     <div class="d-flex justify-content-center mb-2">
                         <form method="get" th:action="@{/user/myOrders/page/1}">
-                            <button type="submit" class="btn btn-primary">My Orders</button>
+                            <button type="submit" class="btn btn-primary">[[#{head.link.orders}]]</button>
                         </form>
                         <form method="post" action="/logout">
                             <button type="submit" class="btn btn-outline-primary ms-1">
                                 <i class="bi bi-door-open-fill"></i>
-                                Logout
+                                [[#{logout}]]
                             </button>
                         </form>
                     </div>
@@ -61,7 +61,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Login</p>
+                            <p class="mb-0">[[#{user.label.login}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.username}"></p>
@@ -70,7 +70,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Full Name</p>
+                            <p class="mb-0">[[#{user.label.fullName}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.firstName} + ' ' + ${selectedUser.lastName}"></p>
@@ -79,7 +79,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Email</p>
+                            <p class="mb-0">[[#{user.label.email}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userEmail}"></p>
@@ -88,7 +88,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Phone</p>
+                            <p class="mb-0">[[#{user.label.phone}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userPhone}"></p>
@@ -97,7 +97,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Balance</p>
+                            <p class="mb-0">[[#{user.label.balance}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userCountOfMoney} + ' ₴'"></p>
@@ -107,15 +107,15 @@
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <form th:action="@{/user/changePassword}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Змінити пароль</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{user.button.changePass}]]</button>
                 </form>
-                    <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">Поповнити рахунок</button>
+                    <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">[[#{user.button.topUpTheAccount}]]</button>
             </div>
             <div id="placeToAdd" class="changedMenu">
                 <form method="post" th:action="@{/user/topUpAccount}">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start" style="padding-top: 20px">
-                        <input type="number" class="form-control" name="countOfMoney" style="border-radius:20px;height:40px;width:200px">
-                        <button type="submit" class="btn btn-outline-success">Поповнити рахунок</button>
+                        <input type="number" min="1" class="form-control" name="countOfMoney" style="border-radius:20px;height:40px;width:200px">
+                        <button type="submit" class="btn btn-outline-success">[[#{user.button.topUpTheAccount}]]</button>
                     </div>
                 </form>
             </div>

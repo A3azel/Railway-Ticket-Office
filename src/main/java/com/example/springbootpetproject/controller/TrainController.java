@@ -42,17 +42,25 @@ public class TrainController {
 
     @GetMapping("/between/page/{pageNumber}")
     public String getAllTrainBetweenCity(Model model
-            ,@PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            ,@PathVariable("pageNumber") int pageNumber
-            ,@RequestParam("cityOfDeparture") String cityOfDeparture,@RequestParam("cityOfArrival") String cityOfArrival
-            ,@RequestParam("selectedDates") String selectedDatesString,@RequestParam("selectedTime") String selectedTimeString){
+            , @PageableDefault(size = 10) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam("cityOfDeparture") String cityOfDeparture,@RequestParam("cityOfArrival") String cityOfArrival
+            , @RequestParam("selectedDates") String selectedDatesString,@RequestParam("selectedTime") String selectedTimeString
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
 
-        Page<Route> routePage = routeService.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber);
+        Page<Route> routePage = routeService.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber,direction,sort);
         List<Route> routeList = routePage.getContent();
+
+        model.addAttribute("selectedDates",selectedDatesString);
+        model.addAttribute("selectedTime",selectedTimeString);
+        model.addAttribute("cityOfDeparture",cityOfDeparture);
+        model.addAttribute("cityOfArrival",cityOfArrival);
 
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",routePage);
         model.addAttribute("routeList",routeList);
+        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
 
         return All_TRAINS_BETWEEN_CITIES_FILE;
     }

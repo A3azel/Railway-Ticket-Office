@@ -19,7 +19,7 @@
             <div class="card-body" >
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Номер потяга</p>
+                        <p class="mb-0">[[#{label.train.number}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedRoute.train.trainNumber}"></p>
@@ -28,7 +28,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Звідки/Куди</p>
+                        <p class="mb-0">[[#{label.route.from.to}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedRoute.startStation.city.cityName} + '/' + ${selectedRoute.arrivalStation.city.cityName}"></p>
@@ -37,7 +37,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Станція відправлення</p>
+                        <p class="mb-0">[[#{label.route.startStation}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedRoute.startStation.stationName}"></p>
@@ -46,7 +46,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Станція прибуття</p>
+                        <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedRoute.arrivalStation.stationName}"></p>
@@ -55,7 +55,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Час відправлення</p>
+                        <p class="mb-0">[[#{label.route.startTime}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedRoute.departureTime}"></p>
@@ -64,7 +64,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Час прибуття</p>
+                        <p class="mb-0">[[#{label.route.arrivalTime}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedRoute.arrivalTime}"></p>
@@ -73,7 +73,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Час в дорозі</p>
+                        <p class="mb-0">[[#{label.route.travelTime}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedRoute.travelTime}"></p>
@@ -82,7 +82,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Кількість вільних купе місць</p>
+                        <p class="mb-0">[[#{label.route.numberOfCompartmentFreeSeats}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:text = "${selectedRoute.numberOfCompartmentFreeSeats}"></p>
@@ -91,7 +91,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Ціна купе місця</p>
+                        <p class="mb-0">[[#{label.route.priseOfCompartmentTicket}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:text = "${selectedRoute.priseOfCompartmentTicket} + ' ₴'"></p>
@@ -100,7 +100,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Кількість вільних люкс місць</p>
+                        <p class="mb-0">[[#{label.route.numberOfSuiteFreeSeats}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:text = "${selectedRoute.numberOfSuiteFreeSeats}"></p>
@@ -109,7 +109,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Ціна люкс місця</p>
+                        <p class="mb-0">[[#{label.route.priseOfSuiteTicket}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:text = "${selectedRoute.priseOfSuiteTicket} + ' ₴'"></p>
@@ -132,15 +132,20 @@
                 </th:block>
                 <div class="input-group" style="width: 150px">
                     <!--readonly js-->
-                    <label for="countOfTickets">Кількість квитків</label>
+                    <label for="countOfTickets">[[#{button.countOfTicket}]]</label>
                     <button type="button" id="minusCount" class="input-group-text">-</button>
                     <input type="number" class="form-control" id="countOfTickets" name="cityOfDeparture" min="0"/>
                     <button type="button" id="plusCount" class="input-group-text" >+</button>
                 </div>
+                <div>
+                    <label for="countOfTickets">Місце</label>
+                    <input type ="radio" name="ticketType" th:value="Купе" th:text="#{label.compartment}"/>
+                    <input type ="radio" name="ticketType" th:value="Люкс" th:text="#{label.suite}"/>
+                </div>
                     <label>Сума: </label>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <button type="button" class="btn btn-outline-primary">Додати</button>
-                        <button type="submit" class="btn btn-outline-success">Купити</button>
+                        <button type="button" class="btn btn-outline-primary">[[#{button.add}]]</button>
+                        <button type="submit" class="btn btn-outline-success">[[#{button.by}]]</button>
                     </div>
             </form>
         </div>

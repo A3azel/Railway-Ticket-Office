@@ -14,23 +14,47 @@
 <table class="table table-bordered table-striped text-center" style="margin: 20px">
     <thead class="table-info">
     <tr>
-        <th scope="col">Потяг</th>
-        <th scope="col">Звідки/Куди</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Час <br/> Відправлення/Прибуття</th>
-        <th scope="col">Час в дорозі</th>
-        <th scope="col">Кількість вільних місць <br/> Купе/Люкс</th>
-        <th scope="col">Ціна квитка <br/> Купе/Люкс</th>
-        <th scope="col">Придбати квиток/ <br/> Інформація про маршрут</th>
+        <th scope="col">
+            <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=train.trainNumber'}">[[#{label.train.number}]]</a>
+        </th>
+        <th scope="col">[[#{label.route.from.to}]]</th>
+        <th scope="col">
+            <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=departureTime'}">[[#{label.route.date}]]</a>
+        </th>
+        <th scope="col">
+            <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=departureTime'}">[[#{label.route.time}]]</a>
+        </th>
+        <th scope="col">
+            <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=travelTime'}">[[#{label.route.travelTime}]]</a>
+        </th>
+        <th scope="col">
+            <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=numberOfCompartmentFreeSeats'}">[[#{label.route.numberOfFreeSeats}]]</a>
+        </th>
+        <th scope="col">
+            <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=priseOfCompartmentTicket'}">[[#{label.route.priseOfTicket}]]</a>
+        </th>
+        <th scope="col">[[#{buttonGroup.by.information}]]</th>
     </tr>
     </thead>
     <tbody>
         <tr th:each="route : ${routeList}">
             <td th:utext="${route.train.trainNumber}"></td>
             <td th:utext="${route.startStation.city.cityName} + '/' + ${route.arrivalStation.city.cityName}"></td>
-            <td th:utext="Відправдення + ' ' + ${#temporals.format(route.departureTime, 'dd-MM-yyyy')}
+            <td th:utext="${#temporals.format(route.departureTime, 'dd-MM-yyyy')}
             + '<br>' +
-            Прибуття + ' ' + ${#temporals.format(route.arrivalTime, 'dd-MM-yyyy')}"></td>
+            ${#temporals.format(route.arrivalTime, 'dd-MM-yyyy')}"></td>
             <td th:utext="${#temporals.format(route.departureTime, 'HH:mm')}
             + '/' +
             ${#temporals.format(route.arrivalTime, 'HH:mm')}"></td>
@@ -43,12 +67,12 @@
                     <div class="row">
                         <div class="col">
                             <form th:action="@{'/order/' + ${route.id}}" method="get">
-                                <button type="submit" class="btn btn-outline-primary">Купити</button>
+                                <button type="submit" class="btn btn-outline-primary">[[#{button.by}]]</button>
                             </form>
                         </div>
                         <div class="col">
                             <form th:action="@{/train/info}" method="get">
-                                <button type="submit" th:value="${route.id}" class="btn btn-outline-info" name="id">Інформація</button>
+                                <button type="submit" th:value="${route.id}" class="btn btn-outline-info" name="id">[[#{button.information}]]</button>
                             </form>
                         </div>
                     </div>
@@ -61,7 +85,9 @@
     <ul class="pagination justify-content-center">
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${1}}">First</a>
+                <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">First</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -72,7 +98,9 @@
         <!-- Previous -->
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 1}}">Previous</a>
+                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 1} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">Previous</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -90,7 +118,9 @@
                 </th:block>
                 <th:block th:unless="${i} == ${pageNumber}">
                     <li class="page-item">
-                        <a class="page-link" th:href = "@{'/train/between/page/' + ${i}}">[[${i}]]</a>
+                        <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">[[${i}]]</a>
                     </li>
                 </th:block>
             </th:block>
@@ -99,19 +129,27 @@
         <th:block th:if="${pageable.getTotalPages()} >  10">
             <th:block th:if="${pageNumber <= 5 || pageNumber > pageable.getTotalPages()-4}">
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/train/between/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">[[${i}]]</a>
                 </li>
 
-                <a class="page-link" th:href = "@{'/train/between/page/' + '6'}">...</a>
+                <a class="page-link" th:href = "@{'/train/between/page/' + '6'+ '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">...</a>
 
                 <li th:each="i : ${#numbers.sequence(pageable.getTotalPages()-4,pageable.getTotalPages())}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/train/between/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">[[${i}]]</a>
                 </li>
             </th:block>
 
             <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
-                <li th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 5}}">...</a>
+                <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
+                    <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 5} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">...</a>
                 </li>
             </th:block>
 
@@ -120,7 +158,9 @@
         <!-- Next -->
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber + 1}}">Next</a>
+                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber + 1} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">Next</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
@@ -131,7 +171,9 @@
 
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageable.getTotalPages()}}">Last</a>
+                <a class="page-link" th:href = "@{'/train/between/page/' + ${pageable.getTotalPages()} + '?cityOfDeparture=' + ${cityOfDeparture}
+                + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
+                + '&selectedTime=' + ${selectedTime}}">Last</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
@@ -192,6 +234,11 @@
 <div th:include="footer::foot"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+</script>
+<script type="text/javascript" th:src="@{/JS/Internationalization.js}">
 
 </script>
 <script defer="defer">

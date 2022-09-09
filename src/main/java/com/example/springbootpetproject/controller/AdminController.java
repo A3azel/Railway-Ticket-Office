@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class AdminController {
     // User
     @GetMapping("/all/users/page/{pageNumber}")
     public String getAllUsersForAdmin(Model model
-            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+            , @PageableDefault(sort = {"id"}, size = 10, direction = Sort.Direction.DESC) Pageable pageable
             , @PathVariable("pageNumber") int pageNumber){
         Page<User> userPage = userService.getAllUsers(pageable,pageNumber);
         List<User> userList = userPage.getContent();
@@ -79,13 +80,16 @@ public class AdminController {
 
     @GetMapping("/selectedUser/{userName}/comment/page{pageNumber}")
     public String getAllUserCommentsForAdmin(@PathVariable("userName") String userName, Model model
-            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            , @PathVariable("pageNumber") int pageNumber){
-        Page<UserComments> userCommentsPage = userCommentsService.findAllUserComments(userName,pageable,pageNumber);
+            , Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<UserComments> userCommentsPage = userCommentsService.findAllUserComments(userName,pageable,pageNumber,direction,sort);
         List<UserComments> userCommentsList = userCommentsPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",userCommentsPage);
         model.addAttribute("userCommentsList",userCommentsList);
+        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
         return "allUserComments";
     }
 
@@ -98,13 +102,16 @@ public class AdminController {
     // Trains
     @GetMapping("/all/trains/page/{pageNumber}")
     public String getAllTrainsForAdmin(Model model
-            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            , @PathVariable("pageNumber") int pageNumber){
-        Page<Train> trainPage = trainService.getAllTrain(pageable,pageNumber);
+            , @PageableDefault(size = 10) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<Train> trainPage = trainService.getAllTrain(pageable,pageNumber,direction,sort);
         List<Train> trainList = trainPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",trainPage);
         model.addAttribute("trainList",trainList);
+        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
         return "allTrainsForAdmin";
     }
 
@@ -161,13 +168,16 @@ public class AdminController {
     //Route
     @GetMapping("/all/route/page/{pageNumber}")
     public String getAllRouteForAdmin(Model model
-            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            , @PathVariable("pageNumber") int pageNumber){
-        Page<Route> routePage = routeService.getAll(pageable,pageNumber);
+            , @PageableDefault(size = 10) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<Route> routePage = routeService.getAll(pageable,pageNumber,direction,sort);
         List<Route> routeList = routePage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",routePage);
         model.addAttribute("routeList",routeList);
+        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
         return "allRoute";
     }
 
@@ -223,25 +233,33 @@ public class AdminController {
     // Cites and Stations
     @GetMapping("/all/cites/page/{pageNumber}")
     public String getAllCites(Model model
-            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            , @PathVariable("pageNumber") int pageNumber){
-        Page<City> cityPage = cityService.findAllCity(pageable,pageNumber);
+            , @PageableDefault(size = 10) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<City> cityPage = cityService.findAllCity(pageable,pageNumber,direction,sort);
         List<City> cityList = cityPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",cityPage);
         model.addAttribute("cityList",cityList);
+        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
+        model.addAttribute("sort",sort);
         return "allCitesForAdmin";
     }
 
     @GetMapping("/all/stations/{cityName}/page/{pageNumber}")
     public String getAllStations(Model model
-            , @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            , @PathVariable("pageNumber") int pageNumber, @PathVariable("cityName") String cityName){
-        Page<Station> stationPage = stationService.getAllStationInCity(cityName,pageable,pageNumber);
+            , @PageableDefault(size = 10) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber, @PathVariable("cityName") String cityName
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<Station> stationPage = stationService.getAllStationInCity(cityName,pageable,pageNumber,direction,sort);
         List<Station> stationList = stationPage.getContent();
+        model.addAttribute("cityName",cityName);
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",stationPage);
         model.addAttribute("stationList",stationList);
+        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
         return "allStations";
     }
 

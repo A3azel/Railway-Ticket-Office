@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,20 +125,22 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Route> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber) {
+    public Page<Route> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) {
         LocalDate selectedDates = LocalDate.parse(selectedDatesString);
         LocalTime selectedTime = LocalTime.parse(selectedTimeString);
         LocalDateTime selectedLocalDateTime = LocalDateTime.of(selectedDates,selectedTime);
         LocalDateTime finalLocalDateTime = selectedLocalDateTime.plusDays(7);
-        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
+                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         return routeRepository.findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
                 senderCity, cityOfArrival, selectedLocalDateTime, finalLocalDateTime, changePageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Route> getAll(Pageable pageable, int pageNumber) {
-        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+    public Page<Route> getAll(Pageable pageable, int pageNumber, String direction, String sort) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
+                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         return routeRepository.findAll(changePageable);
     }
 

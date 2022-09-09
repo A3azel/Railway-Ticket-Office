@@ -41,7 +41,7 @@
                     <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
                     <div class="d-flex justify-content-center mb-2">
                         <form method="post">
-                            <button type="submit" class="btn btn-outline-danger">Заблокувати</button>
+                            <button type="submit" class="btn btn-outline-danger">[[#{button.block}]]</button>
                         </form>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Login</p>
+                            <p class="mb-0">[[#{user.label.login}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.username}"></p>
@@ -61,7 +61,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Full Name</p>
+                            <p class="mb-0">[[#{user.label.fullName}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.firstName} + ' ' + ${selectedUser.lastName}"></p>
@@ -70,7 +70,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Email</p>
+                            <p class="mb-0">[[#{user.label.email}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userEmail}"></p>
@@ -79,7 +79,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Phone</p>
+                            <p class="mb-0">[[#{user.label.phone}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userPhone}"></p>
@@ -88,7 +88,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Balance</p>
+                            <p class="mb-0">[[#{user.label.balance}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userCountOfMoney} + ' ₴'"></p>
@@ -98,10 +98,10 @@
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <form method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список оформлених білетів</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{button.ListOfUserOrders}]]</button>
                 </form>
                 <form method="get">
-                    <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">Залишені коментарі</button>
+                    <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">[[#{button.ListOfUserComments}]]</button>
                 </form>
 
             </div>

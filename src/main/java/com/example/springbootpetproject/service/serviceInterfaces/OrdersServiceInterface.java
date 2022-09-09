@@ -13,7 +13,7 @@ public interface OrdersServiceInterface {
 
     List<Orders> getAllUserOrders(Long id);
 
-    Page<Orders> getAllUserOrdersByUserName(String username, Pageable pageable, int pageNumber);
+    Page<Orders> getAllUserOrdersByUserName(String username, Pageable pageable, int pageNumber, String direction, String sort);
 
     boolean exitByUserNameAndTrainName(String userName, String trainName);
 }

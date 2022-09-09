@@ -46,7 +46,7 @@
                         <form method="post" action="/logout">
                             <button type="submit" class="btn btn-outline-primary ms-1">
                                 <i class="bi bi-door-open-fill"></i>
-                                Logout
+                                [[#{logout}]]
                             </button>
                         </form>
                     </div>
@@ -58,7 +58,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Login</p>
+                            <p class="mb-0">[[#{user.label.login}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.username}"></p>
@@ -67,7 +67,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Full Name</p>
+                            <p class="mb-0">[[#{user.label.fullName}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.firstName} + ' ' + ${selectedUser.lastName}"></p>
@@ -76,7 +76,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Email</p>
+                            <p class="mb-0">[[#{user.label.email}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userEmail}"></p>
@@ -85,7 +85,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">Phone</p>
+                            <p class="mb-0">[[#{user.label.phone}]]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0" th:utext = "${selectedUser.userPhone}"></p>
@@ -95,19 +95,19 @@
             </div>
             <div class="d-grid gap-5 d-md-flex justify-content-md-start">
                 <form th:action="@{/admin/all/users/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список кристувачів</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfUsers}]]</button>
                 </form>
                 <form th:action="@{/admin/all/trains/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список потягів</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfTrains}]]</button>
                 </form>
                 <form th:action="@{/admin/all/cites/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список міст</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfCites}]]т</button>
                 </form>
                 <form th:action="@{/admin/all/route/page/1}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Список маршрутів</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfRoutes}]]</button>
                 </form>
                 <form th:action="@{/user/changePassword}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">Переглянути кристувачів</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfUsers}]]</button>
                 </form>
             </div>
         </div>

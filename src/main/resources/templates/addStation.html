@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Місто</p>
+                            <p class="mb-0">[[#{label.city.name}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" th:value="${cityName}" name="cityName"/>
@@ -27,7 +27,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Назва станції</p>
+                            <p class="mb-0">[[#{label.station.name}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="stationName"/>
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-outline-primary">Додати</button>
+        <button type="submit" class="btn btn-outline-primary">[[#{button.station.add}]]</button>
     </form>
 </div>
 

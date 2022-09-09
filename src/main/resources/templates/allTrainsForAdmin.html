@@ -12,36 +12,44 @@
 <div th:include="header::head"></div>
 <div class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin: 20px">
     <form th:action="@{/admin/train/find/byTrainNumber}" method="get">
-        <label>Пошук потягу</label>
+        <label>[[#{label.train.search}]]</label>
             <label>
-                <input type="text" name="wantedTrain" class="form-control" placeholder="Введіть номер потягу..."/>
+                <input type="text" name="wantedTrain" class="form-control" th:placeholder="#{placeholder.train.search}"/>
             </label>
-        <button type="submit" class="btn btn-outline-success">Пошук</button>
+        <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
     </form>
     <form th:action="@{/admin/add/train}" method="get">
-        <button type="submit" class="btn btn-outline-primary">Додати потяг</button>
+        <button type="submit" class="btn btn-outline-primary">[[#{button.addTrain}]]</button>
     </form>
 </div>
 
 <table class="table table-bordered table-striped text-center" style="margin: 20px">
     <thead class="table-info">
     <tr>
-        <th scope="col">Потяг</th>
-        <th scope="col">Кількість вільних місць <br/> Купе/Люкс</th>
-        <th scope="col">Оновити данні/Видалити</th>
+        <th scope="col">
+            <a th:href="'/admin/all/trains/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=id'">id</a>
+        </th>
+        <th scope="col">
+            <a th:href="'/admin/all/trains/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=trainNumber'">[[#{label.train.number}]]</a>
+        </th>
+        <th scope="col">
+            <a th:href="'/admin/all/trains/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=numberOfCompartmentSeats'">[[#{label.route.numberOfSeats}]]</a>
+        </th>
+        <th scope="col">[[#{buttonGroup.updateData.delete}]]</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="train : ${trainList}">
+        <td th:text="${train.id}"></td>
         <td th:text="${train.trainNumber}"></td>
         <td th:text="${train.numberOfCompartmentSeats} + ' / ' + ${train.numberOfSuiteSeats}"></td>
         <td>
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                         <form th:action="@{'/admin/train/' + ${train.id}}" method="get">
-                            <button type="submit" class="btn btn-outline-primary">Оновити данні</button>
+                            <button type="submit" class="btn btn-outline-primary">[[#{button.updateData}]]</button>
                         </form>
                 <form th:action="@{'/admin/delete/train/' + ${train.id}}" method="post">
-                    <button type="submit" class="btn btn-outline-danger">Видалити</button>
+                    <button type="submit" class="btn btn-outline-danger">[[#{button.delete}]]</button>
                 </form>
             </div>
         </td>
@@ -102,7 +110,7 @@
             </th:block>
 
             <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
-                <li th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
+                <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
                     <a class="page-link" th:href = "@{'/admin/all/trains/page/' + ${pageNumber - 5}}">...</a>
                 </li>
             </th:block>

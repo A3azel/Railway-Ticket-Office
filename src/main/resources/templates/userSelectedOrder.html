@@ -26,7 +26,7 @@
     <li th:text="'Час покупки' + ${selectedOrder.orderTime}"></li>
 </ul>
 -->
-<div th:text="'Квиток № ' + ${selectedOrder.id}">
+<div th:text="#{label.ticket.number} + ' ' + ${selectedOrder.id}">
 
 </div>
 <div class="row mainRow">
@@ -35,7 +35,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Номер замовлення</p>
+                        <p class="mb-0">[[#{user.order.label.number}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.id}"></p>
@@ -44,7 +44,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Номер потяга</p>
+                        <p class="mb-0">[[#{label.train.number}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.train.trainNumber}"></p>
@@ -53,7 +53,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Звідки/Куди</p>
+                        <p class="mb-0">[[#{label.route.from.to}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.train.startStation.city.cityName} + '/' + ${selectedOrder.train.arrivalStation.city.cityName}"></p>
@@ -62,7 +62,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Станція відправлення</p>
+                        <p class="mb-0">[[#{label.route.startStation}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.train.startStation.stationName}"></p>
@@ -71,7 +71,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Станція прибуття</p>
+                        <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.train.arrivalStation.stationName}"></p>
@@ -80,7 +80,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Час відправлення</p>
+                        <p class="mb-0">[[#{label.route.startTime}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.train.departureTime}"></p>
@@ -89,7 +89,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Час прибуття</p>
+                        <p class="mb-0">[[#{label.route.arrivalTime }]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.train.arrivalTime}"></p>
@@ -98,7 +98,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Час в дорозі</p>
+                        <p class="mb-0">[[#{label.route.travelTime}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.train.travelTime}"></p>
@@ -107,7 +107,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Час оформлення</p>
+                        <p class="mb-0">[[#{label.registration.time}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.orderTime}"></p>
@@ -116,7 +116,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-4">
-                        <p class="mb-0">Ціна замовлення</p>
+                        <p class="mb-0">[[#{user.order.label.prise}]]</p>
                     </div>
                     <div class="col-sm-8">
                         <p class="text-muted mb-0" th:utext = "${selectedOrder.orderPrise}+ ' ₴'"></p>
@@ -130,24 +130,24 @@
             <th:block th:if="${comment }!= null">
                 <form method="post" th:action="@{'/comments/update/' + ${selectedOrder.train.trainNumber}}">
                     <div class="mb-3">
-                        <label for="changeComment" class="form-label">Змінити відгук</label>
+                        <label for="changeComment" class="form-label">[[#{label.change.comments}]]</label>
                         <textarea class="form-control" id="changeComment" rows="6" name="newComment" maxlength="5000" placeholder="Ваш відгук..."></textarea>
-                        <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-primary" style="margin:20px" >Змінити</button>
+                        <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-primary" style="margin:20px" >[[#{label.change.comments}]]</button>
                     </div>
                 </form>
                 <form method="post" th:action="@{'/comments/delete/' + ${selectedOrder.train.trainNumber}}">
                     <div class="mb-3">
-                        <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-danger" style="margin-left:20px">Видалити</button>
+                        <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-danger" style="margin-left:20px">[[#{button.delete}]]</button>
                     </div>
                 </form>
             </th:block>
             <th:block th:unless="${comment }!= null">
                 <form th:action="@{'/comments/add/' + ${selectedOrder.train.trainNumber}}" method="post">
                     <div class="mb-3">
-                        <label for="comment" class="form-label">Додайте відгук про поїздку</label>
+                        <label for="comment" class="form-label">[[#{label.add.comments}]]</label>
                         <textarea class="form-control" id="comment" rows="6" name="userComment" maxlength="5000" placeholder="Ваш відгук...">
                         </textarea>
-                        <button type="submit" class="btn btn-outline-success" th:value="${selectedOrder.id}" name="id" style="margin:20px">Опублікувати</button>
+                        <button type="submit" class="btn btn-outline-success" th:value="${selectedOrder.id}" name="id" style="margin:20px">[[#{button.comment.publish}]]</button>
                     </div>
                 </form>
             </th:block>

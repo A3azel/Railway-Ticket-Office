@@ -13,34 +13,39 @@
 
 <div class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin: 20px">
     <form method="get" th:action="@{/admin/find/City}">
-        <label>Пошук по місту</label>
+        <label>[[#{label.city.search}]]</label>
         <label>
-            <input type="text" name="city" class="form-control" placeholder="Введіть назву міста..."/>
+            <input type="text" name="city" class="form-control" th:placeholder="#{placeholder.city.search}"/>
         </label>
-        <button type="submit" class="btn btn-outline-success">Пошук</button>
+        <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
     </form>
     <form th:action="@{/admin/add/newCity}" method="get">
-        <button type="submit" class="btn btn-outline-primary">Додоати місто</button>
+        <button type="submit" class="btn btn-outline-primary">[[#{button.addCity}]]</button>
     </form>
 </div>
 
 <table class="table table-bordered table-striped text-center" style="margin: 20px; width: 80%; margin-left: auto; margin-right: auto">
     <thead class="table-info" >
     <tr>
-        <th scope="col">Місто</th>
-        <th scope="col">Переглянути список станцій/Додати станцію</th>
+        <th scope="col">
+            <a th:href="@{'/admin/all/cites/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=id'}">id</a></th>
+        <th scope="col">
+            <a th:href="@{'/admin/all/cites/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=cityName'}">[[#{label.city.name}]]</a>
+        </th>
+        <th scope="col">[[#{buttonGroup.ListOfStations.addStation}]]</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="city : ${cityList}">
+        <td th:text="${city.id}"></td>
         <td th:text="${city.cityName}"></td>
         <td>
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                         <form th:action="@{'/admin/all/stations/' +${city.cityName}+ '/page/1'}"  method="get">
-                            <button type="submit" class="btn btn-outline-primary">Переглянути список станцій</button>
+                            <button type="submit" class="btn btn-outline-primary">[[#{button.station.viewStationList}]]</button>
                         </form>
                 <form th:action="@{'/admin/add/station/' + ${city.cityName}}" method="get">
-                    <button type="submit" class="btn btn-outline-success">Додати станцію</button>
+                    <button type="submit" class="btn btn-outline-success">[[#{button.station.add}]]</button>
                 </form>
             </div>
 

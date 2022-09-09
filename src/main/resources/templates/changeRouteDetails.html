@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Номер потяга</p>
+                            <p class="mb-0">[[#{label.train.number}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="trainNumber" th:value = "${selectedRoute.train.trainNumber}"/>
@@ -27,7 +27,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Місто відправлення</p>
+                            <p class="mb-0">[[#{label.route.startCity}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" th:value = "${selectedRoute.startStation.city.cityName}"/>
@@ -36,7 +36,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Місто прибуття</p>
+                            <p class="mb-0">[[#{label.route.arrivalCity}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" th:value = "${selectedRoute.arrivalStation.city.cityName}"/>
@@ -45,7 +45,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Станція відправлення</p>
+                            <p class="mb-0">[[#{label.route.startStation}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="text" name="startStation" class="form-control" th:value = "${selectedRoute.startStation.stationName}"/>
@@ -54,7 +54,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Станція прибуття</p>
+                            <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="text" name="arrivalStation" class="form-control" th:value = "${selectedRoute.arrivalStation.stationName}"/>
@@ -63,7 +63,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Дата відправлення</p>
+                            <p class="mb-0">[[#{label.route.startDate}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="date" name="dateOfDispatch" class="form-control" th:value = "${#temporals.format(selectedRoute.departureTime, 'yyyy-MM-dd')}"/>
@@ -72,7 +72,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Дата прибуття</p>
+                            <p class="mb-0">[[#{label.route.arrivalDate}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="date" name="dateOfArrival" class="form-control" th:value = "${#temporals.format(selectedRoute.arrivalTime, 'yyyy-MM-dd')}"/>
@@ -81,7 +81,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Час відправленння</p>
+                            <p class="mb-0">[[#{label.route.startTime}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="time" name="timeOfDispatch" class="form-control" th:value = "${#temporals.format(selectedRoute.departureTime, 'HH:mm')}"/>
@@ -90,7 +90,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Час прибуття</p>
+                            <p class="mb-0">[[#{label.route.arrivalTime}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="time" name="timeOfArrival" class="form-control" th:value = "${#temporals.format(selectedRoute.arrivalTime, 'HH:mm')}"/>
@@ -99,7 +99,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Час в дорозі</p>
+                            <p class="mb-0">[[#{label.route.travelTime}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="time" name="travelTime" class="form-control" th:value = "${#temporals.format(selectedRoute.travelTime, 'HH:mm')}"/>
@@ -108,7 +108,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Кількість купе місць</p>
+                            <p class="mb-0">[[#{label.route.numberOfCompartmentFreeSeats}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="number" min="0" name="numberOfCompartmentFreeSeats" th:max="${selectedRoute.train.numberOfCompartmentSeats}" class="form-control" th:value = "${selectedRoute.numberOfCompartmentFreeSeats}"/>
@@ -117,7 +117,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Ціна купе місця</p>
+                            <p class="mb-0">[[#{label.route.priseOfCompartmentTicket}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="number" min="0" name="priseOfCompartmentTicket" class="form-control" th:value = "${selectedRoute.priseOfCompartmentTicket}"/>
@@ -126,7 +126,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Кількість люкс місць</p>
+                            <p class="mb-0">[[#{label.route.numberOfSuiteFreeSeats}]]ь</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="number" min="0" name="numberOfSuiteFreeSeats" th:max="${selectedRoute.train.numberOfSuiteSeats}" class="form-control" th:value = "${selectedRoute.numberOfSuiteFreeSeats}"/>
@@ -135,7 +135,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="mb-0">Ціна люкс місця</p>
+                            <p class="mb-0">[[#{label.route.priseOfSuiteTicket}]]</p>
                         </div>
                         <div class="col-sm-8">
                             <input type="number" min="0" name="priseOfSuiteTicket" class="form-control" th:value = "${selectedRoute.priseOfSuiteTicket}"/>
@@ -144,10 +144,10 @@
                 </div>
             </div>
         </div>
-        <button type="submit" name="id" class="btn btn-outline-primary" th:value="${selectedRoute.id}">Підтвердити зміни</button>
+        <button type="submit" name="id" class="btn btn-outline-primary" th:value="${selectedRoute.id}">[[#{button.submitData}]]</button>
     </form>
     <form method="post" th:action="@{'/admin/delete/route/' + ${selectedRoute.id}}">
-        <button type="submit" class="btn btn-outline-danger">Видалити</button>
+        <button type="submit" class="btn btn-outline-danger">[[#{button.delete}]]</button>
     </form>
 </div>
 

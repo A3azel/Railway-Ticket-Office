@@ -13,10 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -61,9 +58,11 @@ public class UserController {
 
     @GetMapping("/myOrders/page/{pageNumber}")
     public String getMyOrdersPage(Model model, Principal principal
-            ,@PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
-            ,@PathVariable("pageNumber") int pageNumber){
-        Page<Orders> ordersList =  ordersService.getAllUserOrdersByUserName(principal.getName(),pageable,pageNumber);
+            , @PageableDefault(size = 10) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<Orders> ordersList =  ordersService.getAllUserOrdersByUserName(principal.getName(),pageable,pageNumber,direction,sort);
         List<Orders> ordersListContext = ordersList.getContent();
         /*int totalPages = ordersList.getTotalPages();
         if (totalPages > 0) {
@@ -75,6 +74,7 @@ public class UserController {
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",ordersList);
         model.addAttribute("ordersList",ordersListContext);
+        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
         return "allUserPurchasedTickets";
     }
 

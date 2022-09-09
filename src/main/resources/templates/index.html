@@ -77,25 +77,25 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <div class="input-group mb-3">
-                    <span class="input-group-text">Звідки</span>
+                    <span class="input-group-text">[[#{main.window.from}]]</span>
                     <input type="text" class="form-control" id="from" name="cityOfDeparture" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                 </div>
             </div>
 
             <div class="col-sm-6">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" >Куди</span>
+                    <span class="input-group-text" >[[#{main.window.to}]]</span>
                     <input type="text" class="form-control" id="where" name="cityOfArrival" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                 </div>
             </div>
         </div>
             <div class="row justify-content-md-center">
                 <div class="col col-lg-2">
-                    <label for="startDate" style="padding-bottom:20px">Виберіть дату відправлення</label>
+                    <label for="startDate" style="padding-bottom:20px">[[#{select.date.of.shipment}]]</label>
                     <input id="startDate" name="selectedDates" class="form-control" type="date" />
                 </div>
                 <div class="col col-lg-2">
-                    <label for="startTime" style="padding-bottom:20px">Виберіть час відправлення</label>
+                    <label for="startTime" style="padding-bottom:20px">[[#{select.time.of.shipment}]]</label>
                     <input  id="startTime" name="selectedTime" class="form-control" type="time" value="00:00" />
                 </div>
             </div>
@@ -104,7 +104,7 @@
                     <button type="submit" class="btn btn-primary btn-lg" >
                         <span class="icon">
                             <i class="bi bi-cursor-fill"></i>
-                        </span> Пошук
+                        </span> [[#{button.find}]]
                     </button>
                 </div>
             </div>
@@ -121,5 +121,10 @@
 
 </script>
 <script th:src="@{/JS/mainWindowLink.js}" defer="defer"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+</script>
+<script type="text/javascript" th:src="@{/JS/Internationalization.js}">
+
+</script>
 </body>
 </html>

@@ -15,11 +15,11 @@
 <table class="table table-bordered table-striped text-center" style="margin: 20px">
     <thead class="table-info">
     <tr>
-        <th scope="col">Номер замовлення</th>
-        <th scope="col">Номер потяга</th>
-        <th scope="col">Звідки/Куди</th>
-        <th scope="col">Ціна замовлення</th>
-        <th scope="col">Детальніша інформація</th>
+        <th scope="col">[[#{user.order.label.number}]]</th>
+        <th scope="col">[[#{label.train.number}]]</th>
+        <th scope="col">[[#{label.route.from.to}]]</th>
+        <th scope="col">[[#{user.order.label.prise}]]</th>
+        <th scope="col">[[{user.order.label.details}]]</th>
     </tr>
     </thead>
     <tbody>
@@ -30,7 +30,7 @@
         <td th:utext="${order.orderPrise}"></td>
         <td>
             <form th:action="'/user/myOrders/' + ${order.id}" method="get">
-                <button type="submit" class="btn btn-outline-info">Інформація</button>
+                <button type="submit" class="btn btn-outline-info">[[#{button.information}]]</button>
             </form>
         </td>
     </tr>
@@ -90,7 +90,7 @@
             </th:block>
 
             <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
-                <li th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
+                <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
                     <a class="page-link" th:href = "@{'/user/myOrders/page/' + ${pageNumber - 5}}">...</a>
                 </li>
             </th:block>

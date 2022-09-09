@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.StationRepository;
@@ -42,8 +43,9 @@ public class StationService implements StationServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Station> getAllStationInCity(String cityName, Pageable pageable, int pageNumber) {
-        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize());
+    public Page<Station> getAllStationInCity(String cityName, Pageable pageable, int pageNumber, String direction, String sort) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
+                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         return stationRepository.getStationByCity_CityName(cityName,changePageable);
     }
 
