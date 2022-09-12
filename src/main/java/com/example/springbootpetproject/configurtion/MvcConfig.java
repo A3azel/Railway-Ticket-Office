@@ -31,14 +31,14 @@ public class MvcConfig implements WebMvcConfigurer {
         return lci;
     }
 
-/*    @Bean(name = "messageSource")
+    @Bean(name = "messageSource")
     public MessageSource getMessageResource() {
         ReloadableResourceBundleMessageSource messageResource = new ReloadableResourceBundleMessageSource();
 
-        messageResource.setBasename("classpath:locale/messages");
+        messageResource.setBasename("classpath:locate/messages");
         messageResource.setDefaultEncoding("UTF-8");
         return messageResource;
-    }*/
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

@@ -12,7 +12,6 @@ import com.example.springbootpetproject.repository.StationRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.StationServiceInterface;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -26,13 +25,12 @@ public class StationService implements StationServiceInterface {
 
     @Override
     @Transactional
-    public boolean addStation(Station station) {
+    public void addStation(Station station) {
         Set<Station> stationSet = new HashSet<>(stationRepository.findAll());
         if(stationSet.contains(station)){
-            return false;
+            return;
         }
         stationRepository.save(station);
-        return true;
     }
 
     @Override
@@ -50,6 +48,7 @@ public class StationService implements StationServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Station findStationByStationName(String stationName) {
         Station station = stationRepository.findByStationName(stationName);
         if(station!= null){
@@ -57,5 +56,17 @@ public class StationService implements StationServiceInterface {
         }
         throw new IllegalArgumentException("Станцію не знайдено");
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Station findByID(Long id) {
+        return stationRepository.findStationById(id);
+    }
+
+    @Override
+    @Transactional
+    public void updateStation(Station station) {
+        stationRepository.save(station);
     }
 }

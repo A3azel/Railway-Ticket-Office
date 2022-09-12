@@ -17,33 +17,33 @@
         <th scope="col">
             <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=train.trainNumber'}">[[#{label.train.number}]]</a>
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${reverseDirection} + '&sort=train.trainNumber'}">[[#{label.train.number}]]</a>
         </th>
         <th scope="col">[[#{label.route.from.to}]]</th>
         <th scope="col">
             <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=departureTime'}">[[#{label.route.date}]]</a>
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${reverseDirection} + '&sort=departureTime'}">[[#{label.route.date}]]</a>
         </th>
         <th scope="col">
             <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=departureTime'}">[[#{label.route.time}]]</a>
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${reverseDirection} + '&sort=departureTime'}">[[#{label.route.time}]]</a>
         </th>
         <th scope="col">
             <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=travelTime'}">[[#{label.route.travelTime}]]</a>
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${reverseDirection} + '&sort=travelTime'}">[[#{label.route.travelTime}]]</a>
         </th>
         <th scope="col">
             <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=numberOfCompartmentFreeSeats'}">[[#{label.route.numberOfFreeSeats}]]</a>
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${reverseDirection} + '&sort=numberOfCompartmentFreeSeats'}">[[#{label.route.numberOfFreeSeats}]]</a>
         </th>
         <th scope="col">
             <a th:href = "@{'/train/between/page/' + ${pageNumber} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${direction} + '&sort=priseOfCompartmentTicket'}">[[#{label.route.priseOfTicket}]]</a>
+                + '&selectedTime=' + ${selectedTime} + '&direction=' + ${reverseDirection} + '&sort=priseOfCompartmentTicket'}">[[#{label.route.priseOfTicket}]]</a>
         </th>
         <th scope="col">[[#{buttonGroup.by.information}]]</th>
     </tr>
@@ -87,7 +87,7 @@
             <li class="page-item">
                 <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">First</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">First</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -100,7 +100,7 @@
             <li class="page-item">
                 <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 1} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">Previous</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Previous</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -120,7 +120,7 @@
                     <li class="page-item">
                         <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">[[${i}]]</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                     </li>
                 </th:block>
             </th:block>
@@ -131,17 +131,17 @@
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
                     <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">[[${i}]]</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                 </li>
 
                 <a class="page-link" th:href = "@{'/train/between/page/' + '6'+ '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">...</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
 
                 <li th:each="i : ${#numbers.sequence(pageable.getTotalPages()-4,pageable.getTotalPages())}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
                     <a class="page-link" th:href = "@{'/train/between/page/' + ${1} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">[[${i}]]</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                 </li>
             </th:block>
 
@@ -149,7 +149,7 @@
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
                     <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber - 5} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">...</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
                 </li>
             </th:block>
 
@@ -160,7 +160,7 @@
             <li class="page-item">
                 <a class="page-link" th:href = "@{'/train/between/page/' + ${pageNumber + 1} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">Next</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Next</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
@@ -173,7 +173,7 @@
             <li class="page-item">
                 <a class="page-link" th:href = "@{'/train/between/page/' + ${pageable.getTotalPages()} + '?cityOfDeparture=' + ${cityOfDeparture}
                 + '&cityOfArrival=' + ${cityOfArrival} + '&selectedDates=' + ${selectedDates}
-                + '&selectedTime=' + ${selectedTime}}">Last</a>
+                + '&selectedTime=' + ${selectedTime}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Last</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
@@ -183,53 +183,6 @@
         </th:block>
     </ul>
 </nav>
-
-
-<!--<div class="container" style="padding: 40px">
-    <div class="row head-of-table">
-        <div class="col-sm">Потяг</div>
-        <div class="col-sm">Звідки/Куди</div>
-        <div class="col-sm">Дата</div>
-        <div class="col-sm">Час <br/> Відправлення/Прибуття</div>
-        <div class="col-sm">Час в дорозі</div>
-        <div class="col-sm">Кількість вільних місць</div>
-    </div>
-    <div th:each="train : ${trainList}">
-        <div class="row">
-            <div class="col-sm" th:utext="${train.trainNumber}"></div>
-            <div class="col-sm" th:utext="${train.startStation.city.cityName} + '/' + ${train.arrivalStation.city.cityName}" ></div>
-            <div class="col-sm" th:utext="Відправдення + ' ' + ${#temporals.format(train.departureTime, 'dd-MM-yyyy')}
-            + '<br>' +
-            Прибуття + ' ' + ${#temporals.format(train.arrivalTime, 'dd-MM-yyyy')}"></div>
-            <div class="col-sm" th:utext="${#temporals.format(train.departureTime, 'HH:mm')}
-            + '/' +
-            ${#temporals.format(train.arrivalTime, 'HH:mm')}"></div>
-            <div class="col-sm" th:utext="${train.travelTime}"></div>
-            <div class="col-sm" >
-                <div class="row">
-                    <div class="col-sm" th:utext="${train.numberOfFreeSeats}"></div>
-                    <button type="button" class="btn btn-outline-primary col-sm">Купити</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>-->
-
-<!--<ul>
-    <th:block th:each="flower : ${trainList}">
-        <li th:utext="${flower.trainNumber}">..</li>
-        <li th:utext="${flower.startStation.stationName}">..</li>
-        <li th:utext="${flower.departureTime}">..</li>
-        <li th:utext="${flower.travelTime}">..</li>
-        <li th:utext="${flower.arrivalStation.stationName}">..</li>
-        <li th:utext="${flower.arrivalTime}">..</li>
-        <li th:utext="${flower.numberOfFreeSeats}">..</li>
-        <li th:utext="${flower.priseOfTicket}">..</li>
-        <li th:utext="${flower.linkToRotePage}">..</li>
-        <hr/>
-    </th:block>
-</ul>-->
 
 <div th:include="footer::foot"></div>
 

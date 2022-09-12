@@ -15,7 +15,7 @@ public interface UserServiceInterface {
 
     User getUserById(Long id);
 
-    Page<User> getAllUsers(Pageable pageable, int pageNumber);
+    Page<User> getAllUsers(Pageable pageable, int pageNumber, String direction, String sort);
 
     User findUserByUsername(String username);
 

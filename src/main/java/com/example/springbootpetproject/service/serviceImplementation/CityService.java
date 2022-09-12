@@ -34,11 +34,21 @@ public class CityService implements CityServiceInterface {
     @Override
     @Transactional
     public void addCity(City city) {
+        if(cityIsExist(city.getCityName())){
+            throw new IllegalArgumentException("місто вже існує в базі данних");
+        }
         cityRepository.save(city);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public City findByCityName(String cityName) {
         return cityRepository.findByCityName(cityName);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean cityIsExist(String cityName) {
+        return cityRepository.existsCityByCityName(cityName);
     }
 }

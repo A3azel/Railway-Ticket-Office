@@ -27,25 +27,25 @@
     <thead class="table-info">
     <tr>
         <th scope="col">
-            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=id'}">id</a>
+            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=id'}">id</a>
         </th>
         <th scope="col">
-            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=train.trainNumber'}">[[#{label.train.number}]]</a></th>
+            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=train.trainNumber'}">[[#{label.train.number}]]</a></th>
         <th scope="col">[[#{label.route.from.to}]]</th>
         <th scope="col">
-            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=departureTime'}">[[#{label.route.date}]]</a>
+            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=departureTime'}">[[#{label.route.date}]]</a>
         </th>
         <th scope="col">
-            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=departureTime'}">[[#{label.route.time}]]</a>
+            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=departureTime'}">[[#{label.route.time}]]</a>
         </th>
         <th scope="col">
-            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=travelTime'}">[[#{label.route.travelTime}]]</a>
+            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=travelTime'}">[[#{label.route.travelTime}]]</a>
         </th>
         <th scope="col">
-            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=numberOfCompartmentFreeSeats'}">[[#{label.route.numberOfFreeSeats}]]</a>
+            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=numberOfCompartmentFreeSeats'}">[[#{label.route.numberOfFreeSeats}]]</a>
         </th>
         <th scope="col">
-            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=priseOfCompartmentTicket'}">[[#{label.route.priseOfTicket}]]</a>
+            <a th:href = "@{'/admin/all/route/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=priseOfCompartmentTicket'}">[[#{label.route.priseOfTicket}]]</a>
         </th>
         <th scope="col">[[#{button.updateData}]]</th>
     </tr>
@@ -82,7 +82,7 @@
     <ul class="pagination justify-content-center">
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${1}}">First</a>
+                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">First</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -93,7 +93,7 @@
         <!-- Previous -->
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageNumber - 1}}">Previous</a>
+                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageNumber - 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Previous</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -111,7 +111,7 @@
                 </th:block>
                 <th:block th:unless="${i} == ${pageNumber}">
                     <li class="page-item">
-                        <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${i}}">[[${i}]]</a>
+                        <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                     </li>
                 </th:block>
             </th:block>
@@ -120,19 +120,19 @@
         <th:block th:if="${pageable.getTotalPages()} >  10">
             <th:block th:if="${pageNumber <= 5 || pageNumber > pageable.getTotalPages()-4}">
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                 </li>
 
-                <a class="page-link" th:href = "@{'/admin/all/route/page/' + '6'}">...</a>
+                <a class="page-link" th:href = "@{'/admin/all/route/page/' + '6'+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
 
                 <li th:each="i : ${#numbers.sequence(pageable.getTotalPages()-4,pageable.getTotalPages())}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                 </li>
             </th:block>
 
             <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageNumber - 5}}">...</a>
+                    <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageNumber - 5}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
                 </li>
             </th:block>
 
@@ -141,7 +141,7 @@
         <!-- Next -->
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageNumber + 1}}">Next</a>
+                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageNumber + 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Next</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
@@ -152,7 +152,7 @@
 
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageable.getTotalPages()}}">Last</a>
+                <a class="page-link" th:href = "@{'/admin/all/route/page/' + ${pageable.getTotalPages()}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Last</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">

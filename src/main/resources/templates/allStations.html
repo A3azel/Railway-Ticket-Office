@@ -12,14 +12,14 @@
 <div th:include="header::head"></div>
 
 <div class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin: 20px">
-    <form method="get">
+    <form method="get" th:action="@{/admin/find/station}">
         <label>[[#{label.station.find}]]</label>
         <label>
-            <input type="text" name="wantedTrain" class="form-control" th:placeholder="#{placeholder.station.search}"/>
+            <input type="text" name="stationName" class="form-control" th:placeholder="#{placeholder.station.search}"/>
         </label>
         <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
     </form>
-    <form method="get">
+    <form method="get" th:action="@{'/admin/add/station/' + ${cityName}}">
         <button type="submit" class="btn btn-outline-primary">[[#{button.station.add}]]</button>
     </form>
 </div>
@@ -28,10 +28,10 @@
     <thead class="table-info" >
     <tr>
         <th scope="col">
-            <a th:href="@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=id'}">id</a>
+            <a th:href="@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=id'}">id</a>
         </th>
         <th scope="col">
-            <a th:href="@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber} + '?direction=' + ${direction} + '&sort=stationName'}">[[#{label.station}]]</a>
+            <a th:href="@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=stationName'}">[[#{label.station}]]</a>
         </th>
         <th scope="col">[[#{buttonGroup.updateData.delete}]]</th>
     </tr>
@@ -42,8 +42,8 @@
         <td th:text="${station.stationName}"></td>
         <td>
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                <form  method="get">
-                    <button type="submit" class="btn btn-outline-primary">[[#{button.updateData}]]</button>
+                <form  method="get" th:action="@{/admin/find/station}">
+                    <button type="submit" name="stationName" th:value="${station.stationName}" class="btn btn-outline-primary">[[#{button.updateData}]]</button>
                 </form>
                 <form th:action="@{'/admin/delete/'+ ${station.city.cityName} + '/station/' + ${station.id}}"  method="post">
                     <button type="submit" name="city" th:value="${station.city.cityName}" class="btn btn-outline-danger">[[#{button.delete}]]</button>
@@ -58,7 +58,7 @@
     <ul class="pagination justify-content-center">
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${1}}">First</a>
+                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">First</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -69,7 +69,7 @@
         <!-- Previous -->
         <th:block th:if="${pageNumber}>1">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber - 1}}">Previous</a>
+                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber - 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Previous</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}>1">
@@ -87,7 +87,7 @@
                 </th:block>
                 <th:block th:unless="${i} == ${pageNumber}">
                     <li class="page-item">
-                        <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${i}}">[[${i}]]</a>
+                        <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                     </li>
                 </th:block>
             </th:block>
@@ -96,19 +96,19 @@
         <th:block th:if="${pageable.getTotalPages()} >  10">
             <th:block th:if="${pageNumber <= 5 || pageNumber > pageable.getTotalPages()-4}">
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                 </li>
 
-                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + '6'}">...</a>
+                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + '6'+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
 
                 <li th:each="i : ${#numbers.sequence(pageable.getTotalPages()-4,pageable.getTotalPages())}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${i}}">[[${i}]]</a>
+                    <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
                 </li>
             </th:block>
 
             <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
                 <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber - 5}}">...</a>
+                    <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber - 5}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
                 </li>
             </th:block>
 
@@ -117,7 +117,7 @@
         <!-- Next -->
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber + 1}}">Next</a>
+                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageNumber + 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Next</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
@@ -128,7 +128,7 @@
 
         <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
             <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageable.getTotalPages()}}">Last</a>
+                <a class="page-link" th:href = "@{'/admin/all/stations/'+ ${cityName} +'/page/' + ${pageable.getTotalPages()}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Last</a>
             </li>
         </th:block>
         <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">

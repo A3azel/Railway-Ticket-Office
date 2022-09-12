@@ -74,7 +74,10 @@ public class UserController {
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",ordersList);
         model.addAttribute("ordersList",ordersListContext);
-        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
         return "allUserPurchasedTickets";
     }
 

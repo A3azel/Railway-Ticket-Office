@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,13 +50,20 @@ public class AdminController {
     // User
     @GetMapping("/all/users/page/{pageNumber}")
     public String getAllUsersForAdmin(Model model
-            , @PageableDefault(sort = {"id"}, size = 10, direction = Sort.Direction.DESC) Pageable pageable
-            , @PathVariable("pageNumber") int pageNumber){
-        Page<User> userPage = userService.getAllUsers(pageable,pageNumber);
+            , @PageableDefault(size = 2) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<User> userPage = userService.getAllUsers(pageable,pageNumber,direction,sort);
         List<User> userList = userPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",userPage);
         model.addAttribute("userList",userList);
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
+
         return "allUsers";
     }
 
@@ -89,7 +97,10 @@ public class AdminController {
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",userCommentsPage);
         model.addAttribute("userCommentsList",userCommentsList);
-        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
         return "allUserComments";
     }
 
@@ -111,7 +122,10 @@ public class AdminController {
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",trainPage);
         model.addAttribute("trainList",trainList);
-        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
         return "allTrainsForAdmin";
     }
 
@@ -168,7 +182,7 @@ public class AdminController {
     //Route
     @GetMapping("/all/route/page/{pageNumber}")
     public String getAllRouteForAdmin(Model model
-            , @PageableDefault(size = 10) Pageable pageable
+            , @PageableDefault(size = 2) Pageable pageable
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
@@ -177,7 +191,10 @@ public class AdminController {
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",routePage);
         model.addAttribute("routeList",routeList);
-        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
         return "allRoute";
     }
 
@@ -205,18 +222,6 @@ public class AdminController {
         return "addRoute";
     }
 
-    /*@PostMapping("/add/route")
-    public String addRoute(@RequestParam("trainNumber") String trainNumber, @RequestParam("startStation") String startStation
-            , @RequestParam("arrivalStation") String arrivalStation, @RequestParam("dateOfDispatch") LocalDate dateOfDispatch
-            , @RequestParam("dateOfArrival") LocalDate dateOfArrival, @RequestParam("timeOfDispatch") LocalTime timeOfDispatch
-            , @RequestParam("timeOfArrival") LocalTime timeOfArrival, @RequestParam("travelTime") LocalTime travelTime
-            , @RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats, @RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats
-            ,@RequestParam("priseOfCompartmentTicket") BigDecimal priseOfCompartmentTicket, @RequestParam("priseOfSuiteTicket") BigDecimal priseOfSuiteTicket){
-        routeService.addRoute(trainNumber, startStation, arrivalStation, dateOfDispatch, dateOfArrival, timeOfDispatch, timeOfArrival, travelTime
-                , numberOfCompartmentSeats, numberOfSuiteSeats,priseOfCompartmentTicket, priseOfSuiteTicket);
-        return "redirect:/admin/all/route/page/1";
-    }*/
-
     @PostMapping("/add/route")
     public String addRoute(@RequestParam Map<String,String> allParam){
         routeService.addRoute(allParam);
@@ -242,8 +247,11 @@ public class AdminController {
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",cityPage);
         model.addAttribute("cityList",cityList);
-        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
+
         model.addAttribute("sort",sort);
+        model.addAttribute("direction",direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
+
         return "allCitesForAdmin";
     }
 
@@ -259,24 +267,29 @@ public class AdminController {
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",stationPage);
         model.addAttribute("stationList",stationList);
-        model.addAttribute("direction", direction.equals("asc") ? "desc" : "asc");
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
         return "allStations";
     }
 
     @GetMapping("/find/City")
-    public String findCity(HttpServletRequest request){
-        String city = request.getParameter("city");
-        return "redirect:/admin/all/stations/" + city + "/page/1";
+    public String findCity(@RequestParam("cityName")String cityName){
+        return "redirect:/admin/all/stations/" + cityName + "/page/1";
     }
 
     @GetMapping("/add/newCity")
     public String pageAddNewCity(){
-        return null;
+        return "addCity";
     }
 
     @PostMapping("/add/newCity")
-    public String addNewCity(){
-        return null;
+    public String addNewCity(@RequestParam("cityName") String cityName){
+        City newCity = new City();
+        newCity.setCityName(cityName);
+        cityService.addCity(newCity);
+        return "redirect:/admin/all/stations/" + newCity.getCityName() + "/page/1";
     }
 
     @PostMapping("/delete/{cityName}/station/{id}")
@@ -291,6 +304,13 @@ public class AdminController {
         return "addStation";
     }
 
+    @GetMapping("/find/station")
+    public String findStation(@RequestParam("stationName")String stationName, Model model){
+        Station finderStation = stationService.findStationByStationName(stationName);
+        model.addAttribute("finderStation",finderStation);
+        return "updateStation";
+    }
+
     @PostMapping("/add/station")
     public String addStation(HttpServletRequest request){
         Station newStation = new Station();
@@ -298,7 +318,17 @@ public class AdminController {
         newStation.setStationName(request.getParameter("stationName"));
         newStation.setCity(cityService.findByCityName(cityName));
         stationService.addStation(newStation);
-        return "redirect:/admin/all/cites/page/1";
+        return "redirect:/all/stations/"+cityName+"/page/{pageNumber}";
+    }
+
+    @PostMapping("/update/station")
+    public String updateStation(@RequestParam("cityName") String cityName
+            , @RequestParam("stationName") String stationName, @RequestParam("id") Long id){
+        Station updateStation = stationService.findByID(id);
+        updateStation.setStationName(stationName);
+        updateStation.setCity(cityService.findByCityName(cityName));
+        stationService.updateStation(updateStation);
+        return "redirect:/all/stations/"+cityName+"/page/{pageNumber}";
     }
 
 

@@ -12,4 +12,6 @@ public interface CityServiceInterface {
     void addCity(City city);
 
     City findByCityName(String cityName);
+
+    boolean cityIsExist(String cityName);
 }
