@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -68,5 +69,14 @@ public class StationService implements StationServiceInterface {
     @Transactional
     public void updateStation(Station station) {
         stationRepository.save(station);
+    }
+
+    @Override
+    public StationDTO convertStationToStationDTO(Station station){
+        StationDTO stationDTO = new StationDTO();
+        stationDTO.setId(station.getId());
+        stationDTO.setStationName(station.getStationName());
+        stationDTO.setCityName(station.getCity().getCityName());
+        return stationDTO;
     }
 }

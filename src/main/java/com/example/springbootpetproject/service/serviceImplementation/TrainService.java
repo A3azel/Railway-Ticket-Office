@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.Train;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -72,6 +73,16 @@ public class TrainService implements TrainServiceInterface {
     @Transactional
     public void reduceTheNumberOfSuiteSeats(String trainNumber, int countOfPurchasedTickets) {
         trainRepository.reduceTheNumberOfSuiteSeats(trainNumber, countOfPurchasedTickets);
+    }
+
+    @Override
+    public TrainDTO convertTrainToTrainDTO(Train train){
+        TrainDTO trainDTO = new TrainDTO();
+        trainDTO.setId(train.getId());
+        trainDTO.setTrainNumber(train.getTrainNumber());
+        trainDTO.setNumberOfCompartmentSeats(train.getNumberOfCompartmentSeats());
+        trainDTO.setNumberOfSuiteSeats(train.getNumberOfSuiteSeats());
+        return trainDTO;
     }
 
     public LocalDateTime localDateTimeBuilder(String localDate,String localTime){

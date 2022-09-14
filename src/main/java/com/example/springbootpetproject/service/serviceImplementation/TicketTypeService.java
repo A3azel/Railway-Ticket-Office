@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.TicketType;
 import com.example.springbootpetproject.repository.TicketTypeRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.TicketTypeServiceInterface;
@@ -43,5 +44,14 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     @Transactional(readOnly = true)
     public List<TicketType> getAllTicketTypes() {
         return ticketTypeRepository.findAll();
+    }
+
+    @Override
+    public TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType){
+        TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
+        ticketTypeDTO.setId(ticketType.getId());
+        ticketTypeDTO.setTicketType(ticketType.getTicketType());
+        ticketTypeDTO.setTicketPriceFactor(ticketType.getTicketPriceFactor());
+        return ticketTypeDTO;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.TicketType;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface TicketTypeServiceInterface {
     boolean setTicketPriceFactor(String ticketTypeName, float priceFactor);
 
     List<TicketType> getAllTicketTypes();
+
+    TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType);
 }

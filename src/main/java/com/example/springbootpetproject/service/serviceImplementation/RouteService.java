@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.entity.Train;
@@ -154,5 +155,21 @@ public class RouteService implements RouteServiceInterface {
     @Transactional
     public void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets) {
         routeRepository.reduceNumberOfSuiteFreeSeats(routeId, countOfPurchasedTickets);
+    }
+
+    @Override
+    public RouteDTO convertRouteToRouteDTO(Route route){
+        RouteDTO routeDTO = new RouteDTO();
+        routeDTO.setId(route.getId());
+        routeDTO.setStartStationName(route.getStartStation().getStationName());
+        routeDTO.setDepartureTime(route.getDepartureTime());
+        routeDTO.setArrivalStationName(route.getArrivalStation().getStationName());
+        routeDTO.setArrivalTime(route.getArrivalTime());
+        routeDTO.setNumberOfCompartmentFreeSeats(route.getNumberOfCompartmentFreeSeats());
+        routeDTO.setNumberOfSuiteFreeSeats(route.getNumberOfSuiteFreeSeats());
+        routeDTO.setPriseOfCompartmentTicket(route.getPriseOfCompartmentTicket());
+        routeDTO.setPriseOfSuiteTicket(route.getPriseOfSuiteTicket());
+        routeDTO.setTrainNumber(route.getTrain().getTrainNumber());
+        return routeDTO;
     }
 }

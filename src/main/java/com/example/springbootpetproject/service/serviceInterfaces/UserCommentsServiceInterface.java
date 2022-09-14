@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.UserComments;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,5 +22,7 @@ public interface UserCommentsServiceInterface {
     List<UserComments> findByTrainNumber(String trainNumber);
 
     Page<UserComments> findAllUserComments(String userName, Pageable pageable, int pageNumber, String direction, String sort);
+
+    UserCommentsDTO convertUserCommentsToUserCommentsDTO(UserComments userComments);
 
 }

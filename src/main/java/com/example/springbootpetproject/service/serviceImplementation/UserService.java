@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.configurtion.CustomBCryptPasswordEncoder;
+import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserRole;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.UserRepository;
@@ -18,7 +18,6 @@ import com.example.springbootpetproject.service.serviceInterfaces.UserServiceInt
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -145,6 +144,22 @@ public class UserService implements UserServiceInterface {
     public void setUserVerification(String username) {
         boolean oldAccountVerificationStatus = userRepository.findByUsername(username).isAccountVerified();
         userRepository.setUserVerification(!oldAccountVerificationStatus,username);
+    }
+
+    @Override
+    public UserDTO convertUserToUserDTO(User user){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(userDTO.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setUserCountOfMoney(user.getUserCountOfMoney());
+        userDTO.setAccountVerified(user.isAccountVerified());
+        userDTO.setUserRole(user.getUserRole().name());
+        userDTO.setUserGender(user.getUserGender().name());
+        userDTO.setUserEmail(user.getUserEmail());
+        userDTO.setUserPhone(user.getUserPhone());
+        return userDTO;
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,6 @@ public interface StationServiceInterface {
     Station findByID(Long id);
 
     void updateStation(Station station);
+
+    StationDTO convertStationToStationDTO(Station station);
 }

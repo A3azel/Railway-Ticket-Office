@@ -24,11 +24,11 @@ import java.util.Set;
 //@Builder
 @NoArgsConstructor
 @Table(name = "user_info")
-public class User implements Serializable/*, UserDetails*/ {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "username")
     @NotEmpty

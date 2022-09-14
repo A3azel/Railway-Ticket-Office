@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.repository.CityRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.CityServiceInterface;
@@ -50,5 +51,13 @@ public class CityService implements CityServiceInterface {
     @Transactional(readOnly = true)
     public boolean cityIsExist(String cityName) {
         return cityRepository.existsCityByCityName(cityName);
+    }
+
+    @Override
+    public CityDTO convertCityToCityDTO(City city){
+        CityDTO cityDTO = new CityDTO();
+        cityDTO.setId(city.getId());
+        cityDTO.setCityName(city.getCityName());
+        return cityDTO;
     }
 }

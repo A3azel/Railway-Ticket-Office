@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,5 @@ public interface RouteServiceInterface {
     Page<Route> getAll(Pageable pageable, int pageNumber, String direction, String sort);
     void reduceNumberOfCompartmentFreeSeats(Long routeId, int countOfPurchasedTickets);
     void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets);
+    RouteDTO convertRouteToRouteDTO(Route route);
 }

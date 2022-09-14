@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.UserComments;
 import com.example.springbootpetproject.repository.UserCommentsRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.UserCommentsServiceInterface;
@@ -67,5 +68,16 @@ public class UserCommentsService implements UserCommentsServiceInterface {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         return userCommentsRepository.findAllByUserUsername(userName,changePageable);
+    }
+
+    @Override
+    public UserCommentsDTO convertUserCommentsToUserCommentsDTO(UserComments userComments){
+        UserCommentsDTO userCommentsDTO = new UserCommentsDTO();
+        userCommentsDTO.setId(userComments.getId());
+        userCommentsDTO.setUsername(userComments.getUser().getUsername());
+        userCommentsDTO.setTrainNumber(userComments.getTrain().getTrainNumber());
+        userCommentsDTO.setUserComments(userComments.getUserComments());
+        userCommentsDTO.setPublicationTime(userComments.getPublicationTime());
+        return userCommentsDTO;
     }
 }

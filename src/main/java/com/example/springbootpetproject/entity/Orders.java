@@ -19,7 +19,7 @@ public class Orders implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "orders_prise")
     private BigDecimal orderPrise;
@@ -40,8 +40,8 @@ public class Orders implements Serializable {
     private Set<Train> trainSet;*/
 
     @OneToOne
-    @JoinColumn(name = "train_id")
-    private Train train;
+    @JoinColumn(name = "route_id")
+    private Route route;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_type_id")

@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +31,7 @@ public interface UserServiceInterface {
     void spendMoney(BigDecimal money,String userName);
 
     void setUserVerification(String username);
+
+    UserDTO convertUserToUserDTO(User user);
 
 }

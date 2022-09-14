@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,4 +15,6 @@ public interface CityServiceInterface {
     City findByCityName(String cityName);
 
     boolean cityIsExist(String cityName);
+
+    CityDTO convertCityToCityDTO(City city);
 }

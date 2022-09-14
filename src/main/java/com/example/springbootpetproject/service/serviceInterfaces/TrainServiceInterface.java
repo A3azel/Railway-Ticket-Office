@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.entity.User;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,6 @@ public interface TrainServiceInterface {
     void reduceTheNumberOfCompartmentSeats(String trainNumber, int countOfPurchasedTickets);
 
     void reduceTheNumberOfSuiteSeats(String trainNumber, int countOfPurchasedTickets);
+
+    TrainDTO convertTrainToTrainDTO(Train train);
 }
