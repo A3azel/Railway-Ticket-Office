@@ -10,7 +10,7 @@ public interface StationServiceInterface {
 
     void deleteStation(Long id);
 
-    Page<Station> getAllStationInCity(String cityName, Pageable pageable, int pageNumber, String direction, String sort);
+    Page<StationDTO> getAllStationInCity(String cityName, Pageable pageable, int pageNumber, String direction, String sort);
 
     Station findStationByStationName(String stationName);
 

@@ -1,5 +1,7 @@
 package com.example.springbootpetproject.controller;
 
+import com.example.springbootpetproject.dto.RouteDTO;
+import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.entity.UserComments;
@@ -47,8 +49,8 @@ public class TrainController {
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
 
-        Page<Route> routePage = routeService.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber,direction,sort);
-        List<Route> routeList = routePage.getContent();
+        Page<RouteDTO> routeDTOPage = routeService.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber,direction,sort);
+        List<RouteDTO> routeDTOList = routeDTOPage.getContent();
 
         model.addAttribute("selectedDates",selectedDatesString);
         model.addAttribute("selectedTime",selectedTimeString);
@@ -56,8 +58,8 @@ public class TrainController {
         model.addAttribute("cityOfArrival",cityOfArrival);
 
         model.addAttribute("pageNumber",pageNumber);
-        model.addAttribute("pageable",routePage);
-        model.addAttribute("routeList",routeList);
+        model.addAttribute("pageable",routeDTOPage);
+        model.addAttribute("routeDTOList",routeDTOList);
 
         model.addAttribute("sort", sort);
         model.addAttribute("direction", direction);
@@ -69,7 +71,7 @@ public class TrainController {
     @GetMapping("/info")
     public String getInfoAboutChangedTrain(@RequestParam("id") String id, Model model){
         Route route = routeService.findById(Long.parseLong(id));
-        List<UserComments> userCommentsList = userCommentsService.findByTrainNumber(route.getTrain().getTrainNumber());
+        List<UserCommentsDTO> userCommentsList = userCommentsService.findByTrainNumber(route.getTrain().getTrainNumber());
         model.addAttribute("userCommentsList",userCommentsList);
         model.addAttribute("selectedRoute",route);
         return "trainInfo";

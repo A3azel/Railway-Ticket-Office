@@ -1,6 +1,8 @@
 package com.example.springbootpetproject.repository;
 
 import com.example.springbootpetproject.entity.TicketType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +19,7 @@ public interface TicketTypeRepository extends JpaRepository<TicketType,Long> {
             , nativeQuery = true)
     boolean setTicketPriceFactor(@Param("ticketTypeName") String ticketTypeName,
                                  @Param("priceFactor") float priceFactor);
+
+    Page<TicketType> findAll(Pageable pageable);
 
 }

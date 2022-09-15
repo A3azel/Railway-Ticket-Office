@@ -49,9 +49,9 @@
     </tr>
     </thead>
     <tbody>
-        <tr th:each="route : ${routeList}">
-            <td th:utext="${route.train.trainNumber}"></td>
-            <td th:utext="${route.startStation.city.cityName} + '/' + ${route.arrivalStation.city.cityName}"></td>
+        <tr th:each="route : ${routeDTOList}">
+            <td th:utext="${route.trainNumber}"></td>
+            <td th:utext="${route.startCityName} + '/' + ${route.arrivalCityName}"></td>
             <td th:utext="${#temporals.format(route.departureTime, 'dd-MM-yyyy')}
             + '<br>' +
             ${#temporals.format(route.arrivalTime, 'dd-MM-yyyy')}"></td>

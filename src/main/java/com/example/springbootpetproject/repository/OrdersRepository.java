@@ -19,7 +19,7 @@ public interface OrdersRepository extends JpaRepository<Orders,Long> {
 
     Orders getOrdersById(Long Id);
 
-    boolean existsOrdersByUser_usernameAndTrain_TrainNumber(String username, String trainNumber);
+    boolean existsOrdersByUser_usernameAndRoute_Train_TrainNumber(String username, String trainNumber);
 
 
 }

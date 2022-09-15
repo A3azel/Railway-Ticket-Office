@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserCommentsService implements UserCommentsServiceInterface {
@@ -58,16 +59,19 @@ public class UserCommentsService implements UserCommentsServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserComments> findByTrainNumber(String trainNumber) {
-        return userCommentsRepository.findByTrain_TrainNumber(trainNumber);
+    public List<UserCommentsDTO> findByTrainNumber(String trainNumber) {
+        List<UserComments> userCommentsList = userCommentsRepository.findByTrain_TrainNumber(trainNumber);
+        return userCommentsList.stream().map(this::convertUserCommentsToUserCommentsDTO).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UserComments> findAllUserComments(String userName, Pageable pageable, int pageNumber, String direction, String sort) {
+    public Page<UserCommentsDTO> findAllUserComments(String userName, Pageable pageable, int pageNumber, String direction, String sort) {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return userCommentsRepository.findAllByUserUsername(userName,changePageable);
+        Page<UserComments> userCommentsPage = userCommentsRepository.findAllByUserUsername(userName,changePageable);
+        Page<UserCommentsDTO> userCommentsDTOPage = userCommentsPage.map(this::convertUserCommentsToUserCommentsDTO);
+        return userCommentsDTOPage;
     }
 
     @Override

@@ -94,10 +94,12 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<User> getAllUsers(Pageable pageable, int pageNumber, String direction, String sort) {
+    public Page<UserDTO> getAllUsers(Pageable pageable, int pageNumber, String direction, String sort) {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return userRepository.findAll(changePageable);
+        Page<User> userPage = userRepository.findAll(changePageable);
+        Page<UserDTO> userDTOPage = userPage.map(this::convertUserToUserDTO);
+        return userDTOPage;
     }
 
     @Override
@@ -149,7 +151,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public UserDTO convertUserToUserDTO(User user){
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(userDTO.getId());
+        userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());

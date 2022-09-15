@@ -126,23 +126,27 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Route> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) {
+    public Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) {
         LocalDate selectedDates = LocalDate.parse(selectedDatesString);
         LocalTime selectedTime = LocalTime.parse(selectedTimeString);
         LocalDateTime selectedLocalDateTime = LocalDateTime.of(selectedDates,selectedTime);
         LocalDateTime finalLocalDateTime = selectedLocalDateTime.plusDays(7);
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return routeRepository.findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
+        Page<Route> routePage = routeRepository.findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
                 senderCity, cityOfArrival, selectedLocalDateTime, finalLocalDateTime, changePageable);
+        Page<RouteDTO> routeDTOPage = routePage.map(this::convertRouteToRouteDTO);
+        return routeDTOPage;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Route> getAll(Pageable pageable, int pageNumber, String direction, String sort) {
+    public Page<RouteDTO> getAll(Pageable pageable, int pageNumber, String direction, String sort) {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return routeRepository.findAll(changePageable);
+        return routeRepository
+                .findAll(changePageable)
+                .map(this::convertRouteToRouteDTO);
     }
 
     @Override
@@ -162,14 +166,19 @@ public class RouteService implements RouteServiceInterface {
         RouteDTO routeDTO = new RouteDTO();
         routeDTO.setId(route.getId());
         routeDTO.setStartStationName(route.getStartStation().getStationName());
+        routeDTO.setStartCityName(route.getStartStation().getCity().getCityName());
         routeDTO.setDepartureTime(route.getDepartureTime());
         routeDTO.setArrivalStationName(route.getArrivalStation().getStationName());
+        routeDTO.setArrivalCityName(route.getArrivalStation().getCity().getCityName());
+        routeDTO.setTravelTime(route.getTravelTime());
         routeDTO.setArrivalTime(route.getArrivalTime());
         routeDTO.setNumberOfCompartmentFreeSeats(route.getNumberOfCompartmentFreeSeats());
         routeDTO.setNumberOfSuiteFreeSeats(route.getNumberOfSuiteFreeSeats());
         routeDTO.setPriseOfCompartmentTicket(route.getPriseOfCompartmentTicket());
         routeDTO.setPriseOfSuiteTicket(route.getPriseOfSuiteTicket());
         routeDTO.setTrainNumber(route.getTrain().getTrainNumber());
+        routeDTO.setNumberOfCompartmentSeats(route.getTrain().getNumberOfCompartmentSeats());
+        routeDTO.setNumberOfSuiteSeats(route.getTrain().getNumberOfSuiteSeats());
         return routeDTO;
     }
 }

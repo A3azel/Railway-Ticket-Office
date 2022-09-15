@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller;
 
+import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.Orders;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserComments;
@@ -39,7 +40,8 @@ public class UserController {
     @GetMapping
     public String getUserPage(Model model, Principal principal){
         User user = userService.findUserByUsername(principal.getName());
-        model.addAttribute("selectedUser",user);
+        UserDTO selectedUser = userService.convertUserToUserDTO(user);
+        model.addAttribute("selectedUser",selectedUser);
         if(user.getUserRole().name().equals("USER")){
             return PERSONAL_OFFICE_PAGE;
         }
@@ -84,7 +86,7 @@ public class UserController {
     @GetMapping("/myOrders/{id}")
     public String getMyOrdersById(Model model, @PathVariable("id") long id, Principal principal){
         Orders selectedOrder = ordersService.getOrderById(id);
-        UserComments comment = userCommentsService.findByUserNameAndTrainNumber(principal.getName(),selectedOrder.getTrain().getTrainNumber());
+        UserComments comment = userCommentsService.findByUserNameAndTrainNumber(principal.getName(),selectedOrder.getRoute().getTrain().getTrainNumber());
         if(selectedOrder.getUser().getUsername().equals(principal.getName())){
             model.addAttribute("selectedOrder",selectedOrder);
             model.addAttribute("comment",comment);

@@ -42,10 +42,12 @@ public class StationService implements StationServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Station> getAllStationInCity(String cityName, Pageable pageable, int pageNumber, String direction, String sort) {
+    public Page<StationDTO> getAllStationInCity(String cityName, Pageable pageable, int pageNumber, String direction, String sort) {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return stationRepository.getStationByCity_CityName(cityName,changePageable);
+        return stationRepository
+                .getStationByCity_CityName(cityName,changePageable)
+                .map(this::convertStationToStationDTO);
     }
 
     @Override

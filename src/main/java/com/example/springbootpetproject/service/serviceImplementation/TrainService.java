@@ -35,10 +35,12 @@ public class TrainService implements TrainServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Train> getAllTrain(Pageable pageable, int pageNumber, String direction, String sort){
+    public Page<TrainDTO> getAllTrain(Pageable pageable, int pageNumber, String direction, String sort){
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return trainRepository.findAll(changePageable);
+        Page<Train> trainPage = trainRepository.findAll(changePageable);
+        Page<TrainDTO> trainDTOPage = trainPage.map(this::convertTrainToTrainDTO);
+        return trainDTOPage;
     }
 
     @Override

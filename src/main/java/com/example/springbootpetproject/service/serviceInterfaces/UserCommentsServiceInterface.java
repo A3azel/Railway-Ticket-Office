@@ -19,9 +19,9 @@ public interface UserCommentsServiceInterface {
 
     UserComments findByUserNameAndTrainNumber(String username, String trainNumber);
 
-    List<UserComments> findByTrainNumber(String trainNumber);
+    List<UserCommentsDTO> findByTrainNumber(String trainNumber);
 
-    Page<UserComments> findAllUserComments(String userName, Pageable pageable, int pageNumber, String direction, String sort);
+    Page<UserCommentsDTO> findAllUserComments(String userName, Pageable pageable, int pageNumber, String direction, String sort);
 
     UserCommentsDTO convertUserCommentsToUserCommentsDTO(UserComments userComments);
 

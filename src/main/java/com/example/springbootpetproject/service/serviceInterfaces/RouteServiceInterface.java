@@ -18,8 +18,8 @@ public interface RouteServiceInterface {
     void updateRoute(Map<String,String> allParam);
     void deleteRoute(Long Id);
     Route findById(Long Id);
-    Page<Route> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival,  String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort);
-    Page<Route> getAll(Pageable pageable, int pageNumber, String direction, String sort);
+    Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival,  String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort);
+    Page<RouteDTO> getAll(Pageable pageable, int pageNumber, String direction, String sort);
     void reduceNumberOfCompartmentFreeSeats(Long routeId, int countOfPurchasedTickets);
     void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets);
     RouteDTO convertRouteToRouteDTO(Route route);

@@ -62,6 +62,6 @@ public class OrdersService implements OrdersServiceInterface {
 
     @Override
     public boolean exitByUserNameAndTrainName(String userName, String trainName) {
-        return ordersRepository.existsOrdersByUser_usernameAndTrain_TrainNumber(userName, trainName);
+        return ordersRepository.existsOrdersByUser_usernameAndRoute_Train_TrainNumber(userName, trainName);
     }
 }

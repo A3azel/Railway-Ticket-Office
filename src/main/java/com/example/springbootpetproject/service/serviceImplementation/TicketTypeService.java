@@ -5,10 +5,15 @@ import com.example.springbootpetproject.entity.TicketType;
 import com.example.springbootpetproject.repository.TicketTypeRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.TicketTypeServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketTypeService implements TicketTypeServiceInterface {
@@ -42,8 +47,21 @@ public class TicketTypeService implements TicketTypeServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TicketType> getAllTicketTypes() {
-        return ticketTypeRepository.findAll();
+    public Page<TicketTypeDTO> getAllTicketTypes(Pageable pageable, int pageNumber, String direction, String sort) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
+                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
+        Page<TicketType> ticketTypes = ticketTypeRepository.findAll(changePageable);
+        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypes.map(this::convertTicketTypeToTicketTypeDTO);
+        return ticketTypeDTOPage;
+    }
+
+    @Override
+    public List<TicketTypeDTO> getAllTicketTypesForOrder() {
+        List<TicketType> ticketTypeList = ticketTypeRepository.findAll();
+        return ticketTypeList
+                .stream()
+                .map(this::convertTicketTypeToTicketTypeDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

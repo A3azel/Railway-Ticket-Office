@@ -18,7 +18,7 @@
             <div class="card mb-4">
                 <div class="card-body text-center">
                     <!-- With ENUM you should add method name() -->
-                    <th:block th:switch="${selectedUser.userGender.name()}">
+                    <th:block th:switch="${selectedUser.userGender}">
 
                         <th:block th:case = "'MAN'">
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
@@ -94,20 +94,20 @@
                 </div>
             </div>
             <div class="d-grid gap-5 d-md-flex justify-content-md-start">
-                <form th:action="@{/admin/all/users/page/1}" method="get">
+                <form th:action="@{/admin/users/all/page/1}" method="get">
                     <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfUsers}]]</button>
                 </form>
-                <form th:action="@{/admin/all/trains/page/1}" method="get">
+                <form th:action="@{/admin/train/all/page/1}" method="get">
                     <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfTrains}]]</button>
                 </form>
-                <form th:action="@{/admin/all/cites/page/1}" method="get">
+                <form th:action="@{/admin/city/all/page/1}" method="get">
                     <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfCites}]]т</button>
                 </form>
-                <form th:action="@{/admin/all/route/page/1}" method="get">
+                <form th:action="@{/admin/route/all/page/1}" method="get">
                     <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfRoutes}]]</button>
                 </form>
                 <form th:action="@{/user/changePassword}" method="get">
-                    <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfUsers}]]</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{admin.button.listOfTickets}]]</button>
                 </form>
             </div>
         </div>

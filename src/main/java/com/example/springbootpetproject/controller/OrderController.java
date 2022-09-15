@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller;
 
+import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.Orders;
 import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.entity.TicketType;
@@ -38,9 +39,9 @@ public class OrderController {
     @GetMapping("/{id}")
     public String goToOrder(@PathVariable("id") Long id, Model model){
         Route selectedRoute = routeService.findById(id);
-        List<TicketType> ticketTypeList = ticketTypeService.getAllTicketTypes();
+        List<TicketTypeDTO> ticketTypeDTOList = ticketTypeService.getAllTicketTypesForOrder();
         model.addAttribute("selectedRoute",selectedRoute);
-        model.addAttribute("ticketTypeList",ticketTypeList);
+        model.addAttribute("ticketTypeList",ticketTypeDTOList);
         return "issuingTicket";
     }
 

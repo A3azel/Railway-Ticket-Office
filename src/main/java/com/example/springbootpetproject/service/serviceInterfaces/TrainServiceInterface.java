@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface TrainServiceInterface {
 
-    Page<Train> getAllTrain(Pageable pageable, int pageNumber, String direction, String sort);
+    Page<TrainDTO> getAllTrain(Pageable pageable, int pageNumber, String direction, String sort);
 
     Train findTrainByTrainNumber(String trainNumber);
 

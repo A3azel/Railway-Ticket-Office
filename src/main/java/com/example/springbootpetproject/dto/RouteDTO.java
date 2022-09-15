@@ -16,8 +16,11 @@ import java.time.LocalTime;
 public class RouteDTO {
     private Long id;
     private String startStationName;
+    private String startCityName;
     private LocalDateTime departureTime;
+    private LocalTime travelTime;
     private String arrivalStationName;
+    private String arrivalCityName;
     private LocalDateTime arrivalTime;
    /* private LocalDate dateOfDispatch;
     private LocalTime timeOfDispatch;
@@ -28,4 +31,7 @@ public class RouteDTO {
     private BigDecimal priseOfCompartmentTicket;
     private BigDecimal priseOfSuiteTicket;
     private String trainNumber;
+    private int numberOfCompartmentSeats;
+    private int numberOfSuiteSeats;
+
 }

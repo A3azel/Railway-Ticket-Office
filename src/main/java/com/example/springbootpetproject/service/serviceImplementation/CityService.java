@@ -23,13 +23,24 @@ public class CityService implements CityServiceInterface {
         this.cityRepository = cityRepository;
     }
 
-    @Override
+    /*@Override
     @Transactional(readOnly = true)
     public Page<City> findAllCity(Pageable pageable, int pageNumber, String direction, String sort) {
         //Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()).withSort(Sort.by(direction,sort));
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         return cityRepository.findAll(changePageable);
+    }*/
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CityDTO> findAllCity(Pageable pageable, int pageNumber, String direction, String sort) {
+        //Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()).withSort(Sort.by(direction,sort));
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
+                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
+        Page<City> cityPage = cityRepository.findAll(changePageable);
+        Page<CityDTO> cityDTOPage = cityPage.map(this::convertCityToCityDTO);
+        return cityDTOPage;
     }
 
     @Override

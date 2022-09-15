@@ -100,7 +100,7 @@
                 <form method="get">
                     <button type="submit"  class="btn btn-outline-secondary">[[#{button.ListOfUserOrders}]]</button>
                 </form>
-                <form method="get">
+                <form method="get" th:action="@{'/admin/users/selectedUser/' + ${selectedUser.username} + '/comment/page/1'}">
                     <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">[[#{button.ListOfUserComments}]]</button>
                 </form>
 
