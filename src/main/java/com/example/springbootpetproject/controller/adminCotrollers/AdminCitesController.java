@@ -24,7 +24,7 @@ public class AdminCitesController {
         this.cityService = cityService;
     }
 
-    @GetMapping("/city/all/page/{pageNumber}")
+    @GetMapping("/all/page/{pageNumber}")
     public String getAllCites(Model model
             , @PageableDefault(size = 10) Pageable pageable
             , @PathVariable("pageNumber") int pageNumber
@@ -43,17 +43,17 @@ public class AdminCitesController {
         return "allCitesForAdmin";
     }
 
-    @GetMapping("/city/find")
+    @GetMapping("/find")
     public String findCity(@RequestParam("cityName")String cityName){
         return "redirect:/admin/all/stations/" + cityName + "/page/1";
     }
 
-    @GetMapping("/city/add")
+    @GetMapping("/add")
     public String pageAddNewCity(){
         return "addCity";
     }
 
-    @PostMapping("/city/add")
+    @PostMapping("/add")
     public String addNewCity(@RequestParam("cityName") String cityName){
         City newCity = new City();
         newCity.setCityName(cityName);

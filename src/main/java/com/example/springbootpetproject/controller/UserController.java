@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller;
 
+import com.example.springbootpetproject.dto.OrdersDTO;
 import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.Orders;
 import com.example.springbootpetproject.entity.User;
@@ -64,8 +65,8 @@ public class UserController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<Orders> ordersList =  ordersService.getAllUserOrdersByUserName(principal.getName(),pageable,pageNumber,direction,sort);
-        List<Orders> ordersListContext = ordersList.getContent();
+        Page<OrdersDTO> ordersDTOPage =  ordersService.getAllUserOrdersByUserName(principal.getName(),pageable,pageNumber,direction,sort);
+        List<OrdersDTO> ordersListContext = ordersDTOPage.getContent();
         /*int totalPages = ordersList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -74,7 +75,7 @@ public class UserController {
             model.addAttribute("pageNumbers", pageNumbers);
         }*/
         model.addAttribute("pageNumber",pageNumber);
-        model.addAttribute("pageable",ordersList);
+        model.addAttribute("pageable",ordersDTOPage);
         model.addAttribute("ordersList",ordersListContext);
 
         model.addAttribute("sort", sort);

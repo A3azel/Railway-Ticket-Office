@@ -1,8 +1,10 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
 import com.example.springbootpetproject.dto.TrainDTO;
+import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.service.serviceImplementation.TrainService;
+import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +20,12 @@ import java.util.List;
 @RequestMapping("/admin/train")
 public class AdminTrainController {
     private final TrainService trainService;
+    private final UserCommentsService userCommentsService;
 
     @Autowired
-    public AdminTrainController(TrainService trainService) {
+    public AdminTrainController(TrainService trainService, UserCommentsService userCommentsService) {
         this.trainService = trainService;
+        this.userCommentsService = userCommentsService;
     }
 
     @GetMapping("/all/page/{pageNumber}")
@@ -92,5 +96,30 @@ public class AdminTrainController {
     public String deleteTrain(@PathVariable("id") Long id){
         trainService.deleteTrainByID(id);
         return "redirect:/admin/train/all/page/1";
+    }
+
+    @GetMapping("/all/comment/{id}/page/{pageNumber}")
+    public String getAllCommentsAboutTrain(@PathVariable("id") Long id, Model model
+            , @PageableDefault(size = 10) Pageable pageable
+            , @PathVariable("pageNumber") int pageNumber
+            , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
+            , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
+        Page<UserCommentsDTO> userCommentsDTOPage = userCommentsService.findAllCommentsForTrainByTrainID(id, pageable, pageNumber, direction, sort);
+        List<UserCommentsDTO> userCommentsDTOList = userCommentsDTOPage.getContent();
+        model.addAttribute("pageNumber",pageNumber);
+        model.addAttribute("pageable",userCommentsDTOPage);
+        model.addAttribute("userCommentsList",userCommentsDTOList);
+        model.addAttribute("trainId",id);
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("reverseDirection", direction.equals("asc") ? "desc" : "asc");
+        return "allCommentsAboutTrain";
+    }
+
+    @PostMapping("/delete/{trainId}/comment/{commentId}")
+    public String deleteComment(@PathVariable("trainId") Long trainId, @PathVariable("commentId") Long commentId){
+        userCommentsService.deleteComment(commentId);
+        return "redirect:/admin/train/all/comment/" + trainId + "/page/1";
     }
 }

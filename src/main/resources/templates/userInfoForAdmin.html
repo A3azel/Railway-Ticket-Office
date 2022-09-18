@@ -40,7 +40,7 @@
                     <p class="text-muted mb-1"  th:utext = "${selectedUser.userRole}"></p>
                     <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
                     <div class="d-flex justify-content-center mb-2">
-                        <form method="post">
+                        <form method="post" th:action="@{'/admin/selectedUser/changStatus/' + ${selectedUser.username}}">
                             <button type="submit" class="btn btn-outline-danger">[[#{button.block}]]</button>
                         </form>
                     </div>

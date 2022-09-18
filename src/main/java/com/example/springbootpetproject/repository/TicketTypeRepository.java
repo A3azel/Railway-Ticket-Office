@@ -22,4 +22,6 @@ public interface TicketTypeRepository extends JpaRepository<TicketType,Long> {
 
     Page<TicketType> findAll(Pageable pageable);
 
+    TicketType findTicketTypeById(Long id);
+
 }

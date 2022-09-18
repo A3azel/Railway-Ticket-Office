@@ -65,6 +65,16 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     }
 
     @Override
+    public TicketType getTicketById(Long id) {
+        return ticketTypeRepository.findTicketTypeById(id);
+    }
+
+    @Override
+    public void deleteTicketById(Long id) {
+        ticketTypeRepository.deleteById(id);
+    }
+
+    @Override
     public TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType){
         TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
         ticketTypeDTO.setId(ticketType.getId());

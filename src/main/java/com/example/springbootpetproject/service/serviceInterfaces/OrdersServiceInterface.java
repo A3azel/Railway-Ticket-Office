@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.dto.OrdersDTO;
 import com.example.springbootpetproject.entity.Orders;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,9 +12,9 @@ public interface OrdersServiceInterface {
 
     Orders getOrderById(Long id);
 
-    List<Orders> getAllUserOrders(Long id);
+    List<OrdersDTO> getAllUserOrders(Long id);
 
-    Page<Orders> getAllUserOrdersByUserName(String username, Pageable pageable, int pageNumber, String direction, String sort);
+    Page<OrdersDTO> getAllUserOrdersByUserName(String username, Pageable pageable, int pageNumber, String direction, String sort);
 
     boolean exitByUserNameAndTrainName(String userName, String trainName);
 }

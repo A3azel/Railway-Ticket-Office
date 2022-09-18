@@ -40,15 +40,24 @@ public class UserCommentsService implements UserCommentsServiceInterface {
     @Transactional
     public void deleteComment(Long id) {
         userCommentsRepository.deleteById(id);
-
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<UserComments> findAllCommentsForTrain(String trainNumber, Pageable pageable, int pageNumber, String direction, String sort) {
+    public Page<UserCommentsDTO> findAllCommentsForTrain(String trainNumber, Pageable pageable, int pageNumber, String direction, String sort) {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return userCommentsRepository.findAllByTrain_TrainNumber(trainNumber,changePageable);
+        return userCommentsRepository.findAllByTrain_TrainNumber(trainNumber,changePageable)
+                .map(this::convertUserCommentsToUserCommentsDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserCommentsDTO> findAllCommentsForTrainByTrainID(Long id, Pageable pageable, int pageNumber, String direction, String sort) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
+                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
+        return userCommentsRepository.findAllByTrain_Id(id,changePageable)
+                .map(this::convertUserCommentsToUserCommentsDTO);
     }
 
     @Override

@@ -18,5 +18,9 @@ public interface TicketTypeServiceInterface {
 
     List<TicketTypeDTO> getAllTicketTypesForOrder();
 
+    TicketType getTicketById(Long id);
+
+    void deleteTicketById(Long id);
+
     TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType);
 }
