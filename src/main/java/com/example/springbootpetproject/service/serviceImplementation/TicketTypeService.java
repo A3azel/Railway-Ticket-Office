@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,9 +28,28 @@ public class TicketTypeService implements TicketTypeServiceInterface {
 
     @Override
     @Transactional
-    public boolean addTicketType(TicketType ticketType) {
+    public void addTicketType(Map<String,String> allParam) {
+        TicketType ticketType = new TicketType();
+        ticketType.setTicketType(allParam.get("ticketName"));
+        double ticketPriceFactor = Double.parseDouble(allParam.get("ticketPriceFactor"));
+        String formattedDouble = new DecimalFormat("#0.00").format(ticketPriceFactor);
+        formattedDouble = formattedDouble.replaceAll(",",".");
+        double finalTicketPriceFactor = Double.parseDouble(formattedDouble);
+        ticketType.setTicketPriceFactor(finalTicketPriceFactor);
         ticketTypeRepository.save(ticketType);
-        return true;
+    }
+
+    @Override
+    @Transactional
+    public void updateTicketInfo(Map<String, String> allParam) {
+        TicketType ticketType = getTicketById(Long.valueOf(allParam.get("id")));
+        ticketType.setTicketType(allParam.get("ticketType"));
+        double ticketPriceFactor = Double.parseDouble(allParam.get("ticketPriceFactor"));
+        String formattedDouble = new DecimalFormat("#0.00").format(ticketPriceFactor);
+        formattedDouble = formattedDouble.replaceAll(",",".");
+        double finalTicketPriceFactor = Double.parseDouble(formattedDouble);
+        ticketType.setTicketPriceFactor(finalTicketPriceFactor);
+        ticketTypeRepository.save(ticketType);
     }
 
     @Override
@@ -56,6 +77,7 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TicketTypeDTO> getAllTicketTypesForOrder() {
         List<TicketType> ticketTypeList = ticketTypeRepository.findAll();
         return ticketTypeList
@@ -65,11 +87,18 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TicketType getTicketById(Long id) {
         return ticketTypeRepository.findTicketTypeById(id);
     }
 
     @Override
+    public TicketType getTicketByTicketType(String ticketType) {
+        return ticketTypeRepository.findTicketTypeByTicketType(ticketType);
+    }
+
+    @Override
+    @Transactional
     public void deleteTicketById(Long id) {
         ticketTypeRepository.deleteById(id);
     }

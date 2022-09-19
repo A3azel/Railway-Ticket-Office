@@ -1,9 +1,7 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
 import com.example.springbootpetproject.dto.TicketTypeDTO;
-import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.TicketType;
-import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.service.serviceImplementation.TicketTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/ticket")
@@ -44,17 +43,20 @@ public class AdminTicketsTypeController {
         return "allTicketsForAdmin";
     }
 
-    @GetMapping("/find/byTicketName")
+    @GetMapping("/find")
     public String getTrainForAdminByTrainNumber(HttpServletRequest request, Model model){
-        return "updateInfoAboutTicket";
+        String ticketType = request.getParameter("ticketName");
+        TicketType selectedTicket = ticketTypeService.getTicketByTicketType(ticketType);
+        //System.out.println(selectedTicket);
+        TicketTypeDTO selectedTicketDTO = ticketTypeService.convertTicketTypeToTicketTypeDTO(selectedTicket);
+        model.addAttribute("selectedTicket", selectedTicketDTO);
+        return "updateTicketInfo";
     }
 
     @PostMapping("/update")
-    public String updateInfoAboutTrain(@RequestParam("id") Long id, @RequestParam("trainNumber") String trainNumber
-            ,@RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats
-            ,@RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats){
-
-        return "redirect:/admin/ticket/" + id;
+    public String updateInfoAboutTrain(@RequestParam Map<String,String> allParam){
+        ticketTypeService.updateTicketInfo(allParam);
+        return "redirect:/admin/ticket/" + allParam.get("id");
     }
 
     @GetMapping("/{id}")
@@ -62,7 +64,7 @@ public class AdminTicketsTypeController {
         TicketTypeDTO selectedTicket = ticketTypeService
                 .convertTicketTypeToTicketTypeDTO(ticketTypeService.getTicketById(id));
         model.addAttribute("selectedTicket",selectedTicket);
-        return "updateInfoAboutTicket";
+        return "updateTicketInfo";
     }
 
     @GetMapping("/add")
@@ -71,11 +73,8 @@ public class AdminTicketsTypeController {
     }
 
     @PostMapping("/add")
-    public String addTrain(@RequestParam("trainNumber") String trainNumber
-            ,@RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats
-            ,@RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats){
-        TicketType newTicket = new TicketType();
-
+    public String addTrain(@RequestParam Map<String,String> allParam){
+        ticketTypeService.addTicketType(allParam);
         return "redirect:/admin/ticket/all/page/1";
     }
 

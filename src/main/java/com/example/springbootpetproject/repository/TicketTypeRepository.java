@@ -12,15 +12,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketTypeRepository extends JpaRepository<TicketType,Long> {
 
-    boolean deleteTicketTypeByTicketType(String ticketName);
+    void deleteTicketTypeByTicketType(String ticketName);
 
     @Modifying
     @Query(value = "UPDATE ticket_type SET ticket_price_factor = :priceFactor WHERE ticket_type = :ticketTypeName"
             , nativeQuery = true)
-    boolean setTicketPriceFactor(@Param("ticketTypeName") String ticketTypeName,
+    void setTicketPriceFactor(@Param("ticketTypeName") String ticketTypeName,
                                  @Param("priceFactor") float priceFactor);
 
     Page<TicketType> findAll(Pageable pageable);
+
+    TicketType findTicketTypeByTicketType(String ticketType);
 
     TicketType findTicketTypeById(Long id);
 

@@ -6,9 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TicketTypeServiceInterface {
-    boolean addTicketType(TicketType ticketType);
+    void addTicketType(Map<String,String> allParam);
+
+    void updateTicketInfo(Map<String,String> allParam);
 
     boolean deleteTicketTypeByTicketTypeName(String ticketTypeName);
 
@@ -19,6 +22,8 @@ public interface TicketTypeServiceInterface {
     List<TicketTypeDTO> getAllTicketTypesForOrder();
 
     TicketType getTicketById(Long id);
+
+    TicketType getTicketByTicketType(String ticketType);
 
     void deleteTicketById(Long id);
 
