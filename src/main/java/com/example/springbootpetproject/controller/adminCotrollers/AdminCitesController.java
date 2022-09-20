@@ -57,8 +57,15 @@ public class AdminCitesController {
     public String addNewCity(@RequestParam("cityName") String cityName){
         City newCity = new City();
         newCity.setCityName(cityName);
+        newCity.setRelevant(true);
         cityService.addCity(newCity);
         return "redirect:/admin/station/all/" + newCity.getCityName() + "/page/1";
+    }
+
+    @PostMapping("/relevant/{id}")
+    public String setRelevant(@PathVariable("id") Long id){
+        cityService.setCityRelevant(id);
+        return "redirect:/admin/city/all/page/1";
     }
 
 }

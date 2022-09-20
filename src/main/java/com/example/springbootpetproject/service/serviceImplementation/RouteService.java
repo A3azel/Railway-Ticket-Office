@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.CityExceptions.InvalidNameOfCity;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.entity.Station;
@@ -126,7 +127,7 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) {
+    public Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) throws InvalidNameOfCity {
         LocalDate selectedDates = LocalDate.parse(selectedDatesString);
         LocalTime selectedTime = LocalTime.parse(selectedTimeString);
         LocalDateTime selectedLocalDateTime = LocalDateTime.of(selectedDates,selectedTime);
@@ -136,6 +137,9 @@ public class RouteService implements RouteServiceInterface {
         Page<Route> routePage = routeRepository.findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
                 senderCity, cityOfArrival, selectedLocalDateTime, finalLocalDateTime, changePageable);
         Page<RouteDTO> routeDTOPage = routePage.map(this::convertRouteToRouteDTO);
+        if (routeDTOPage.getContent().size() == 0){
+            throw new InvalidNameOfCity();
+        }
         return routeDTOPage;
     }
 

@@ -32,6 +32,9 @@ public class Train implements Serializable {
     @Column(name = "number_of_suite_seats")
     private int numberOfSuiteSeats;
 
+    @Column(name = "relevant")
+    private boolean isRelevant;
+
     @OneToMany(mappedBy = "train")
     @JsonManagedReference
     private Set<Route> routeSet;

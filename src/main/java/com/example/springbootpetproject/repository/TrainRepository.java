@@ -54,7 +54,7 @@ public interface TrainRepository extends JpaRepository<Train,Long> {
 
     Train findTrainByTrainNumber(String trainNumber);
 
-    void deleteById(Long id);
+    void deleteTrainById(Long id);
 
     @Modifying
     @Query(
@@ -71,4 +71,8 @@ public interface TrainRepository extends JpaRepository<Train,Long> {
     void reduceTheNumberOfSuiteSeats(
             @Param("trainNumber") String trainNumber,
             @Param("countOfPurchasedTickets") int countOfPurchasedTickets);
+
+    @Modifying
+    @Query(value = "UPDATE train_info SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
+    void setTrainRelevant(@Param("changedRelevant") boolean changedRelevant, @Param("id") Long id);
 }

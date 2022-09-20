@@ -65,10 +65,25 @@ public class CityService implements CityServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public City findCityById(Long id) {
+        return cityRepository.findCityById(id);
+    }
+
+    @Override
+    @Transactional
+    public void setCityRelevant(Long id) {
+        boolean isRelevant = findCityById(id).isRelevant();
+        boolean notIsRelevant = !isRelevant;
+        cityRepository.setCityRelevant(notIsRelevant,id);
+    }
+
+    @Override
     public CityDTO convertCityToCityDTO(City city){
         CityDTO cityDTO = new CityDTO();
         cityDTO.setId(city.getId());
         cityDTO.setCityName(city.getCityName());
+        cityDTO.setRelevant(city.isRelevant());
         return cityDTO;
     }
 }

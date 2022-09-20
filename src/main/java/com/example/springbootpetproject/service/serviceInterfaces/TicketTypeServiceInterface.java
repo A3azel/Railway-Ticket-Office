@@ -19,6 +19,8 @@ public interface TicketTypeServiceInterface {
 
     Page<TicketTypeDTO> getAllTicketTypes(Pageable pageable, int pageNumber, String direction, String sort);
 
+    Page<TicketTypeDTO> findAllByRelevantTrue(Pageable pageable, int pageNumber, String direction, String sort);
+
     List<TicketTypeDTO> getAllTicketTypesForOrder();
 
     TicketType getTicketById(Long id);
@@ -27,5 +29,9 @@ public interface TicketTypeServiceInterface {
 
     void deleteTicketById(Long id);
 
+    void setTicketRelevant(Long id);
+
     TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType);
+
+
 }

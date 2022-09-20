@@ -36,6 +36,7 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         formattedDouble = formattedDouble.replaceAll(",",".");
         double finalTicketPriceFactor = Double.parseDouble(formattedDouble);
         ticketType.setTicketPriceFactor(finalTicketPriceFactor);
+        ticketType.setRelevant(true);
         ticketTypeRepository.save(ticketType);
     }
 
@@ -78,6 +79,16 @@ public class TicketTypeService implements TicketTypeServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<TicketTypeDTO> findAllByRelevantTrue(Pageable pageable, int pageNumber, String direction, String sort) {
+        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
+                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
+        Page<TicketType> ticketTypes = ticketTypeRepository.findAll(changePageable);
+        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypes.map(this::convertTicketTypeToTicketTypeDTO);
+        return ticketTypeDTOPage;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TicketTypeDTO> getAllTicketTypesForOrder() {
         List<TicketType> ticketTypeList = ticketTypeRepository.findAll();
         return ticketTypeList
@@ -104,11 +115,22 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     }
 
     @Override
+    @Transactional
+    public void setTicketRelevant(Long id) {
+        boolean isRelevant = getTicketById(id).isRelevant();
+        boolean notIsRelevant = !isRelevant;
+        ticketTypeRepository.setTicketRelevant(notIsRelevant,id);
+    }
+
+    @Override
     public TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType){
         TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
         ticketTypeDTO.setId(ticketType.getId());
         ticketTypeDTO.setTicketType(ticketType.getTicketType());
         ticketTypeDTO.setTicketPriceFactor(ticketType.getTicketPriceFactor());
+        ticketTypeDTO.setRelevant(ticketType.isRelevant());
         return ticketTypeDTO;
     }
+
+
 }

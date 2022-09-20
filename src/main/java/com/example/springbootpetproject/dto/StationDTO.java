@@ -9,4 +9,5 @@ public class StationDTO {
     private Long id;
     private String stationName;
     private String cityName;
+    private boolean isRelevant;
 }

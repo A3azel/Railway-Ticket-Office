@@ -25,6 +25,9 @@ public class TicketType implements Serializable {
     @Column(name = "ticket_price_factor")
     private double ticketPriceFactor;
 
+    @Column(name = "relevant")
+    private boolean isRelevant;
+
     @OneToMany(mappedBy = "ticketType")
     @JsonManagedReference
     private Set<Orders> ordersSet;

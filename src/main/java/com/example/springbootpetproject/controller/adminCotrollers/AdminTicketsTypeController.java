@@ -84,6 +84,12 @@ public class AdminTicketsTypeController {
         return "redirect:/admin/ticket/all/page/1";
     }
 
+    @PostMapping("/relevant/{id}")
+    public String setRelevant(@PathVariable("id") Long id){
+        ticketTypeService.setTicketRelevant(id);
+        return "redirect:/admin/ticket/all/page/1";
+    }
+
 
 
 

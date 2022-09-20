@@ -22,8 +22,14 @@ public interface TicketTypeRepository extends JpaRepository<TicketType,Long> {
 
     Page<TicketType> findAll(Pageable pageable);
 
+    Page<TicketType> findAllByRelevantTrue(Pageable pageable);
+
     TicketType findTicketTypeByTicketType(String ticketType);
 
     TicketType findTicketTypeById(Long id);
+
+    @Modifying
+    @Query(value = "UPDATE ticket_type SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
+    void setTicketRelevant(@Param("changedRelevant") boolean changedRelevant, @Param("id") Long id);
 
 }

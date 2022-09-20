@@ -26,6 +26,9 @@ public class Station implements Serializable {
     @Column(name = "station_name")
     private String stationName;
 
+    @Column(name = "relevant")
+    private boolean isRelevant;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     @JsonBackReference

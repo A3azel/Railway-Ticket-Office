@@ -27,4 +27,6 @@ public interface TrainServiceInterface {
     void reduceTheNumberOfSuiteSeats(String trainNumber, int countOfPurchasedTickets);
 
     TrainDTO convertTrainToTrainDTO(Train train);
+
+    void setTrainRelevant(Long id);
 }

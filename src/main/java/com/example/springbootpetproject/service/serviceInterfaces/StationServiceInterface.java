@@ -4,6 +4,9 @@ import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface StationServiceInterface {
     void addStation(Station station);
@@ -18,5 +21,9 @@ public interface StationServiceInterface {
 
     void updateStation(Station station);
 
+    void setStationRelevant(Long id);
+
     StationDTO convertStationToStationDTO(Station station);
+
+
 }

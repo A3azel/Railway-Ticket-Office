@@ -73,6 +73,7 @@ public class AdminStationController {
         String cityName = request.getParameter("cityName");
         newStation.setStationName(request.getParameter("stationName"));
         newStation.setCity(cityService.findByCityName(cityName));
+        newStation.setRelevant(true);
         stationService.addStation(newStation);
         return "redirect:/admin/station/all/"+cityName+"/page/1";
     }
@@ -84,6 +85,12 @@ public class AdminStationController {
         updateStation.setStationName(stationName);
         updateStation.setCity(cityService.findByCityName(cityName));
         stationService.updateStation(updateStation);
+        return "redirect:/admin/station/all/"+cityName+"/page/1";
+    }
+
+    @PostMapping("/relevant/{cityName}/{id}")
+    public String setRelevant(@PathVariable("id") Long id, @PathVariable("cityName") String cityName){
+        stationService.setStationRelevant(id);
         return "redirect:/admin/station/all/"+cityName+"/page/1";
     }
 }

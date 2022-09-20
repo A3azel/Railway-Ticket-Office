@@ -25,6 +25,9 @@ public class City implements Serializable {
     @Column(name = "city_name")
     private String cityName;
 
+    @Column(name = "relevant")
+    private boolean isRelevant;
+
     @OneToMany(mappedBy = "city",fetch = FetchType.LAZY)
     @JsonManagedReference
     //No

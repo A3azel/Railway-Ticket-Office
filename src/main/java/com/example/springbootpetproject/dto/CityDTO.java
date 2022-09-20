@@ -9,4 +9,5 @@ import lombok.*;
 public class CityDTO {
     private Long Id;
     private String cityName;
+    private boolean isRelevant;
 }

@@ -74,11 +74,20 @@ public class StationService implements StationServiceInterface {
     }
 
     @Override
+    @Transactional
+    public void setStationRelevant(Long id) {
+        boolean isRelevant = findByID(id).isRelevant();
+        boolean notIsRelevant = !isRelevant;
+        stationRepository.setStationRelevant(notIsRelevant,id);
+    }
+
+    @Override
     public StationDTO convertStationToStationDTO(Station station){
         StationDTO stationDTO = new StationDTO();
         stationDTO.setId(station.getId());
         stationDTO.setStationName(station.getStationName());
         stationDTO.setCityName(station.getCity().getCityName());
+        stationDTO.setRelevant(station.isRelevant());
         return stationDTO;
     }
 }

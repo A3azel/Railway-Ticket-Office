@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.customExceptions.CityExceptions.InvalidNameOfCity;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ public interface RouteServiceInterface {
     void updateRoute(Map<String,String> allParam);
     void deleteRoute(Long Id);
     Route findById(Long Id);
-    Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival,  String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort);
+    Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival,  String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) throws InvalidNameOfCity;
     Page<RouteDTO> getAll(Pageable pageable, int pageNumber, String direction, String sort);
     void reduceNumberOfCompartmentFreeSeats(Long routeId, int countOfPurchasedTickets);
     void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets);

@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 public interface RouteRepository extends JpaRepository<Route,Long> {
     Page<Route> findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
             String senderCity, String cityOfArrival, LocalDateTime selectedDates, LocalDateTime finalDates, Pageable pageable);
+
+    Page<Route> findAllByStartStation_City_RelevantAndArrivalStation_City_RelevantAndStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
+            boolean b1, boolean b2, String senderCity, String cityOfArrival, LocalDateTime selectedDates, LocalDateTime finalDates, Pageable pageable);
     Page<Route> findAll(Pageable pageable);
     Route findRouteById(Long Id);
 

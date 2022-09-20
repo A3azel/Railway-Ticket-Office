@@ -20,8 +20,31 @@
             <h5 class="card-title">[[${#temporals.format(userComment.publicationTime, 'dd-MM-yyyy HH:mm')}]]</h5>
             <p class="card-text">[[${userComment.userComments}]]</p>
             <form method="post" th:action="@{'/admin/train/delete/' + ${trainId} + '/comment/1'}">
-                <button type="submit" class="btn btn-outline-danger">Delete</button>
+                <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>Delete</button>
             </form>
+            <!--<button type="button" class="btn btn-outline-danger btn-rounded" data-bs-toggle="modal" data-bs-target="#myModal">
+                <i class="bi bi-trash"></i>[[#{button.delete}]]
+            </button>
+            <div class="modal fade" tabindex="-1" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><i class="bi bi-exclamation-triangle"></i> Are you sure you really want to delete this comment? </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary btn-rounded" data-bs-dismiss="modal"><i class="bi bi-door-open-fill"></i>Close</button>
+                            <form method="post" th:action="@{'/admin/train/delete/' + ${trainId} + '/comment/1'}">
+                                <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+
         </div>
     </div>
 </th:block>

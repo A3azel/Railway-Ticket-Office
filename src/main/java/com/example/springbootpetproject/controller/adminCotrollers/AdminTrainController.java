@@ -88,12 +88,14 @@ public class AdminTrainController {
         newTrain.setTrainNumber(trainNumber);
         newTrain.setNumberOfCompartmentSeats(numberOfCompartmentSeats);
         newTrain.setNumberOfSuiteSeats(numberOfSuiteSeats);
+        newTrain.setRelevant(true);
         trainService.addTrain(newTrain);
         return "redirect:/admin/train/all/page/1";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteTrain(@PathVariable("id") Long id){
+        System.out.println(id);
         trainService.deleteTrainByID(id);
         return "redirect:/admin/train/all/page/1";
     }
@@ -121,5 +123,11 @@ public class AdminTrainController {
     public String deleteComment(@PathVariable("trainId") Long trainId, @PathVariable("commentId") Long commentId){
         userCommentsService.deleteComment(commentId);
         return "redirect:/admin/train/all/comment/" + trainId + "/page/1";
+    }
+
+    @PostMapping("/relevant/{id}")
+    public String setRelevant(@PathVariable("id") Long id){
+        trainService.setTrainRelevant(id);
+        return "redirect:/admin/train/all/page/1";
     }
 }

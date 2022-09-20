@@ -12,4 +12,5 @@ public class TrainDTO {
     private String trainNumber;
     private int numberOfCompartmentSeats;
     private int numberOfSuiteSeats;
+    private boolean isRelevant;
 }

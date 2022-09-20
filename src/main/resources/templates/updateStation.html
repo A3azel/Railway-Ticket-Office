@@ -39,7 +39,7 @@
         <button type="submit" name="id" class="btn btn-outline-primary" th:value="${finderStation.id}">[[#{button.submitData}]]</button>
     </form>
     <form th:action="@{'/admin/station/delete/'+ ${finderStation.cityName} + ${finderStation.id}}"  method="post">
-        <button type="submit" name="city" th:value="${finderStation.cityName}" class="btn btn-outline-danger">[[#{button.delete}]]</button>
+        <button type="submit" name="city" th:value="${finderStation.cityName}" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
     </form>
 </div>
 

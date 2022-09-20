@@ -52,7 +52,7 @@ public class TrainService implements TrainServiceInterface {
     @Override
     @Transactional
     public void deleteTrainByID(Long id){
-        trainRepository.deleteById(id);
+        trainRepository.deleteTrainById(id);
     }
 
     @Override
@@ -78,14 +78,25 @@ public class TrainService implements TrainServiceInterface {
     }
 
     @Override
+    @Transactional
+    public void setTrainRelevant(Long id) {
+        boolean isRelevant = findTrainByID(id).isRelevant();
+        boolean newRelevant = !isRelevant;
+        trainRepository.setTrainRelevant(newRelevant,id);
+    }
+
+    @Override
     public TrainDTO convertTrainToTrainDTO(Train train){
         TrainDTO trainDTO = new TrainDTO();
         trainDTO.setId(train.getId());
         trainDTO.setTrainNumber(train.getTrainNumber());
         trainDTO.setNumberOfCompartmentSeats(train.getNumberOfCompartmentSeats());
         trainDTO.setNumberOfSuiteSeats(train.getNumberOfSuiteSeats());
+        trainDTO.setRelevant(train.isRelevant());
         return trainDTO;
     }
+
+
 
     public LocalDateTime localDateTimeBuilder(String localDate,String localTime){
         LocalDate selectedDates = LocalDate.parse(localDate);

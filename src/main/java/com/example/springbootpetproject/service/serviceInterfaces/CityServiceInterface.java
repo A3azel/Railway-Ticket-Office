@@ -16,5 +16,9 @@ public interface CityServiceInterface {
 
     boolean cityIsExist(String cityName);
 
+    City findCityById(Long id);
+
+    void setCityRelevant(Long id);
+
     CityDTO convertCityToCityDTO(City city);
 }
