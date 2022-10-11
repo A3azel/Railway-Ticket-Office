@@ -78,7 +78,6 @@ public class UserCommentsService implements UserCommentsServiceInterface {
                 .map(this::convertUserCommentsToUserCommentsDTO);
     }
 
-
     //???
     @Override
     @Transactional(readOnly = true)
