@@ -54,7 +54,7 @@ public class AdminTrainController {
     public String getTrainForAdminByID(Model model, @PathVariable("id") String id){
         Train train = trainService.findTrainByID(Long.parseLong(id));
         TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
-        model.addAttribute("train",train);
+        model.addAttribute("train",selectedTrain);
         return "changeTrainDetails";
     }
 
@@ -63,7 +63,7 @@ public class AdminTrainController {
         String trainNumber = request.getParameter("wantedTrain");
         Train train = trainService.findTrainByTrainNumber(trainNumber);
         TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
-        model.addAttribute("train",train);
+        model.addAttribute("train",selectedTrain);
         return "changeTrainDetails";
     }
 
@@ -107,7 +107,6 @@ public class AdminTrainController {
 
     @PostMapping("/delete/{id}")
     public String deleteTrain(@PathVariable("id") Long id){
-        System.out.println(id);
         trainService.deleteTrainByID(id);
         return "redirect:/admin/train/all/page/1";
     }

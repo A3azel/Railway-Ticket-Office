@@ -48,8 +48,9 @@ public class AdminUsersController {
     }
 
     @GetMapping("/selectedUser/{userName}")
-    public String getSelectedUser(Model model, @PathVariable("userName") String userName){
+    public String getSelectedUser(HttpServletRequest request, Model model, @PathVariable("userName") String userName){
         User user = userService.findUserByUsername(userName);
+        model.addAttribute("infoAboutPage",request.getParameter("infoAboutPage"));
         model.addAttribute("selectedUser", user);
         return "userInfoForAdmin";
     }
@@ -86,6 +87,7 @@ public class AdminUsersController {
 
     @PostMapping("/selectedUser/comment/{id}")
     public String deleteUserComment(Model model,@PathVariable("id")Long id){
+        userCommentsService.deleteCommentForAdmin(id);
         return null;
     }
 }

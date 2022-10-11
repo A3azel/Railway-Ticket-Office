@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class UserCommentsService implements UserCommentsServiceInterface {
     private final UserCommentsRepository userCommentsRepository;
-    private final UserCommentsService userCommentsService;
-    private final OrdersService ordersService;
+/*    private final UserCommentsService userCommentsService;
+    private final OrdersService ordersService;*/
 
     @Autowired
-    public UserCommentsService(UserCommentsRepository userCommentsRepository, UserCommentsService userCommentsService, OrdersService ordersService) {
+    public UserCommentsService(UserCommentsRepository userCommentsRepository/*, UserCommentsService userCommentsService, OrdersService ordersService*/) {
         this.userCommentsRepository = userCommentsRepository;
-        this.userCommentsService = userCommentsService;
-        this.ordersService = ordersService;
+    /*    this.userCommentsService = userCommentsService;
+        this.ordersService = ordersService*/;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class UserCommentsService implements UserCommentsServiceInterface {
         userCommentsRepository.save(userComments);
     }
 
-    @Override
+    /*@Override
     @Transactional
     @PreAuthorize("#username == authentication.principal.username")
     public void deleteComment(String username,String trainNumber) {
@@ -51,11 +51,11 @@ public class UserCommentsService implements UserCommentsServiceInterface {
             userCommentsRepository.deleteById(userComments.getId());
         }
         throw new IllegalArgumentException("Коментар не знайдено");
-    }
+    }*/
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public void deleteCommentForAdmin(Long id) {
         userCommentsRepository.deleteById(id);
     }

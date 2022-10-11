@@ -13,7 +13,7 @@ public interface UserCommentsServiceInterface {
 
     void setComment(UserComments userComments);
 
-    void deleteComment(String username,String trainNumber);
+    //void deleteComment(String username,String trainNumber);
 
     void deleteCommentForAdmin(Long id);
 

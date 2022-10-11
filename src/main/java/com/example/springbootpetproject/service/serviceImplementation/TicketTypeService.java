@@ -51,7 +51,7 @@ public class TicketTypeService implements TicketTypeServiceInterface {
 
 
 
-    @Override
+    /*@Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public void updateTicketInfo(Map<String, String> allParam) {
@@ -63,6 +63,16 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         double finalTicketPriceFactor = Double.parseDouble(formattedDouble);
         ticketType.setTicketPriceFactor(finalTicketPriceFactor);
         ticketTypeRepository.save(ticketType);
+    }*/
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateTicketInfo(TicketType ticket, Long id) {
+        TicketType selectedTicket = getTicketById(id);
+        selectedTicket.setTicketTypeName(ticket.getTicketTypeName());
+        selectedTicket.setTicketPriceFactor(ticket.getTicketPriceFactor());
+        ticketTypeRepository.save(selectedTicket);
     }
 
     @Override

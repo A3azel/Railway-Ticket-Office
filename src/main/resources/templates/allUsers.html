@@ -42,7 +42,7 @@
         <td>
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                         <form  method="get" th:action="@{'/admin/users/selectedUser/' +  ${user.username}}">
-                            <button type="submit" class="btn btn-outline-info">[[#{user.order.label.details}]]</button>
+                            <button type="submit" th:value="${pageNumber}" name="infoAboutPage" class="btn btn-outline-info">[[#{user.order.label.details}]]</button>
                         </form>
                     <th:block th:if="${user.userRole} == 'USER'">
                                     <form th:action="@{'/admin/users/selectedUser/changStatus/' + ${user.username}}" method="post">

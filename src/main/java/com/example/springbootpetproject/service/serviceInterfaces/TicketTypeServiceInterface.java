@@ -11,7 +11,8 @@ import java.util.Map;
 public interface TicketTypeServiceInterface {
     void addTicketType(TicketType ticketType);
 
-    void updateTicketInfo(Map<String,String> allParam);
+    //void updateTicketInfo(Map<String,String> allParam);
+    void updateTicketInfo(TicketType ticket, Long id);
 
     boolean deleteTicketTypeByTicketTypeName(String ticketTypeName);
 

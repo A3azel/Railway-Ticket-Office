@@ -2,6 +2,7 @@ package com.example.springbootpetproject.controller.adminCotrollers;
 
 import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.TicketType;
+import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.service.serviceImplementation.TicketTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,26 +47,28 @@ public class AdminTicketsTypeController {
     }
 
     @GetMapping("/find")
-    public String getTrainForAdminByTrainNumber(HttpServletRequest request, Model model){
+    public String getTicketForAdminByTicketNumber(HttpServletRequest request, Model model){
         String ticketType = request.getParameter("ticketName");
         TicketType selectedTicket = ticketTypeService.getTicketByTicketType(ticketType);
-        //System.out.println(selectedTicket);
         TicketTypeDTO selectedTicketDTO = ticketTypeService.convertTicketTypeToTicketTypeDTO(selectedTicket);
-        model.addAttribute("selectedTicket", selectedTicketDTO);
+        model.addAttribute("ticket", selectedTicketDTO);
         return "updateTicketInfo";
     }
 
     @PostMapping("/update")
-    public String updateInfoAboutTrain(@RequestParam Map<String,String> allParam){
-        ticketTypeService.updateTicketInfo(allParam);
-        return "redirect:/admin/ticket/" + allParam.get("id");
+    public String updateInfoAboutTicket(@RequestParam("id") Long id, @Valid @ModelAttribute TicketType ticket, Errors errors){
+        if (errors.hasErrors()) {
+            return "updateTicketInfo";
+        }
+        ticketTypeService.updateTicketInfo(ticket,id);
+        return "redirect:/admin/ticket/all/page/1";
     }
 
     @GetMapping("/{id}")
     public String getTicketById(Model model, @PathVariable("id") Long id){
         TicketTypeDTO selectedTicket = ticketTypeService
                 .convertTicketTypeToTicketTypeDTO(ticketTypeService.getTicketById(id));
-        model.addAttribute("selectedTicket",selectedTicket);
+        model.addAttribute("ticket",selectedTicket);
         return "updateTicketInfo";
     }
 
@@ -85,7 +88,7 @@ public class AdminTicketsTypeController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteTrain(@PathVariable("id") Long id){
+    public String deleteTicket(@PathVariable("id") Long id){
         ticketTypeService.deleteTicketById(id);
         return "redirect:/admin/ticket/all/page/1";
     }
