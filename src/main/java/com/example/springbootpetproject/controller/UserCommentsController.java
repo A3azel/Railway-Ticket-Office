@@ -59,11 +59,7 @@ public class UserCommentsController {
 
     @PostMapping("/delete/{trainNumber}")
     public String deleteComment(HttpServletRequest request, Principal principal, @PathVariable("trainNumber") String trainNumber){
-        UserComments userComments = userCommentsService.findByUserNameAndTrainNumber(principal.getName(),trainNumber);
-        if(ordersService.exitByUserNameAndTrainName(principal.getName(),trainNumber)){
-            userCommentsService.deleteComment(userComments.getId());
+            userCommentsService.deleteComment(principal.getName(),trainNumber);
             return "redirect:/user/myOrders/" + request.getParameter("id");
-        }
-        throw new IllegalArgumentException("Користувач не робив данного замовлення");
     }
 }

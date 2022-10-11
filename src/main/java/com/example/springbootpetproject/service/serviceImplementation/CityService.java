@@ -2,6 +2,7 @@ package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
+import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.repository.CityRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.CityServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +19,12 @@ import java.util.List;
 @Service
 public class CityService implements CityServiceInterface {
     private final CityRepository cityRepository;
+    private final StationService stationService;
 
     @Autowired
-    public CityService(CityRepository cityRepository) {
+    public CityService(CityRepository cityRepository, StationService stationService) {
         this.cityRepository = cityRepository;
+        this.stationService = stationService;
     }
 
     /*@Override
@@ -45,10 +49,12 @@ public class CityService implements CityServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void addCity(City city) {
         if(cityIsExist(city.getCityName())){
             throw new IllegalArgumentException("місто вже існує в базі данних");
         }
+        city.setRelevant(true);
         cityRepository.save(city);
     }
 
@@ -72,9 +78,14 @@ public class CityService implements CityServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void setCityRelevant(Long id) {
         boolean isRelevant = findCityById(id).isRelevant();
         boolean notIsRelevant = !isRelevant;
+        City selectCity = findCityById(id);
+        for (Station station:selectCity.getStationSet()) {
+            stationService.setStationRelevantByCity(notIsRelevant,station.getId());
+        }
         cityRepository.setCityRelevant(notIsRelevant,id);
     }
 

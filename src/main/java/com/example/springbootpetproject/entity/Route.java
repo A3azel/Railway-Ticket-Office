@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,29 +30,44 @@ public class Route implements Serializable {
     @JoinColumn(name = "start_station_id")
     private Station startStation;
 
-    @Column(name = "departure_time", nullable = false)
+    @NotBlank
+    @Column(name = "departure_time")
     private LocalDateTime departureTime;
 
-    @Column(name = "travel_time", nullable = false)
+    @NotBlank
+    @Column(name = "travel_time")
     private LocalTime travelTime;
 
     @OneToOne
     @JoinColumn(name = "arrival_station_id")
     private Station arrivalStation;
 
-    @Column(name = "arrival_time", nullable = false)
+    @NotBlank
+    @Column(name = "arrival_time")
     private LocalDateTime arrivalTime;
 
+    @NotBlank
+    @NumberFormat(style = NumberFormat.Style.NUMBER)
+    @Min(value = 0 , message = "Count of compartment free seats can't negative")
     @Column(name = "number_of_compartment_free_seats")
     private int numberOfCompartmentFreeSeats;
 
+    @NotBlank
+    @NumberFormat(style = NumberFormat.Style.NUMBER)
+    @Min(value = 0 , message = "Count of suite free seats can't negative")
     @Column(name = "number_of_suite_free_seats")
     private int numberOfSuiteFreeSeats;
 
-    @Column(name = "prise_of_compartment_ticket", nullable = false)
+    @NotBlank
+    @NumberFormat(style = NumberFormat.Style.NUMBER)
+    @Min(value = 0 , message = "Count of compartment seats can't negative")
+    @Column(name = "prise_of_compartment_ticket")
     private BigDecimal priseOfCompartmentTicket;
 
-    @Column(name = "prise_of_suite_ticket", nullable = false)
+    @NotBlank
+    @NumberFormat(style = NumberFormat.Style.NUMBER)
+    @Min(value = 0 , message = "Count of suite seats can't negative")
+    @Column(name = "prise_of_suite_ticket")
     private BigDecimal priseOfSuiteTicket;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -13,7 +13,9 @@ public interface UserCommentsServiceInterface {
 
     void setComment(UserComments userComments);
 
-    void deleteComment(Long id);
+    void deleteComment(String username,String trainNumber);
+
+    void deleteCommentForAdmin(Long id);
 
     Page<UserCommentsDTO> findAllCommentsForTrain(String trainNumber, Pageable pageable, int pageNumber, String direction, String sort);
 

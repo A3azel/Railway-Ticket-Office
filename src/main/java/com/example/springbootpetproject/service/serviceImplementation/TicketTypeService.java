@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +27,11 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         this.ticketTypeRepository = ticketTypeRepository;
     }
 
-    @Override
+   /* @Override
     @Transactional
     public void addTicketType(Map<String,String> allParam) {
         TicketType ticketType = new TicketType();
-        ticketType.setTicketType(allParam.get("ticketName"));
+        ticketType.setTicketTypeName(allParam.get("ticketType"));
         double ticketPriceFactor = Double.parseDouble(allParam.get("ticketPriceFactor"));
         String formattedDouble = new DecimalFormat("#0.00").format(ticketPriceFactor);
         formattedDouble = formattedDouble.replaceAll(",",".");
@@ -38,13 +39,24 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         ticketType.setTicketPriceFactor(finalTicketPriceFactor);
         ticketType.setRelevant(true);
         ticketTypeRepository.save(ticketType);
-    }
+    }*/
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void addTicketType(TicketType ticketType) {
+        ticketType.setRelevant(true);
+        ticketTypeRepository.save(ticketType);
+    }
+
+
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateTicketInfo(Map<String, String> allParam) {
         TicketType ticketType = getTicketById(Long.valueOf(allParam.get("id")));
-        ticketType.setTicketType(allParam.get("ticketType"));
+        ticketType.setTicketTypeName(allParam.get("ticketType"));
         double ticketPriceFactor = Double.parseDouble(allParam.get("ticketPriceFactor"));
         String formattedDouble = new DecimalFormat("#0.00").format(ticketPriceFactor);
         formattedDouble = formattedDouble.replaceAll(",",".");
@@ -55,13 +67,15 @@ public class TicketTypeService implements TicketTypeServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteTicketTypeByTicketTypeName(String ticketTypeName) {
-        ticketTypeRepository.deleteTicketTypeByTicketType(ticketTypeName);
+        ticketTypeRepository.deleteTicketTypeByTicketTypeName(ticketTypeName);
         return false;
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean setTicketPriceFactor(String ticketTypeName, float priceFactor) {
         ticketTypeRepository.setTicketPriceFactor(ticketTypeName,priceFactor);
         return false;
@@ -105,17 +119,19 @@ public class TicketTypeService implements TicketTypeServiceInterface {
 
     @Override
     public TicketType getTicketByTicketType(String ticketType) {
-        return ticketTypeRepository.findTicketTypeByTicketType(ticketType);
+        return ticketTypeRepository.findTicketTypeByTicketTypeName(ticketType);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteTicketById(Long id) {
         ticketTypeRepository.deleteById(id);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void setTicketRelevant(Long id) {
         boolean isRelevant = getTicketById(id).isRelevant();
         boolean notIsRelevant = !isRelevant;
@@ -126,7 +142,7 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     public TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType){
         TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
         ticketTypeDTO.setId(ticketType.getId());
-        ticketTypeDTO.setTicketType(ticketType.getTicketType());
+        ticketTypeDTO.setTicketTypeName(ticketType.getTicketTypeName());
         ticketTypeDTO.setTicketPriceFactor(ticketType.getTicketPriceFactor());
         ticketTypeDTO.setRelevant(ticketType.isRelevant());
         return ticketTypeDTO;

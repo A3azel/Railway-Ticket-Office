@@ -11,9 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -50,7 +54,7 @@ public class AdminTrainController {
     public String getTrainForAdminByID(Model model, @PathVariable("id") String id){
         Train train = trainService.findTrainByID(Long.parseLong(id));
         TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
-        model.addAttribute("selectedTrain",selectedTrain);
+        model.addAttribute("train",train);
         return "changeTrainDetails";
     }
 
@@ -59,11 +63,11 @@ public class AdminTrainController {
         String trainNumber = request.getParameter("wantedTrain");
         Train train = trainService.findTrainByTrainNumber(trainNumber);
         TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
-        model.addAttribute("selectedTrain",selectedTrain);
+        model.addAttribute("train",train);
         return "changeTrainDetails";
     }
 
-    @PostMapping("/update")
+    /*@PostMapping("/update")
     public String updateInfoAboutTrain(@RequestParam("id") Long id, @RequestParam("trainNumber") String trainNumber
             ,@RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats
             ,@RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats){
@@ -74,22 +78,30 @@ public class AdminTrainController {
         trainService.updateTrain(oldTrain);
         return "redirect:/admin/train/" + id;
     }
+*/
+
+    @PostMapping("/update")
+    public String updateInfoAboutTrain(@RequestParam("id") Long id, @Valid @ModelAttribute Train train, Errors errors){
+        if (errors.hasErrors()) {
+            return "changeTrainDetails";
+        }
+        trainService.updateTrain(train,id);
+        return "redirect:/admin/train/all/page/1";
+    }
+
 
     @GetMapping("/add")
-    public String getPageToAddTrain(){
+    public String getPageToAddTrain(Model model){
+        model.addAttribute("train", new Train());
         return "addTrain";
     }
 
     @PostMapping("/add")
-    public String addTrain(@RequestParam("trainNumber") String trainNumber
-            ,@RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats
-            ,@RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats){
-        Train newTrain = new Train();
-        newTrain.setTrainNumber(trainNumber);
-        newTrain.setNumberOfCompartmentSeats(numberOfCompartmentSeats);
-        newTrain.setNumberOfSuiteSeats(numberOfSuiteSeats);
-        newTrain.setRelevant(true);
-        trainService.addTrain(newTrain);
+    public String addTrain(@Valid @ModelAttribute Train train, Errors errors){
+        if (errors.hasErrors()) {
+            return "addTrain";
+        }
+        trainService.addTrain(train);
         return "redirect:/admin/train/all/page/1";
     }
 
@@ -120,8 +132,8 @@ public class AdminTrainController {
     }
 
     @PostMapping("/delete/{trainId}/comment/{commentId}")
-    public String deleteComment(@PathVariable("trainId") Long trainId, @PathVariable("commentId") Long commentId){
-        userCommentsService.deleteComment(commentId);
+    public String deleteComment(@PathVariable("trainId") Long trainId, @PathVariable("commentId") Long commentId, Principal principal){
+        userCommentsService.deleteCommentForAdmin(commentId);
         return "redirect:/admin/train/all/comment/" + trainId + "/page/1";
     }
 

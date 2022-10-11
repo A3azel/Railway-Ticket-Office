@@ -1,17 +1,24 @@
 package com.example.springbootpetproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "ticket_type")
-@Data
+//@Data
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class TicketType implements Serializable {
     @Id
@@ -19,20 +26,24 @@ public class TicketType implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank(message = "This field can't be blank")
     @Column(name = "ticket_type")
-    private String ticketType;
+    private String ticketTypeName;
 
+    @NotNull(message = "This field can't be blank")
+    @DecimalMin(value = "0.00", inclusive = false, message = "Price factor can't negative")
+    @Digits(integer = 1, fraction = 2, message = "Example 1.23")
     @Column(name = "ticket_price_factor")
     private double ticketPriceFactor;
 
     @Column(name = "relevant")
-    private boolean isRelevant;
+    private boolean relevant;
 
     @OneToMany(mappedBy = "ticketType")
     @JsonManagedReference
     private Set<Orders> ordersSet;
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TicketType)) return false;
@@ -52,5 +63,5 @@ public class TicketType implements Serializable {
                 ", ticketType='" + ticketType + '\'' +
                 ", ticketPriceFactor=" + ticketPriceFactor +
                 '}';
-    }
+    }*/
 }

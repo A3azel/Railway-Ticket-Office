@@ -23,6 +23,8 @@ public interface StationServiceInterface {
 
     void setStationRelevant(Long id);
 
+    void setStationRelevantByCity(boolean relevant, Long id);
+
     StationDTO convertStationToStationDTO(Station station);
 
 

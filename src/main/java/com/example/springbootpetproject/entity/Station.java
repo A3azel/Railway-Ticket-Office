@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
@@ -23,11 +24,12 @@ public class Station implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank
     @Column(name = "station_name")
     private String stationName;
 
     @Column(name = "relevant")
-    private boolean isRelevant;
+    private boolean relevant;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")

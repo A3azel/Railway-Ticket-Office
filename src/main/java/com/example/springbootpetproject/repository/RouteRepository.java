@@ -10,14 +10,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface RouteRepository extends JpaRepository<Route,Long> {
     Page<Route> findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
             String senderCity, String cityOfArrival, LocalDateTime selectedDates, LocalDateTime finalDates, Pageable pageable);
 
-    Page<Route> findAllByStartStation_City_RelevantAndArrivalStation_City_RelevantAndStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
+    Page<Route> findAllByStartStation_RelevantIsTrueAndArrivalStation_RelevantIsTrueAndStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
+            String senderCity, String cityOfArrival, LocalDateTime selectedDates, LocalDateTime finalDates, Pageable pageable);
+
+    /*Page<Route> findAllByStartStation_City_RelevantAndArrivalStation_City_RelevantAndStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
             boolean b1, boolean b2, String senderCity, String cityOfArrival, LocalDateTime selectedDates, LocalDateTime finalDates, Pageable pageable);
+
+    List<Route> findAllByStartStation_City_RelevantAndArrivalStation_City_RelevantAndStartStation_City_CityNameAndArrivalStation_City_CityName(boolean b1, boolean b2, String senderCity, String cityOfArrival);*/
+
     Page<Route> findAll(Pageable pageable);
     Route findRouteById(Long Id);
 

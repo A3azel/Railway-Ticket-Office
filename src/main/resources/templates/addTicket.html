@@ -12,7 +12,7 @@
 <div th:include="header::head"></div>
 
 <div class="row mainRow">
-    <form method="post" th:action="@{/admin/ticket/add}">
+    <form method="post" th:action="@{/admin/ticket/add}" th:object="${ticket}">
         <div class="col-lg-6" style="margin: 20px">
             <div class="card mb-4">
                 <div class="card-body">
@@ -21,7 +21,10 @@
                             <p class="mb-0">[[#{label.ticket.ticketName}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="ticketName"/>
+                            <input type="text" class="form-control" th:field="*{ticketTypeName}" name="ticketTypeName"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('ticketTypeName')}"
+                                  th:errors="*{ticketTypeName}" style="color: red"></span>
                         </div>
                     </div>
                     <hr>
@@ -30,7 +33,10 @@
                             <p class="mb-0">[[#{label.ticket.ticketPriceFactor}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="ticketPriceFactor"/>
+                            <input type="text" th:field="*{ticketPriceFactor}" class="form-control" name="ticketPriceFactor"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('ticketPriceFactor')}"
+                                  th:errors="*{ticketPriceFactor}" style="color: red"></span>
                         </div>
                     </div>
                 </div>

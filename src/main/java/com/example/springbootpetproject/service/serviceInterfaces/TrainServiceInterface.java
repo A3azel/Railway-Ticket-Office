@@ -20,7 +20,9 @@ public interface TrainServiceInterface {
 
     void addTrain(Train train);
 
-    void updateTrain(Train train);
+    void updateTrain(Train train, Long id);
+
+    Train findTrainByID(Long id);
 
     void reduceTheNumberOfCompartmentSeats(String trainNumber, int countOfPurchasedTickets);
 

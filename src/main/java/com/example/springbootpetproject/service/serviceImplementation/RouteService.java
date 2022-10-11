@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -50,6 +52,7 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void addRoute(Map<String,String> allParam){
         String trainNumber = allParam.get("trainNumber");
         String startStation = allParam.get("startStation");
@@ -78,6 +81,7 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateRoute(Map<String,String> allParam) {
         Long id = Long.parseLong(allParam.get("id"));
         String trainNumber = allParam.get("trainNumber");
@@ -115,6 +119,7 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteRoute(Long Id) {
         routeRepository.deleteById(Id);
     }
@@ -134,7 +139,7 @@ public class RouteService implements RouteServiceInterface {
         LocalDateTime finalLocalDateTime = selectedLocalDateTime.plusDays(7);
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        Page<Route> routePage = routeRepository.findAllByStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
+        Page<Route> routePage = routeRepository.findAllByStartStation_RelevantIsTrueAndArrivalStation_RelevantIsTrueAndStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
                 senderCity, cityOfArrival, selectedLocalDateTime, finalLocalDateTime, changePageable);
         Page<RouteDTO> routeDTOPage = routePage.map(this::convertRouteToRouteDTO);
         if (routeDTOPage.getContent().size() == 0){
@@ -185,4 +190,5 @@ public class RouteService implements RouteServiceInterface {
         routeDTO.setNumberOfSuiteSeats(route.getTrain().getNumberOfSuiteSeats());
         return routeDTO;
     }
+
 }

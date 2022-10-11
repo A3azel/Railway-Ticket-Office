@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class UserComments implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @Size(max = 5000, message = "Comment cannot be longer than 5000 characters")
     @Column(name = "user_comment")
     private String userComments;
 

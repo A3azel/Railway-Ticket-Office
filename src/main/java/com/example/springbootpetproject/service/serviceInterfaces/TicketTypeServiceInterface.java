@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface TicketTypeServiceInterface {
-    void addTicketType(Map<String,String> allParam);
+    void addTicketType(TicketType ticketType);
 
     void updateTicketInfo(Map<String,String> allParam);
 
@@ -25,13 +25,13 @@ public interface TicketTypeServiceInterface {
 
     TicketType getTicketById(Long id);
 
-    TicketType getTicketByTicketType(String ticketType);
+    TicketType getTicketByTicketType(String ticketTypeName);
 
     void deleteTicketById(Long id);
 
     void setTicketRelevant(Long id);
 
-    TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType);
+    TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketTypeName);
 
 
 }

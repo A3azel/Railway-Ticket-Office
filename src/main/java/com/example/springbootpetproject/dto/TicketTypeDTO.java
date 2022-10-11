@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TicketTypeDTO {
     private Long id;
-    private String ticketType;
+    private String ticketTypeName;
     private double ticketPriceFactor;
     private boolean isRelevant;
 }

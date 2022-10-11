@@ -3,15 +3,13 @@ package com.example.springbootpetproject.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.format.annotation.NumberFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -30,27 +28,27 @@ public class User implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank
+    @Size(min = 4, max = 64, message = "length must be from 4 to 64 characters")
     @Column(name = "username")
-    @NotEmpty
-    @NotNull
     private String username;
 
+    @NotBlank
+    @Size(min = 1, max = 64, message = "length must be from 1 to 64 characters")
     @Column(name = "first_name")
-    @NotEmpty
-    @NotNull
     private String firstName;
 
-    @Column(name = "last_name")
-    @NotEmpty
     @NotNull
+    @Size(min = 1, max = 64, message = "length must be from 1 to 64 characters")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "user_password")
-    @NotEmpty
     @NotNull
-    @Size(min = 8, max = 64)
+    @Size(min = 8, max = 64, message = "length must be from 1 to 64 characters")
+    @Column(name = "user_password")
     private String password;
 
+    @NumberFormat(style = NumberFormat.Style.CURRENCY)
     @Column(name = "user_count_of_money")
     private BigDecimal userCountOfMoney;
 
@@ -68,15 +66,10 @@ public class User implements Serializable {
     private UserGender userGender;
 
     @Column(name = "user_phone")
-    @NotEmpty
-    @NotNull
-    @UniqueElements
     private String userPhone;
 
     @Column(name = "user_email")
     @NotEmpty
-    @NotNull
-    @UniqueElements
     @Email
     private String userEmail;
 
@@ -110,7 +103,7 @@ public class User implements Serializable {
         this.userEmail = userEmail;
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
@@ -137,32 +130,6 @@ public class User implements Serializable {
                 ", userPhone='" + userPhone + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 '}';
-    }
-
-    /*@Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority =
-                new SimpleGrantedAuthority(UserRole.name());
-        return Collections.singletonList(authority);
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
     }*/
+
 }

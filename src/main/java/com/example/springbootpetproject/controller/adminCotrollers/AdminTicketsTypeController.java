@@ -9,9 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -68,13 +70,17 @@ public class AdminTicketsTypeController {
     }
 
     @GetMapping("/add")
-    public String addTicket(){
+    public String pageAddTicket(Model model){
+        model.addAttribute("ticket", new TicketType());
         return "addTicket";
     }
 
     @PostMapping("/add")
-    public String addTrain(@RequestParam Map<String,String> allParam){
-        ticketTypeService.addTicketType(allParam);
+    public String addTicket(@Valid @ModelAttribute TicketType ticket, Errors errors){
+        if(errors.hasErrors()){
+            return "addTicket";
+        }
+        ticketTypeService.addTicketType(ticket);
         return "redirect:/admin/ticket/all/page/1";
     }
 
@@ -89,8 +95,4 @@ public class AdminTicketsTypeController {
         ticketTypeService.setTicketRelevant(id);
         return "redirect:/admin/ticket/all/page/1";
     }
-
-
-
-
 }

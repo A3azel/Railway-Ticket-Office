@@ -43,12 +43,12 @@
     <tbody>
     <tr th:each="ticket : ${ticketTypeList}">
         <td th:text="${ticket.id}"></td>
-        <td th:text="${ticket.ticketType}"></td>
+        <td th:text="${ticket.ticketTypeName}"></td>
         <td th:text="${ticket.ticketPriceFactor}"></td>
         <td>
             <div class="d-grid gap-3 d-md-flex justify-content-md-center">
                 <form  method="get" th:action="@{/admin/ticket/find}">
-                    <button type="submit" name="ticketName" th:value="${ticket.ticketType}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
+                    <button type="submit" name="ticketName" th:value="${ticket.ticketTypeName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
                 </form>
                 <!--<form th:action="@{'/admin/ticket/delete/' ${ticket.id}}"  method="post">
                     <button type="submit" class="btn btn-outline-danger">[[#{button.delete}]]</button>
@@ -83,7 +83,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p><i class="bi bi-exclamation-triangle"></i> Are you sure you really want to delete this ticket [[${ticket.ticketType}]]? </p>
+                                <p><i class="bi bi-exclamation-triangle"></i> Are you sure you really want to delete this ticket [[${ticket.ticketTypeName}]]? </p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-secondary btn-rounded" data-bs-dismiss="modal"><i class="bi bi-door-open-fill"></i>Close</button>

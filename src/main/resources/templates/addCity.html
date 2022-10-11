@@ -12,7 +12,7 @@
 <div th:include="header::head"></div>
 
 <div class="row mainRow">
-    <form method="post" th:action="@{/admin/city/add}">
+    <form method="post" th:action="@{/admin/city/add}" th:object="${city}">
         <div class="col-lg-6" style="margin: 20px">
             <div class="card mb-4">
                 <div class="card-body">
@@ -21,7 +21,10 @@
                             <p class="mb-0">[[#{label.city.name}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="cityName"/>
+                            <input type="text"  th:field="*{cityName}" class="form-control" name="cityName"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('cityName')}"
+                                  th:errors="*{cityName}" style="color: red"></span>
                         </div>
                     </div>
                 </div>

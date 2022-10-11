@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -24,12 +25,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    // change configure() method
+    /*@Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return null;
+    }*/
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                     .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/order/**","/user/**").authenticated()
+                    .antMatchers("/order/**","/user/**").authenticated()/*.hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())*/
                     .antMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
                     .anyRequest()
                     .permitAll()
@@ -47,9 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .sessionManagement()
                     .invalidSessionUrl("/")
-                    .maximumSessions(1)
-                    /*.maxSessionsPreventsLogin(true)
-                    .sessionRegistry(sessionRegistry())*/;
+                    .maximumSessions(1)//?
+                    .maxSessionsPreventsLogin(false)
+                    /*.sessionRegistry(sessionRegistry())*/;
     }
 
     /*@Bean(name = "sessionRegistry")

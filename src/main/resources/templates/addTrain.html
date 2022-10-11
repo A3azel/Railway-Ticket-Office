@@ -12,7 +12,7 @@
 <div th:include="header::head"></div>
 
 <div class="row mainRow">
-    <form method="post" th:action="@{/admin/train/add}">
+    <form method="post" th:action="@{/admin/train/add}" th:object="${train}">
         <div class="col-lg-6" style="margin: 20px">
             <div class="card mb-4">
                 <div class="card-body">
@@ -21,7 +21,11 @@
                             <p class="mb-0">[[#{label.train.number}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="trainNumber"/>
+                            <input type="text" th:field="*{trainNumber}" class="form-control" name="trainNumber"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('trainNumber')}"
+                                  th:errors="*{trainNumber}" style="color: red">
+                            </span>
                         </div>
                     </div>
                     <hr>
@@ -30,7 +34,11 @@
                             <p class="mb-0">[[#{label.train.numberOfCompartmentSeats}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="numberOfCompartmentSeats"/>
+                            <input type="number" th:field="*{numberOfCompartmentSeats}" class="form-control" name="numberOfCompartmentSeats"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('numberOfCompartmentSeats')}"
+                                  th:errors="*{numberOfCompartmentSeats}" style="color: red">
+                            </span>
                         </div>
                     </div>
                     <hr>
@@ -39,7 +47,11 @@
                             <p class="mb-0">[[#{label.train.numberOfSuiteSeats}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="numberOfSuiteSeats"/>
+                            <input type="number" th:field="*{numberOfSuiteSeats}" class="form-control" name="numberOfSuiteSeats"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('numberOfSuiteSeats')}"
+                                  th:errors="*{numberOfSuiteSeats}" style="color: red">
+                            </span>
                         </div>
                     </div>
                 </div>

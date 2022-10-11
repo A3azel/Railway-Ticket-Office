@@ -28,23 +28,7 @@ public class RegistrationController {
 
     @PostMapping
     public String makeAnRegistration(HttpServletRequest request){
-
-        String username = request.getParameter("username");
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        //String gender = request.getParameter("gender");
-        String password = request.getParameter("password");
-        String submitPassword = request.getParameter("submitPassword");
-        if(!Validator.isTheSamePassword(password,submitPassword)){
-            throw new IllegalArgumentException("different passwords");
-        }
-        User user = new User(username,firstName,lastName,password, UserGender.MAN,email);
-        if(!phone.equals("")){
-            user.setUserPhone(phone);
-        }
-        registrationService.sendRegistrationConfirmationEmail(user);
+        registrationService.sendRegistrationConfirmationEmail(request);
         return "redirect:/login";
     }
 

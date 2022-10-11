@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.TrainRepository;
@@ -28,6 +29,7 @@ public class TrainService implements TrainServiceInterface {
         this.trainRepository = trainRepository;
     }
 
+    @Override
     @Transactional
     public Train findTrainByID(Long id){
         return trainRepository.findTrainById(id);
@@ -51,18 +53,28 @@ public class TrainService implements TrainServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteTrainByID(Long id){
         trainRepository.deleteTrainById(id);
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void addTrain(Train train) {
+        train.setRelevant(true);
         trainRepository.save(train);
     }
 
     @Override
-    public void updateTrain(Train train) {
-        trainRepository.save(train);
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateTrain(Train train, Long id) {
+        Train selectedTrain = findTrainByID(id);
+        selectedTrain.setTrainNumber(train.getTrainNumber());
+        selectedTrain.setNumberOfSuiteSeats(train.getNumberOfSuiteSeats());
+        selectedTrain.setNumberOfCompartmentSeats(train.getNumberOfCompartmentSeats());
+        trainRepository.save(selectedTrain);
     }
 
     @Override
@@ -79,6 +91,7 @@ public class TrainService implements TrainServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void setTrainRelevant(Long id) {
         boolean isRelevant = findTrainByID(id).isRelevant();
         boolean newRelevant = !isRelevant;

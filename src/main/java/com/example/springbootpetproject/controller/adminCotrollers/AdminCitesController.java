@@ -9,8 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -45,21 +48,22 @@ public class AdminCitesController {
 
     @GetMapping("/find")
     public String findCity(@RequestParam("cityName")String cityName){
-        return "redirect:/admin/all/stations/" + cityName + "/page/1";
+        return "forward:/admin/station/all/" + cityName + "/page/1";
     }
 
     @GetMapping("/add")
-    public String pageAddNewCity(){
+    public String pageAddNewCity(Model model){
+        model.addAttribute("city",new City());
         return "addCity";
     }
 
     @PostMapping("/add")
-    public String addNewCity(@RequestParam("cityName") String cityName){
-        City newCity = new City();
-        newCity.setCityName(cityName);
-        newCity.setRelevant(true);
-        cityService.addCity(newCity);
-        return "redirect:/admin/station/all/" + newCity.getCityName() + "/page/1";
+    public String addNewCity(@Valid @ModelAttribute City city, Errors errors){
+        if (errors.hasErrors()) {
+            return "addCity";
+        }
+        cityService.addCity(city);
+        return "redirect:/admin/city/all/page/1";
     }
 
     @PostMapping("/relevant/{id}")

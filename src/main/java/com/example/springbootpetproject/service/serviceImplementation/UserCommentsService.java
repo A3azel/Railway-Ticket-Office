@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class UserCommentsService implements UserCommentsServiceInterface {
     private final UserCommentsRepository userCommentsRepository;
+    private final UserCommentsService userCommentsService;
+    private final OrdersService ordersService;
 
     @Autowired
-    public UserCommentsService(UserCommentsRepository userCommentsRepository) {
+    public UserCommentsService(UserCommentsRepository userCommentsRepository, UserCommentsService userCommentsService, OrdersService ordersService) {
         this.userCommentsRepository = userCommentsRepository;
+        this.userCommentsService = userCommentsService;
+        this.ordersService = ordersService;
     }
 
     @Override
@@ -38,7 +44,19 @@ public class UserCommentsService implements UserCommentsServiceInterface {
 
     @Override
     @Transactional
-    public void deleteComment(Long id) {
+    @PreAuthorize("#username == authentication.principal.username")
+    public void deleteComment(String username,String trainNumber) {
+        UserComments userComments = userCommentsService.findByUserNameAndTrainNumber(username,trainNumber);
+        if(ordersService.exitByUserNameAndTrainName(username,trainNumber)) {
+            userCommentsRepository.deleteById(userComments.getId());
+        }
+        throw new IllegalArgumentException("Коментар не знайдено");
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteCommentForAdmin(Long id) {
         userCommentsRepository.deleteById(id);
     }
 
@@ -60,8 +78,11 @@ public class UserCommentsService implements UserCommentsServiceInterface {
                 .map(this::convertUserCommentsToUserCommentsDTO);
     }
 
+    //???
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN') || " +
+            "#username == authentication.principal.username")
     public UserComments findByUserNameAndTrainNumber(String username, String trainNumber) {
         return userCommentsRepository.findByUserUsernameAndTrainTrainNumber(username, trainNumber);
     }

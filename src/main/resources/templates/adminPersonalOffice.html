@@ -42,7 +42,16 @@
                     </h5>
                     <p class="text-muted mb-1"  th:utext = "${selectedUser.userRole}"></p>
                     <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
-                    <div class="d-flex justify-content-center mb-1">
+                    <div class="d-flex justify-content-center mb-2">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                [[#{button.language}]]
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li><a class="dropdown-item" th:href="@{'/user?lang=uk'}">Українська</a></li>
+                                <li><a class="dropdown-item" th:href="@{'/user?lang=en'}">English</a></li>
+                            </ul>
+                        </div>
                         <form method="post" action="/logout">
                             <button type="submit" class="btn btn-outline-primary ms-1">
                                 <i class="bi bi-door-open-fill"></i>

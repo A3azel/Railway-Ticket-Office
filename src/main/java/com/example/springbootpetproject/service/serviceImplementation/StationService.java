@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.StationRepository;
@@ -26,16 +27,19 @@ public class StationService implements StationServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void addStation(Station station) {
         Set<Station> stationSet = new HashSet<>(stationRepository.findAll());
         if(stationSet.contains(station)){
             return;
         }
+        //station.setRelevant(true);
         stationRepository.save(station);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteStation(Long id) {
         stationRepository.deleteById(id);
     }
@@ -69,16 +73,25 @@ public class StationService implements StationServiceInterface {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateStation(Station station) {
         stationRepository.save(station);
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void setStationRelevant(Long id) {
         boolean isRelevant = findByID(id).isRelevant();
         boolean notIsRelevant = !isRelevant;
         stationRepository.setStationRelevant(notIsRelevant,id);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void setStationRelevantByCity(boolean relevant, Long id) {
+        stationRepository.setStationRelevantByCity(relevant,id);
     }
 
     @Override

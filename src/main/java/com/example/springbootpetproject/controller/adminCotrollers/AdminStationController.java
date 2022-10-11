@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -77,6 +78,12 @@ public class AdminStationController {
         stationService.addStation(newStation);
         return "redirect:/admin/station/all/"+cityName+"/page/1";
     }
+
+    /*@PostMapping("/add")
+    public String addStation(@Valid Station station){
+        stationService.addStation(station);
+        return "redirect:/admin/station/all/"+station.getCity().getCityName()+"/page/1";
+    }*/
 
     @PostMapping("/update")
     public String updateStation(@RequestParam("cityName") String cityName
