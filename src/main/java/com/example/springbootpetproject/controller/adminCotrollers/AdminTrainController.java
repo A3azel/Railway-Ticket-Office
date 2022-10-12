@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAlreadyExist;
 import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.Train;
@@ -81,11 +82,16 @@ public class AdminTrainController {
 */
 
     @PostMapping("/update")
-    public String updateInfoAboutTrain(@RequestParam("id") Long id, @Valid @ModelAttribute Train train, Errors errors){
+    public String updateInfoAboutTrain(@RequestParam("id") Long id, @Valid @ModelAttribute Train train, Errors errors, Model model){
         if (errors.hasErrors()) {
             return "changeTrainDetails";
         }
-        trainService.updateTrain(train,id);
+        try {
+            trainService.updateTrain(train,id);
+        } catch (TrainAlreadyExist e) {
+            model.addAttribute("TrainAlreadyExist", e.getMessage());
+            return "changeTrainDetails";
+        }
         return "redirect:/admin/train/all/page/1";
     }
 
@@ -97,11 +103,16 @@ public class AdminTrainController {
     }
 
     @PostMapping("/add")
-    public String addTrain(@Valid @ModelAttribute Train train, Errors errors){
+    public String addTrain(@Valid @ModelAttribute Train train, Errors errors, Model model){
         if (errors.hasErrors()) {
             return "addTrain";
         }
-        trainService.addTrain(train);
+        try {
+            trainService.addTrain(train);
+        } catch (TrainAlreadyExist e) {
+            model.addAttribute("TrainAlreadyExist", e.getMessage());
+            return "addTrain";
+        }
         return "redirect:/admin/train/all/page/1";
     }
 

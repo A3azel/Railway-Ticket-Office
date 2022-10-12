@@ -1,6 +1,8 @@
 package com.example.springbootpetproject.service.anotherServices;
 
 import com.example.springbootpetproject.configurtion.CustomBCryptPasswordEncoder;
+import com.example.springbootpetproject.customExceptions.registrationExeptions.DifferentPasswords;
+import com.example.springbootpetproject.customExceptions.registrationExeptions.UserAlreadyExist;
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserGender;
@@ -31,21 +33,13 @@ public class RegistrationService {
 
 
     @Transactional
-    public void sendRegistrationConfirmationEmail(HttpServletRequest request){
-        String username = request.getParameter("username");
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        //String gender = request.getParameter("gender");
-        String password = request.getParameter("password");
-        String submitPassword = request.getParameter("submitPassword");
-        if(!Validator.isTheSamePassword(password,submitPassword)){
-            throw new IllegalArgumentException("different passwords");
+    public void sendRegistrationConfirmationEmail(User user, String secondPassword) throws DifferentPasswords, UserAlreadyExist {
+
+        if(userService.existsUserByUsername(user.getUsername())){
+            throw new UserAlreadyExist("user already exists");
         }
-        User user = new User(username,firstName,lastName,password, UserGender.MAN,email);
-        if(!phone.equals("")){
-            user.setUserPhone(phone);
+        if(!Validator.isTheSamePassword(user.getPassword(), secondPassword)){
+            throw new DifferentPasswords("password are not the same");
         }
         String token = userService.addUser(user);
         String link = "http://localhost:8080/registration/activate?token=" + token;

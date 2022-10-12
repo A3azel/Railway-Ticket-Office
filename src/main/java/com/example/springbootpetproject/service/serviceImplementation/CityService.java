@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.CityExceptions.CityAlreadyExist;
 import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.entity.Station;
@@ -13,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class CityService implements CityServiceInterface {
@@ -50,9 +49,9 @@ public class CityService implements CityServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void addCity(City city) {
+    public void addCity(City city) throws CityAlreadyExist {
         if(cityIsExist(city.getCityName())){
-            throw new IllegalArgumentException("місто вже існує в базі данних");
+            throw new CityAlreadyExist("City with the specified name already exist");
         }
         city.setRelevant(true);
         cityRepository.save(city);

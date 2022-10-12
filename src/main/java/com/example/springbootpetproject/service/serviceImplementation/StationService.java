@@ -1,7 +1,9 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
+import com.example.springbootpetproject.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,27 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.StationRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.StationServiceInterface;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Service
 public class StationService implements StationServiceInterface {
     private final StationRepository stationRepository;
+    //private final CityService cityService;
+    private final CityRepository cityRepository;
 
     @Autowired
-    public StationService(StationRepository stationRepository) {
+    public StationService(StationRepository stationRepository, CityRepository cityRepository) {
         this.stationRepository = stationRepository;
+        this.cityRepository = cityRepository;
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void addStation(Station station) {
-        Set<Station> stationSet = new HashSet<>(stationRepository.findAll());
-        if(stationSet.contains(station)){
-            return;
+    public void addStation(StationDTO stationDTO) throws StationAlreadyExist {
+        if(existStationByStationNameAndCity(stationDTO.getStationName(),stationDTO.getCityName())){
+            throw new StationAlreadyExist("Station with the specified name in this city already exist");
         }
-        //station.setRelevant(true);
+        Station station = new Station();
+        station.setStationName(stationDTO.getStationName());
+        station.setCity(cityRepository.findByCityName(stationDTO.getCityName()));
+        //station.setCity(cityService.findByCityName(stationDTO.getCityName()));
+        station.setRelevant(true);
         stationRepository.save(station);
     }
 
@@ -69,6 +74,12 @@ public class StationService implements StationServiceInterface {
     @Transactional(readOnly = true)
     public Station findByID(Long id) {
         return stationRepository.findStationById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existStationByStationNameAndCity(String stationName,String cityName) {
+        return stationRepository.existsByStationNameAndCity_CityName(stationName,cityName);
     }
 
     @Override

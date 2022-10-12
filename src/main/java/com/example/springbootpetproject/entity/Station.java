@@ -24,7 +24,6 @@ public class Station implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank
     @Column(name = "station_name")
     private String stationName;
 

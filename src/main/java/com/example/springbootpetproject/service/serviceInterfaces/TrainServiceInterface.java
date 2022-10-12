@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAlreadyExist;
 import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.entity.User;
@@ -18,11 +19,13 @@ public interface TrainServiceInterface {
 
     void deleteTrainByID(Long id);
 
-    void addTrain(Train train);
+    void addTrain(Train train) throws TrainAlreadyExist;
 
-    void updateTrain(Train train, Long id);
+    void updateTrain(Train train, Long id) throws TrainAlreadyExist;
 
     Train findTrainByID(Long id);
+
+    boolean existTrainByTrainNumber(String trainNumber);
 
     void reduceTheNumberOfCompartmentSeats(String trainNumber, int countOfPurchasedTickets);
 

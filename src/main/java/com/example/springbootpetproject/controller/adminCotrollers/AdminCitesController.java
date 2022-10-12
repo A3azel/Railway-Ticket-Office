@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
+import com.example.springbootpetproject.customExceptions.CityExceptions.CityAlreadyExist;
 import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.service.serviceImplementation.CityService;
@@ -58,11 +59,16 @@ public class AdminCitesController {
     }
 
     @PostMapping("/add")
-    public String addNewCity(@Valid @ModelAttribute City city, Errors errors){
+    public String addNewCity(@Valid @ModelAttribute City city, Errors errors,Model model){
         if (errors.hasErrors()) {
             return "addCity";
         }
-        cityService.addCity(city);
+        try {
+            cityService.addCity(city);
+        } catch (CityAlreadyExist e) {
+            model.addAttribute("CityIsAlreadyExist", e.getMessage());
+            return "addCity";
+        }
         return "redirect:/admin/city/all/page/1";
     }
 

@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAlreadyExist;
 import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.Train;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.TrainRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.TrainServiceInterface;
 
-import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @Service
 public class TrainService implements TrainServiceInterface {
@@ -33,6 +31,12 @@ public class TrainService implements TrainServiceInterface {
     @Transactional
     public Train findTrainByID(Long id){
         return trainRepository.findTrainById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existTrainByTrainNumber(String trainNumber) {
+        return trainRepository.existsTrainByTrainNumber(trainNumber);
     }
 
     @Override
@@ -61,7 +65,10 @@ public class TrainService implements TrainServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void addTrain(Train train) {
+    public void addTrain(Train train) throws TrainAlreadyExist {
+        if(existTrainByTrainNumber(train.getTrainNumber())){
+            throw new TrainAlreadyExist("Train with the specified name already exist");
+        }
         train.setRelevant(true);
         trainRepository.save(train);
     }
@@ -69,7 +76,10 @@ public class TrainService implements TrainServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void updateTrain(Train train, Long id) {
+    public void updateTrain(Train train, Long id) throws TrainAlreadyExist {
+        if(existTrainByTrainNumber(train.getTrainNumber())){
+            throw new TrainAlreadyExist("Train with the specified name already exist");
+        }
         Train selectedTrain = findTrainByID(id);
         selectedTrain.setTrainNumber(train.getTrainNumber());
         selectedTrain.setNumberOfSuiteSeats(train.getNumberOfSuiteSeats());

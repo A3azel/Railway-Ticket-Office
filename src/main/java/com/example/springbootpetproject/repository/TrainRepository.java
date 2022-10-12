@@ -56,6 +56,8 @@ public interface TrainRepository extends JpaRepository<Train,Long> {
 
     void deleteTrainById(Long id);
 
+    boolean existsTrainByTrainNumber(String trainNumber);
+
     @Modifying
     @Query(
             value = "UPDATE train_info SET number_of_compartment_seats = (number_of_compartment_seats - :countOfPurchasedTickets) where train_number = :trainNumber",

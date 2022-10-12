@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
+import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.service.serviceImplementation.CityService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +58,9 @@ public class AdminStationController {
 
     @GetMapping("/add/{cityName}")
     public String pageAddStation(@PathVariable("cityName") String cityName, Model model){
-        model.addAttribute("cityName",cityName);
+        StationDTO stationDTO = new StationDTO();
+        stationDTO.setCityName(cityName);
+        model.addAttribute("stationDTO", stationDTO);
         return "addStation";
     }
 
@@ -69,21 +73,22 @@ public class AdminStationController {
     }
 
     @PostMapping("/add")
-    public String addStation(HttpServletRequest request){
-        Station newStation = new Station();
+    public String addStation(@Valid @ModelAttribute StationDTO stationDTO, Errors errors, Model model){
+        if (errors.hasErrors()){
+            return "addStation";
+        }
+/*        Station newStation = new Station();
         String cityName = request.getParameter("cityName");
         newStation.setStationName(request.getParameter("stationName"));
-        newStation.setCity(cityService.findByCityName(cityName));
-        newStation.setRelevant(true);
-        stationService.addStation(newStation);
-        return "redirect:/admin/station/all/"+cityName+"/page/1";
+        newStation.setCity(cityService.findByCityName(cityName));*/
+        try {
+            stationService.addStation(stationDTO);
+        } catch (StationAlreadyExist e) {
+            model.addAttribute("StationAlreadyExist" ,e.getMessage());
+            return "addStation";
+        }
+        return "redirect:/admin/station/all/"+stationDTO.getCityName()+"/page/1";
     }
-
-    /*@PostMapping("/add")
-    public String addStation(@Valid Station station){
-        stationService.addStation(station);
-        return "redirect:/admin/station/all/"+station.getCity().getCityName()+"/page/1";
-    }*/
 
     @PostMapping("/update")
     public String updateStation(@RequestParam("cityName") String cityName

@@ -24,7 +24,8 @@
                             <input type="text"  th:field="*{cityName}" class="form-control" name="cityName"/>
                             <span class="validationError"
                                   th:if="${#fields.hasErrors('cityName')}"
-                                  th:errors="*{cityName}" style="color: red"></span>
+                                  th:errors="*{cityName}" style="color: red">
+                            </span>
                         </div>
                     </div>
                 </div>
