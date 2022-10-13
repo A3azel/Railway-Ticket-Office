@@ -1,11 +1,9 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.customExceptions.CityExceptions.InvalidNameOfCity;
+import com.example.springbootpetproject.customExceptions.cityExceptions.InvalidNameOfCity;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.Route;
-import com.example.springbootpetproject.entity.Train;
-import com.example.springbootpetproject.entity.UserComments;
 
 import com.example.springbootpetproject.service.serviceImplementation.RouteService;
 import com.example.springbootpetproject.service.serviceImplementation.TrainService;
@@ -13,7 +11,6 @@ import com.example.springbootpetproject.service.serviceImplementation.UserCommen
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,7 +73,7 @@ public class TrainController {
 
     @GetMapping("/info")
     public String getInfoAboutChangedTrain(@RequestParam("id") String id, Model model){
-        Route route = routeService.findById(Long.parseLong(id));
+        Route route = routeService.findRouteById(Long.parseLong(id));
         List<UserCommentsDTO> userCommentsList = userCommentsService.findByTrainNumber(route.getTrain().getTrainNumber());
         model.addAttribute("userCommentsList",userCommentsList);
         model.addAttribute("selectedRoute",route);

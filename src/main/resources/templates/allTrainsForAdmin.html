@@ -18,6 +18,9 @@
                 <input type="text" name="wantedTrain" class="form-control" th:placeholder="#{placeholder.train.search}"/>
             </label>
         <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+        <th:block th:if="${TrainNotFound}">
+            <p th:text="${TrainNotFound}" style="color: red"></p>
+        </th:block>
     </form>
     <form th:action="@{/admin/train/add}" method="get">
         <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addTrain}]]</button>

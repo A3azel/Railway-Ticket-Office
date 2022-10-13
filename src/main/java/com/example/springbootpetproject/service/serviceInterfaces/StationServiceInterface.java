@@ -1,14 +1,12 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
-import com.example.springbootpetproject.customExceptions.CityExceptions.CityNotFound;
-import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
+import com.example.springbootpetproject.customExceptions.cityExceptions.CityNotFound;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationAlreadyExist;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface StationServiceInterface {
     void addStation(StationDTO stationDTO) throws StationAlreadyExist;
@@ -20,6 +18,8 @@ public interface StationServiceInterface {
     Station findStationByStationName(String stationName);
 
     Station findByID(Long id);
+
+    Station findByStationNameAndCityName(String stationName,String cityName) throws StationNotFound;
 
     boolean existStationByStationNameAndCity(String stationName,String cityName);
 

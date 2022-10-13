@@ -15,9 +15,12 @@
     <form th:action="@{/admin/route/find}" method="get">
         <label>[[#{label.route.search}]]</label>
         <label>
-            <input type="number" name="id" class="form-control" th:placeholder="#{placeholder.route.search}"/>
+            <input type="number" name="id" min="1" class="form-control" th:placeholder="#{placeholder.route.search}"/>
         </label>
         <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+        <th:block th:if="${RouteNotFound}">
+            <p th:text="${RouteNotFound}" style="color: red"></p>
+        </th:block>
     </form>
     <form th:action="@{/admin/route/add}" method="get">
         <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addRoute}]]</button>

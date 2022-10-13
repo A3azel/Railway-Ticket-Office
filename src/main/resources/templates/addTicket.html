@@ -24,7 +24,11 @@
                             <input type="text" class="form-control" th:field="*{ticketTypeName}" name="ticketTypeName"/>
                             <span class="validationError"
                                   th:if="${#fields.hasErrors('ticketTypeName')}"
-                                  th:errors="*{ticketTypeName}" style="color: red"></span>
+                                  th:errors="*{ticketTypeName}" style="color: red">
+                            </span>
+                            <th:block th:if="${TicketAlreadyExist}">
+                                <p th:text="${TicketAlreadyExist}" style="color: red"></p>
+                            </th:block>
                         </div>
                     </div>
                     <hr>

@@ -19,6 +19,9 @@
             <input type="text" name="cityName" class="form-control" th:placeholder="#{placeholder.city.search}"/>
         </label>
         <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+        <th:block th:if="${CityNotFound}">
+            <p th:text="${CityNotFound}" style="color: red"></p>
+        </th:block>
     </form>
     <form th:action="@{/admin/city/add}" method="get">
         <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addCity}]]</button>

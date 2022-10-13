@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TicketTypeRepository extends JpaRepository<TicketType,Long> {
 
@@ -24,9 +26,13 @@ public interface TicketTypeRepository extends JpaRepository<TicketType,Long> {
 
     Page<TicketType> findAllByRelevantTrue(Pageable pageable);
 
+    boolean existsTicketTypeByTicketTypeName(String ticketName);
+
     TicketType findTicketTypeByTicketTypeName(String ticketType);
 
     TicketType findTicketTypeById(Long id);
+
+    Optional<TicketType> findByTicketTypeName(String ticketName);
 
     @Modifying
     @Query(value = "UPDATE ticket_type SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)

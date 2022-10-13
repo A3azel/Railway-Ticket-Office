@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
-import com.example.springbootpetproject.customExceptions.CityExceptions.CityAlreadyExist;
+import com.example.springbootpetproject.customExceptions.cityExceptions.CityAlreadyExist;
+import com.example.springbootpetproject.customExceptions.cityExceptions.CityNotFound;
 import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.service.serviceImplementation.CityService;
@@ -48,7 +49,13 @@ public class AdminCitesController {
     }
 
     @GetMapping("/find")
-    public String findCity(@RequestParam("cityName")String cityName){
+    public String findCity(@RequestParam("cityName")String cityName, Model model){
+        try {
+            cityService.findByCityName(cityName);
+        } catch (CityNotFound e) {
+            model.addAttribute("CityNotFound", e.getMessage());
+            return "forward:/admin/city/all/page/1";
+        }
         return "forward:/admin/station/all/" + cityName + "/page/1";
     }
 

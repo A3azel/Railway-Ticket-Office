@@ -38,7 +38,7 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public String goToOrder(@PathVariable("id") Long id, Model model){
-        Route selectedRoute = routeService.findById(id);
+        Route selectedRoute = routeService.findRouteById(id);
         List<TicketTypeDTO> ticketTypeDTOList = ticketTypeService.getAllTicketTypesForOrder();
         model.addAttribute("selectedRoute",selectedRoute);
         model.addAttribute("ticketTypeList",ticketTypeDTOList);

@@ -1,4 +1,4 @@
-package com.example.springbootpetproject.customExceptions.CityExceptions;
+package com.example.springbootpetproject.customExceptions.cityExceptions;
 
 public class CityAlreadyExist extends Throwable{
 

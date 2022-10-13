@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAlreadyExist;
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.Train;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +52,9 @@ public class TrainService implements TrainServiceInterface {
 
     @Override
     @Transactional
-    public Train findTrainByTrainNumber(String trainNumber) {
-        return trainRepository.findTrainByTrainNumber(trainNumber);
+    public Train findTrainByTrainNumber(String trainNumber) throws TrainNotFound {
+        return trainRepository.findTrainByTrainNumber(trainNumber)
+                .orElseThrow(()-> new TrainNotFound("Train with the specified name not found"));
     }
 
     @Override

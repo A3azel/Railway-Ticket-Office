@@ -39,7 +39,7 @@
                     </h5>
                     <p class="text-muted mb-1"  th:utext = "${selectedUser.userRole}"></p>
                     <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
-                    <th:block th:if="${user.userRole} == 'USER'">
+                    <th:block th:if="${selectedUser.userRole.name()} == 'USER'">
                         <div class="d-flex justify-content-center mb-1">
                             <form method="post" th:action="@{'/admin/users/selectedUser/changStatus/' + ${selectedUser.username}}">
                                 <button type="submit" th:value="${infoAboutPage}" name="infoAboutPage" class="btn btn-outline-danger">[[#{button.block}]]</button>

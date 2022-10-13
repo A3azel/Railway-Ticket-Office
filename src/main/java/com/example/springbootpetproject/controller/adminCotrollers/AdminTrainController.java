@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAlreadyExist;
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.Train;
@@ -62,7 +63,13 @@ public class AdminTrainController {
     @GetMapping("/find/byTrainNumber")
     public String getTrainForAdminByTrainNumber(HttpServletRequest request, Model model){
         String trainNumber = request.getParameter("wantedTrain");
-        Train train = trainService.findTrainByTrainNumber(trainNumber);
+        Train train = null;
+        try {
+            train = trainService.findTrainByTrainNumber(trainNumber);
+        } catch (TrainNotFound e) {
+            model.addAttribute("TrainNotFound", e.getMessage());
+            return "forward:/admin/train/all/page/1";
+        }
         TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
         model.addAttribute("train",selectedTrain);
         return "changeTrainDetails";

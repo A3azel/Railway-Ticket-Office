@@ -1,5 +1,7 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
+import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketAlreadyExist;
+import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketNotFound;
 import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.TicketType;
 import com.example.springbootpetproject.entity.Train;
@@ -49,18 +51,30 @@ public class AdminTicketsTypeController {
     @GetMapping("/find")
     public String getTicketForAdminByTicketNumber(HttpServletRequest request, Model model){
         String ticketType = request.getParameter("ticketName");
-        TicketType selectedTicket = ticketTypeService.getTicketByTicketType(ticketType);
+        TicketType selectedTicket = null;
+        try {
+            selectedTicket = ticketTypeService.findByTicketName(ticketType);
+        } catch (TicketNotFound e) {
+            model.addAttribute("TicketNotFound", e.getMessage());
+            return "forward:/admin/ticket/all/page/1";
+        }
         TicketTypeDTO selectedTicketDTO = ticketTypeService.convertTicketTypeToTicketTypeDTO(selectedTicket);
         model.addAttribute("ticket", selectedTicketDTO);
         return "updateTicketInfo";
     }
 
     @PostMapping("/update")
-    public String updateInfoAboutTicket(@RequestParam("id") Long id, @Valid @ModelAttribute TicketType ticket, Errors errors){
+    public String updateInfoAboutTicket(@RequestParam("id") Long id, @Valid @ModelAttribute TicketType ticket
+            , Errors errors, Model model){
         if (errors.hasErrors()) {
             return "updateTicketInfo";
         }
-        ticketTypeService.updateTicketInfo(ticket,id);
+        try {
+            ticketTypeService.updateTicketInfo(ticket,id);
+        } catch (TicketAlreadyExist e) {
+            model.addAttribute("TicketAlreadyExist", e.getMessage());
+            return "updateTicketInfo";
+        }
         return "redirect:/admin/ticket/all/page/1";
     }
 
@@ -79,11 +93,16 @@ public class AdminTicketsTypeController {
     }
 
     @PostMapping("/add")
-    public String addTicket(@Valid @ModelAttribute TicketType ticket, Errors errors){
+    public String addTicket(@Valid @ModelAttribute TicketType ticket, Errors errors, Model model){
         if(errors.hasErrors()){
             return "addTicket";
         }
-        ticketTypeService.addTicketType(ticket);
+        try {
+            ticketTypeService.addTicketType(ticket);
+        } catch (TicketAlreadyExist e) {
+            model.addAttribute("TicketAlreadyExist", e.getMessage());
+            return "addTicket";
+        }
         return "redirect:/admin/ticket/all/page/1";
     }
 

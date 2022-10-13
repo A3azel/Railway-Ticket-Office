@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RouteRepository extends JpaRepository<Route,Long> {
@@ -26,6 +27,7 @@ public interface RouteRepository extends JpaRepository<Route,Long> {
     List<Route> findAllByStartStation_City_RelevantAndArrivalStation_City_RelevantAndStartStation_City_CityNameAndArrivalStation_City_CityName(boolean b1, boolean b2, String senderCity, String cityOfArrival);*/
 
     Page<Route> findAll(Pageable pageable);
+    Optional<Route> findById(Long Id);
     Route findRouteById(Long Id);
 
     @Modifying

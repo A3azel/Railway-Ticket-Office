@@ -9,12 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CityRepository extends JpaRepository<City,Long> {
 
     Page<City> findAll(Pageable pageable);
 
-    City findByCityName(String cityName);
+    City findCityByCityName(String cityName);
+
+    Optional<City> findByCityName(String cityName);
 
     boolean existsCityByCityName(String cityName);
 

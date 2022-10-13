@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
-import com.example.springbootpetproject.customExceptions.CityExceptions.CityAlreadyExist;
+import com.example.springbootpetproject.customExceptions.cityExceptions.CityAlreadyExist;
+import com.example.springbootpetproject.customExceptions.cityExceptions.CityNotFound;
 import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.entity.Station;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class CityService implements CityServiceInterface {
@@ -51,8 +54,14 @@ public class CityService implements CityServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public City findByCityName(String cityName) {
-        return cityRepository.findByCityName(cityName);
+    public City findCityByCityName(String cityName){
+        return cityRepository.findCityByCityName(cityName);
+    }
+
+    @Override
+    public City findByCityName(String cityName) throws CityNotFound {
+        return cityRepository.findByCityName(cityName)
+                .orElseThrow(()->new  CityNotFound("City with the specified name not found"));
     }
 
     @Override

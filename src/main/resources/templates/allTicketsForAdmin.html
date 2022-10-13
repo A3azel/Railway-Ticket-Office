@@ -19,6 +19,9 @@
             <input type="text" name="ticketName" class="form-control" th:placeholder="#{placeholder.ticket.search}"/>
         </label>
         <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+        <th:block th:if="${TicketNotFound}">
+            <p th:text="${TicketNotFound}" style="color: red"></p>
+        </th:block>
     </form>
     <form method="get" th:action="@{/admin/ticket/add}">
         <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.ticket.add}]]</button>

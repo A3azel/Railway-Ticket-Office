@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 /*@Repository
 public interface TrainRepository extends JpaRepository<Train,Long> {
     Train getTrainByTrainNumber(String trainNumber);
@@ -52,7 +53,8 @@ public interface TrainRepository extends JpaRepository<Train,Long> {
 
     Train findTrainById(Long id);
 
-    Train findTrainByTrainNumber(String trainNumber);
+    Optional<Train> findTrainByTrainNumber(String trainNumber);
+
 
     void deleteTrainById(Long id);
 

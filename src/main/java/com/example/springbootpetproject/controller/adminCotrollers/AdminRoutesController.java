@@ -1,5 +1,9 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
+import com.example.springbootpetproject.customExceptions.routeExceptions.DataCompareError;
+import com.example.springbootpetproject.customExceptions.routeExceptions.ProblemWithSeatsCount;
+import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.service.serviceImplementation.RouteService;
@@ -9,8 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +56,13 @@ public class AdminRoutesController {
 
     @GetMapping("/update/{id}")
     public String getRouteForAdminByID(Model model, @PathVariable("id") Long id){
-        Route route = routeService.findById(id);
+        Route route = null;
+        try {
+            route = routeService.findById(id);
+        } catch (RouteNotFound e) {
+            model.addAttribute("RouteNotFound",e.getMessage());
+            return "forward:/admin/route/all/page/1";
+        }
         RouteDTO selectedRoute = routeService.convertRouteToRouteDTO(route);
         model.addAttribute("selectedRoute",selectedRoute);
         return "changeRouteDetails";
@@ -63,19 +75,37 @@ public class AdminRoutesController {
     }
 
     @GetMapping("/add")
-    public String getPageToAddRoute(){
+    public String getPageToAddRoute(Model model){
+        model.addAttribute("RouteDTO", new RouteDTO());
         return "addRoute";
     }
 
     @PostMapping("/add")
-    public String addRoute(@RequestParam Map<String,String> allParam){
-        routeService.addRoute(allParam);
+    public String addRoute(@Valid @ModelAttribute RouteDTO routeDTO, Errors errors, Model model){
+        if(errors.hasErrors()){
+            return "addRoute";
+        }
+        try {
+            routeService.addRoute(routeDTO);
+        } catch (StationNotFound e) {
+            e.printStackTrace();
+        } catch (DataCompareError e) {
+            e.printStackTrace();
+        } catch (ProblemWithSeatsCount e) {
+            e.printStackTrace();
+        }
         return "redirect:/admin/all/route/page/1";
     }
 
     @GetMapping("/find")
     public String findRouteByID(Model model, @RequestParam("id") Long id){
-        Route route = routeService.findById(id);
+        Route route = null;
+        try {
+            route = routeService.findById(id);
+        } catch (RouteNotFound e) {
+            model.addAttribute("RouteNotFound",e.getMessage());
+            return "forward:/admin/route/all/page/1";
+        }
         RouteDTO selectedRoute = routeService.convertRouteToRouteDTO(route);
         model.addAttribute("selectedRoute",selectedRoute);
         return "changeRouteDetails";

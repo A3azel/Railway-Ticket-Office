@@ -1,6 +1,11 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
-import com.example.springbootpetproject.customExceptions.CityExceptions.InvalidNameOfCity;
+import com.example.springbootpetproject.customExceptions.cityExceptions.InvalidNameOfCity;
+import com.example.springbootpetproject.customExceptions.routeExceptions.DataCompareError;
+import com.example.springbootpetproject.customExceptions.routeExceptions.ProblemWithSeatsCount;
+import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.entity.Station;
@@ -20,7 +25,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -53,8 +57,27 @@ public class RouteService implements RouteServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void addRoute(Map<String,String> allParam){
-        String trainNumber = allParam.get("trainNumber");
+    public void addRoute(RouteDTO routeDTO) throws StationNotFound, DataCompareError, ProblemWithSeatsCount {
+        if(!stationService.existStationByStationNameAndCity(routeDTO.getStartStationName(),routeDTO.getStartCityName())){
+            throw new StationNotFound("Station with the specified name was not found");
+        }
+        if(!routeDTO.getDepartureTime().isAfter(LocalDateTime.now())){
+            throw new DataCompareError("Selected date has already passed");
+        }
+        if(!stationService.existStationByStationNameAndCity(routeDTO.getArrivalStationName(),routeDTO.getArrivalCityName())){
+            throw new StationNotFound("Station with the specified name was not found");
+        }
+        if(!routeDTO.getArrivalTime().isAfter(LocalDateTime.now())){
+            throw new DataCompareError("Selected date has already passed");
+        }
+        if(!routeDTO.getArrivalTime().isAfter(routeDTO.getDepartureTime())){
+            throw new DataCompareError("Selected date must be after the departure time");
+        }
+        if(routeDTO.getNumberOfCompartmentSeats()< routeDTO.getNumberOfCompartmentFreeSeats()){
+            throw new ProblemWithSeatsCount("");
+        }
+
+/*        String trainNumber = allParam.get("trainNumber");
         String startStation = allParam.get("startStation");
         String arrivalStation = allParam.get("arrivalStation");
         LocalDate dateOfDispatch = LocalDate.parse(allParam.get("dateOfDispatch"));
@@ -75,8 +98,8 @@ public class RouteService implements RouteServiceInterface {
         Station stStation = stationService.findStationByStationName(startStation);
         Station endStation = stationService.findStationByStationName(arrivalStation);
         Route route = new Route(stStation,departureTime,travelTime,endStation,arrivalTime,numberOfCompartmentFreeSeats,numberOfSuiteFreeSeats,priseOfCompartmentTicket,priseOfSuiteTicket,train);
-
-        routeRepository.save(route);
+*/
+        routeRepository.save(new Route());
     }
 
     @Override
@@ -99,8 +122,13 @@ public class RouteService implements RouteServiceInterface {
         int numberOfSuiteFreeSeats = Integer.parseInt(allParam.get("numberOfSuiteFreeSeats"));
         BigDecimal priseOfSuiteTicket = BigDecimal.valueOf(Double.parseDouble(allParam.get("priseOfSuiteTicket")));
 
-        Route updateRoute = findById(id);
-        Train train = trainService.findTrainByTrainNumber(trainNumber);
+        Route updateRoute = findRouteById(id);
+        Train train = null;
+        try {
+            train = trainService.findTrainByTrainNumber(trainNumber);
+        } catch (TrainNotFound e) {
+            e.printStackTrace();
+        }
         Station stStation = stationService.findStationByStationName(startStation);
         Station endStation = stationService.findStationByStationName(arrivalStation);
         updateRoute.setArrivalStation(endStation);
@@ -126,8 +154,14 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Route findById(Long Id) {
+    public Route findRouteById(Long Id)  {
         return routeRepository.findRouteById(Id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Route findById(Long Id) throws RouteNotFound {
+        return routeRepository.findById(Id).orElseThrow(()->new RouteNotFound("Route with the specified ID was not found"));
     }
 
     @Override

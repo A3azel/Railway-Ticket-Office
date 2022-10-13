@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
 public interface StationRepository extends JpaRepository<Station,Long> {
@@ -19,6 +21,10 @@ public interface StationRepository extends JpaRepository<Station,Long> {
     void deleteById(Long id);
 
     Station findStationById(Long id);
+
+    boolean existsByStationName(String stationName);
+
+    Optional<Station> findByStationNameAndCity_CityName(String stationName, String cityName);
 
     boolean existsByStationNameAndCity_CityName(String stationName,String cityName);
 

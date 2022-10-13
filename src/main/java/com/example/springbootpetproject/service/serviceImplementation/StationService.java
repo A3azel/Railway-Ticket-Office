@@ -1,7 +1,8 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
-import com.example.springbootpetproject.customExceptions.CityExceptions.CityNotFound;
-import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
+import com.example.springbootpetproject.customExceptions.cityExceptions.CityNotFound;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationAlreadyExist;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.repository.CityRepository;
@@ -37,7 +38,7 @@ public class StationService implements StationServiceInterface {
         }
         Station station = new Station();
         station.setStationName(stationDTO.getStationName());
-        station.setCity(cityRepository.findByCityName(stationDTO.getCityName()));
+        station.setCity(cityRepository.findCityByCityName(stationDTO.getCityName()));
         //station.setCity(cityService.findByCityName(stationDTO.getCityName()));
         station.setRelevant(true);
         stationRepository.save(station);
@@ -63,18 +64,19 @@ public class StationService implements StationServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public Station findStationByStationName(String stationName) {
-        Station station = stationRepository.findByStationName(stationName);
-        if(station!= null){
-            return station;
-        }
-        throw new IllegalArgumentException("Станцію не знайдено");
-
+        return stationRepository.findByStationName(stationName);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Station findByID(Long id) {
         return stationRepository.findStationById(id);
+    }
+
+    @Override
+    public Station findByStationNameAndCityName(String stationName, String cityName) throws StationNotFound {
+        return stationRepository.findByStationNameAndCity_CityName(stationName,cityName)
+                .orElseThrow(()-> new StationNotFound("Station with the specified name was not found"));
     }
 
     @Override
@@ -95,7 +97,7 @@ public class StationService implements StationServiceInterface {
         }
         Station station = findByID(id);
         station.setStationName(stationDTO.getStationName());
-        station.setCity(cityRepository.findByCityName(stationDTO.getCityName()));
+        station.setCity(cityRepository.findCityByCityName(stationDTO.getCityName()));
         stationRepository.save(station);
     }
 

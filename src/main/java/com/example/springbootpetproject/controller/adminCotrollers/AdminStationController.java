@@ -1,10 +1,10 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
-import com.example.springbootpetproject.customExceptions.CityExceptions.CityNotFound;
-import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
+import com.example.springbootpetproject.customExceptions.cityExceptions.CityNotFound;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationAlreadyExist;
+import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
-import com.example.springbootpetproject.service.serviceImplementation.CityService;
 import com.example.springbootpetproject.service.serviceImplementation.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -62,9 +61,16 @@ public class AdminStationController {
         return "addStation";
     }
 
-    @GetMapping("/find")
-    public String findStation(@RequestParam("stationName")String stationName, Model model){
-        Station station = stationService.findStationByStationName(stationName);
+    @GetMapping("/find/{cityName}")
+    public String findStation(@RequestParam("stationName")String stationName, @PathVariable("cityName") String cityName, Model model){
+
+        Station station = null;
+        try {
+            station = stationService.findByStationNameAndCityName(stationName,cityName);
+        } catch (StationNotFound e) {
+            model.addAttribute("StationNotFound", e.getMessage());
+            return "forward:/admin/station/all/"+cityName+"/page/1";
+        }
         StationDTO selectedStation = stationService.convertStationToStationDTO(station);
         model.addAttribute("stationDTO",selectedStation);
         return "updateStation";

@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAlreadyExist;
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.entity.User;
@@ -15,7 +16,7 @@ public interface TrainServiceInterface {
 
     Page<TrainDTO> getAllTrain(Pageable pageable, int pageNumber, String direction, String sort);
 
-    Train findTrainByTrainNumber(String trainNumber);
+    Train findTrainByTrainNumber(String trainNumber) throws TrainNotFound;
 
     void deleteTrainByID(Long id);
 

@@ -14,12 +14,15 @@
 <div th:include="header::head"></div>
 
 <div class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin: 20px">
-    <form method="get" th:action="@{/admin/station/find}">
+    <form method="get" th:action="@{'/admin/station/find/' + ${cityName}}">
         <label>[[#{label.station.find}]]</label>
         <label>
             <input type="text" name="stationName" class="form-control" th:placeholder="#{placeholder.station.search}"/>
         </label>
         <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+        <th:block th:if="${StationNotFound}">
+            <p th:text="${StationNotFound}" style="color: red"></p>
+        </th:block>
     </form>
     <form method="get" th:action="@{'/admin/station/add/' + ${cityName}}">
         <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.station.add}]]</button>

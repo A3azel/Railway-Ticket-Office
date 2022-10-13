@@ -24,7 +24,11 @@
                             <input type="text" class="form-control" th:field="*{ticketTypeName}" name="ticketTypeName"/>
                             <span class="validationError"
                                   th:if="${#fields.hasErrors('ticketTypeName')}"
-                                  th:errors="*{ticketTypeName}" style="color: red"></span>
+                                  th:errors="*{ticketTypeName}" style="color: red">
+                            </span>
+                            <th:block th:if="${TicketAlreadyExist}">
+                                <p th:text="${TicketAlreadyExist}" style="color: red"></p>
+                            </th:block>
                         </div>
                     </div>
                     <hr>
@@ -36,7 +40,8 @@
                             <input type="text" th:field="*{ticketPriceFactor}" class="form-control" name="ticketPriceFactor"/>
                             <span class="validationError"
                                   th:if="${#fields.hasErrors('ticketPriceFactor')}"
-                                  th:errors="*{ticketPriceFactor}" style="color: red"></span>
+                                  th:errors="*{ticketPriceFactor}" style="color: red">
+                            </span>
                         </div>
                     </div>
                 </div>

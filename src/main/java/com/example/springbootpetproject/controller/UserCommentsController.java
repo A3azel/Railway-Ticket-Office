@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller;
 
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.entity.Orders;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.entity.User;
@@ -36,7 +37,12 @@ public class UserCommentsController {
     public String postComment(HttpServletRequest request, Principal principal, @PathVariable("trainNumber") String trainNumber){
         String userComment = request.getParameter("userComment");
         User user = userService.findUserByUsername(principal.getName());
-        Train train = trainService.findTrainByTrainNumber(trainNumber);
+        Train train = null;
+        try {
+            train = trainService.findTrainByTrainNumber(trainNumber);
+        } catch (TrainNotFound e) {
+            e.printStackTrace();
+        }
         UserComments userCommentObj = new UserComments(userComment, LocalDateTime.now(),user,train);
         if(ordersService.exitByUserNameAndTrainName(principal.getName(),trainNumber) && !userComment.equals("")){
             userCommentsService.addComment(userCommentObj);

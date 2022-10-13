@@ -1,5 +1,7 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketAlreadyExist;
+import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketNotFound;
 import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.TicketType;
 import com.example.springbootpetproject.repository.TicketTypeRepository;
@@ -27,48 +29,24 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         this.ticketTypeRepository = ticketTypeRepository;
     }
 
-   /* @Override
-    @Transactional
-    public void addTicketType(Map<String,String> allParam) {
-        TicketType ticketType = new TicketType();
-        ticketType.setTicketTypeName(allParam.get("ticketType"));
-        double ticketPriceFactor = Double.parseDouble(allParam.get("ticketPriceFactor"));
-        String formattedDouble = new DecimalFormat("#0.00").format(ticketPriceFactor);
-        formattedDouble = formattedDouble.replaceAll(",",".");
-        double finalTicketPriceFactor = Double.parseDouble(formattedDouble);
-        ticketType.setTicketPriceFactor(finalTicketPriceFactor);
-        ticketType.setRelevant(true);
-        ticketTypeRepository.save(ticketType);
-    }*/
-
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void addTicketType(TicketType ticketType) {
+    public void addTicketType(TicketType ticketType) throws TicketAlreadyExist {
+        if(existTicketByName(ticketType.getTicketTypeName())){
+            throw new TicketAlreadyExist("Ticket with the specified name already exist");
+        }
         ticketType.setRelevant(true);
         ticketTypeRepository.save(ticketType);
     }
 
-
-
-    /*@Override
-    @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
-    public void updateTicketInfo(Map<String, String> allParam) {
-        TicketType ticketType = getTicketById(Long.valueOf(allParam.get("id")));
-        ticketType.setTicketTypeName(allParam.get("ticketType"));
-        double ticketPriceFactor = Double.parseDouble(allParam.get("ticketPriceFactor"));
-        String formattedDouble = new DecimalFormat("#0.00").format(ticketPriceFactor);
-        formattedDouble = formattedDouble.replaceAll(",",".");
-        double finalTicketPriceFactor = Double.parseDouble(formattedDouble);
-        ticketType.setTicketPriceFactor(finalTicketPriceFactor);
-        ticketTypeRepository.save(ticketType);
-    }*/
-
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void updateTicketInfo(TicketType ticket, Long id) {
+    public void updateTicketInfo(TicketType ticket, Long id) throws TicketAlreadyExist {
+        if(existTicketByName(ticket.getTicketTypeName())){
+            throw new TicketAlreadyExist("Ticket with the specified name already exist");
+        }
         TicketType selectedTicket = getTicketById(id);
         selectedTicket.setTicketTypeName(ticket.getTicketTypeName());
         selectedTicket.setTicketPriceFactor(ticket.getTicketPriceFactor());
@@ -130,6 +108,17 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     @Override
     public TicketType getTicketByTicketType(String ticketType) {
         return ticketTypeRepository.findTicketTypeByTicketTypeName(ticketType);
+    }
+
+    @Override
+    public TicketType findByTicketName(String ticketName) throws TicketNotFound {
+        return ticketTypeRepository.findByTicketTypeName(ticketName)
+                .orElseThrow(()->new TicketNotFound("Ticket with specified name was not found"));
+    }
+
+    @Override
+    public boolean existTicketByName(String ticketName) {
+        return ticketTypeRepository.existsTicketTypeByTicketTypeName(ticketName);
     }
 
     @Override
