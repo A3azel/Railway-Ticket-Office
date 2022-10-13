@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
+import com.example.springbootpetproject.customExceptions.CityExceptions.CityNotFound;
 import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
@@ -21,14 +22,11 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/station")
 public class AdminStationController {
-
     private final StationService stationService;
-    private final CityService cityService;
 
     @Autowired
-    public AdminStationController(StationService stationService, CityService cityService) {
+    public AdminStationController(StationService stationService) {
         this.stationService = stationService;
-        this.cityService = cityService;
     }
 
     @GetMapping("/all/{cityName}/page/{pageNumber}")
@@ -67,8 +65,8 @@ public class AdminStationController {
     @GetMapping("/find")
     public String findStation(@RequestParam("stationName")String stationName, Model model){
         Station station = stationService.findStationByStationName(stationName);
-        StationDTO finderStation = stationService.convertStationToStationDTO(station);
-        model.addAttribute("finderStation",finderStation);
+        StationDTO selectedStation = stationService.convertStationToStationDTO(station);
+        model.addAttribute("stationDTO",selectedStation);
         return "updateStation";
     }
 
@@ -77,10 +75,6 @@ public class AdminStationController {
         if (errors.hasErrors()){
             return "addStation";
         }
-/*        Station newStation = new Station();
-        String cityName = request.getParameter("cityName");
-        newStation.setStationName(request.getParameter("stationName"));
-        newStation.setCity(cityService.findByCityName(cityName));*/
         try {
             stationService.addStation(stationDTO);
         } catch (StationAlreadyExist e) {
@@ -91,13 +85,21 @@ public class AdminStationController {
     }
 
     @PostMapping("/update")
-    public String updateStation(@RequestParam("cityName") String cityName
-            , @RequestParam("stationName") String stationName, @RequestParam("id") Long id){
-        Station updateStation = stationService.findByID(id);
-        updateStation.setStationName(stationName);
-        updateStation.setCity(cityService.findByCityName(cityName));
-        stationService.updateStation(updateStation);
-        return "redirect:/admin/station/all/"+cityName+"/page/1";
+    public String updateStation(@RequestParam("id") Long id, @Valid @ModelAttribute StationDTO stationDTO
+            , Errors errors, Model model){
+        if (errors.hasErrors()){
+            return "updateStation";
+        }
+        try {
+            stationService.updateStation(stationDTO,id);
+        } catch (StationAlreadyExist e) {
+            model.addAttribute("StationAlreadyExist",e.getMessage());
+            return "updateStation";
+        } catch (CityNotFound e) {
+            model.addAttribute("CityNotFound",e.getMessage());
+            return "updateStation";
+        }
+        return "redirect:/admin/station/all/"+stationDTO.getCityName()+"/page/1";
     }
 
     @PostMapping("/relevant/{cityName}/{id}")

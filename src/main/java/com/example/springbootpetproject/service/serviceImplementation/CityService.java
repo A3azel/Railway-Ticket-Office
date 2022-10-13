@@ -26,14 +26,6 @@ public class CityService implements CityServiceInterface {
         this.stationService = stationService;
     }
 
-    /*@Override
-    @Transactional(readOnly = true)
-    public Page<City> findAllCity(Pageable pageable, int pageNumber, String direction, String sort) {
-        //Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()).withSort(Sort.by(direction,sort));
-        Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
-                ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
-        return cityRepository.findAll(changePageable);
-    }*/
 
     @Override
     @Transactional(readOnly = true)

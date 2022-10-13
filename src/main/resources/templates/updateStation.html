@@ -12,7 +12,7 @@
 <div th:include="header::head"></div>
 
 <div class="row mainRow">
-    <form method="post" th:action="@{/admin/station/update}">
+    <form method="post" th:action="@{/admin/station/update}" th:object="${stationDTO}">
         <div class="col-lg-6" style="margin: 20px">
             <div class="card mb-4">
                 <div class="card-body">
@@ -21,7 +21,14 @@
                             <p class="mb-0">[[#{label.city.name}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="cityName" th:value = "${finderStation.cityName}"/>
+                            <input type="text" class="form-control" name="cityName" th:field="*{cityName}"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('cityName')}"
+                                  th:errors="*{cityName}" style="color: red">
+                            </span>
+                            <th:block th:if="${CityNotFound}">
+                                <p th:text="${CityNotFound}" style="color: red"></p>
+                            </th:block>
                         </div>
                     </div>
                     <hr>
@@ -30,16 +37,23 @@
                             <p class="mb-0">[[#{label.station.name}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="stationName" th:value = "${finderStation.stationName}"/>
+                            <input type="text" class="form-control" name="stationName" th:field="*{stationName}"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('stationName')}"
+                                  th:errors="*{stationName}" style="color: red">
+                            </span>
+                            <th:block th:if="${StationAlreadyExist}">
+                                <p th:text="${StationAlreadyExist}" style="color: red"></p>
+                            </th:block>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <button type="submit" name="id" class="btn btn-outline-primary" th:value="${finderStation.id}">[[#{button.submitData}]]</button>
+        <button type="submit" name="id" th:value="*{id}" class="btn btn-outline-primary">[[#{button.submitData}]]</button>
     </form>
-    <form th:action="@{'/admin/station/delete/'+ ${finderStation.cityName} + ${finderStation.id}}"  method="post">
-        <button type="submit" name="city" th:value="${finderStation.cityName}" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
+    <form th:action="@{'/admin/station/delete/' + *{id}}"  method="post">
+        <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
     </form>
 </div>
 

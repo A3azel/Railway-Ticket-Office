@@ -68,19 +68,6 @@ public class AdminTrainController {
         return "changeTrainDetails";
     }
 
-    /*@PostMapping("/update")
-    public String updateInfoAboutTrain(@RequestParam("id") Long id, @RequestParam("trainNumber") String trainNumber
-            ,@RequestParam("numberOfCompartmentSeats") int numberOfCompartmentSeats
-            ,@RequestParam("numberOfSuiteSeats") int numberOfSuiteSeats){
-        Train oldTrain = trainService.findTrainByID(id);
-        oldTrain.setTrainNumber(trainNumber);
-        oldTrain.setNumberOfCompartmentSeats(numberOfCompartmentSeats);
-        oldTrain.setNumberOfSuiteSeats(numberOfSuiteSeats);
-        trainService.updateTrain(oldTrain);
-        return "redirect:/admin/train/" + id;
-    }
-*/
-
     @PostMapping("/update")
     public String updateInfoAboutTrain(@RequestParam("id") Long id, @Valid @ModelAttribute Train train, Errors errors, Model model){
         if (errors.hasErrors()) {

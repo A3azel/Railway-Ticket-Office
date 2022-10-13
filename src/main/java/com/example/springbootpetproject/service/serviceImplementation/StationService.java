@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.CityExceptions.CityNotFound;
 import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
@@ -85,7 +86,16 @@ public class StationService implements StationServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void updateStation(Station station) {
+    public void updateStation(StationDTO stationDTO, Long id) throws StationAlreadyExist, CityNotFound {
+        if(existStationByStationNameAndCity(stationDTO.getStationName(),stationDTO.getCityName())){
+            throw new StationAlreadyExist("Station with the specified name in this city already exist");
+        }
+        if(!cityRepository.existsCityByCityName(stationDTO.getCityName())){
+            throw new CityNotFound("City with the specified name was not found");
+        }
+        Station station = findByID(id);
+        station.setStationName(stationDTO.getStationName());
+        station.setCity(cityRepository.findByCityName(stationDTO.getCityName()));
         stationRepository.save(station);
     }
 

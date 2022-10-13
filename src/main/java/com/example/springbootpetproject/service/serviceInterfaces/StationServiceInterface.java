@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.customExceptions.CityExceptions.CityNotFound;
 import com.example.springbootpetproject.customExceptions.StationExceptions.StationAlreadyExist;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
@@ -22,7 +23,7 @@ public interface StationServiceInterface {
 
     boolean existStationByStationNameAndCity(String stationName,String cityName);
 
-    void updateStation(Station station);
+    void updateStation(StationDTO stationDTO, Long id) throws StationAlreadyExist, CityNotFound;
 
     void setStationRelevant(Long id);
 
