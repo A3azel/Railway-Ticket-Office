@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,11 +45,11 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void updateTicketInfo(TicketType ticket, Long id) throws TicketAlreadyExist {
-        if(existTicketByName(ticket.getTicketTypeName())){
+    public void updateTicketInfo(TicketTypeDTO ticket, Long id) throws TicketAlreadyExist {
+        TicketType selectedTicket = getTicketById(id);
+        if(existTicketByName(ticket.getTicketTypeName()) && !selectedTicket.getTicketTypeName().equals(ticket.getTicketTypeName())){
             throw new TicketAlreadyExist("Ticket with the specified name already exist");
         }
-        TicketType selectedTicket = getTicketById(id);
         selectedTicket.setTicketTypeName(ticket.getTicketTypeName());
         selectedTicket.setTicketPriceFactor(ticket.getTicketPriceFactor());
         ticketTypeRepository.save(selectedTicket);
@@ -140,7 +142,12 @@ public class TicketTypeService implements TicketTypeServiceInterface {
     @Override
     public TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType){
         TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ticketTypeDTO.setId(ticketType.getId());
+        ticketTypeDTO.setCreated(formatter.format(ticketType.getCreated()));
+        ticketTypeDTO.setUpdated(formatter.format(ticketType.getUpdated()));
+        ticketTypeDTO.setCreatedBy(ticketType.getCreatedBy());
+        ticketTypeDTO.setLastModifiedBy(ticketType.getLastModifiedBy());
         ticketTypeDTO.setTicketTypeName(ticketType.getTicketTypeName());
         ticketTypeDTO.setTicketPriceFactor(ticketType.getTicketPriceFactor());
         ticketTypeDTO.setRelevant(ticketType.isRelevant());

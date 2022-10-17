@@ -47,7 +47,7 @@
         <td th:text="${station.stationName}"></td>
         <td>
             <div class="d-grid gap-3 d-md-flex justify-content-md-center">
-                <form  method="get" th:action="@{/admin/station/find}">
+                <form  method="get" th:action="@{'/admin/station/find/' + ${station.cityName}}">
                     <button type="submit" name="stationName" th:value="${station.stationName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
                 </form>
                 <th:block th:if="${station.isRelevant} == true">

@@ -17,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.StationRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.StationServiceInterface;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
 @Service
 public class StationService implements StationServiceInterface {
     private final StationRepository stationRepository;
-    //private final CityService cityService;
     private final CityRepository cityRepository;
 
     @Autowired
@@ -120,7 +122,12 @@ public class StationService implements StationServiceInterface {
     @Override
     public StationDTO convertStationToStationDTO(Station station){
         StationDTO stationDTO = new StationDTO();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         stationDTO.setId(station.getId());
+        stationDTO.setCreated(formatter.format(station.getCreated()));
+        stationDTO.setUpdated(formatter.format(station.getUpdated()));
+        stationDTO.setCreatedBy(station.getCreatedBy());
+        stationDTO.setLastModifiedBy(station.getLastModifiedBy());
         stationDTO.setStationName(station.getStationName());
         stationDTO.setCityName(station.getCity().getCityName());
         stationDTO.setRelevant(station.isRelevant());

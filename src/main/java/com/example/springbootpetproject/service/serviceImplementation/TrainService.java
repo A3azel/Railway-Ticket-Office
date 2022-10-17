@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.TrainRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.TrainServiceInterface;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -78,14 +80,14 @@ public class TrainService implements TrainServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void updateTrain(Train train, Long id) throws TrainAlreadyExist {
-        if(existTrainByTrainNumber(train.getTrainNumber())){
+    public void updateTrain(TrainDTO trainDTO, Long id) throws TrainAlreadyExist {
+        Train selectedTrain = findTrainByID(id);
+        if(existTrainByTrainNumber(trainDTO.getTrainNumber())&& !selectedTrain.getTrainNumber().equals(trainDTO.getTrainNumber())){
             throw new TrainAlreadyExist("Train with the specified name already exist");
         }
-        Train selectedTrain = findTrainByID(id);
-        selectedTrain.setTrainNumber(train.getTrainNumber());
-        selectedTrain.setNumberOfSuiteSeats(train.getNumberOfSuiteSeats());
-        selectedTrain.setNumberOfCompartmentSeats(train.getNumberOfCompartmentSeats());
+        selectedTrain.setTrainNumber(trainDTO.getTrainNumber());
+        selectedTrain.setNumberOfSuiteSeats(trainDTO.getNumberOfSuiteSeats());
+        selectedTrain.setNumberOfCompartmentSeats(trainDTO.getNumberOfCompartmentSeats());
         trainRepository.save(selectedTrain);
     }
 
@@ -113,15 +115,18 @@ public class TrainService implements TrainServiceInterface {
     @Override
     public TrainDTO convertTrainToTrainDTO(Train train){
         TrainDTO trainDTO = new TrainDTO();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         trainDTO.setId(train.getId());
+        trainDTO.setCreated(formatter.format(train.getCreated()));
+        trainDTO.setUpdated(formatter.format(train.getUpdated()));
+        trainDTO.setCreatedBy(train.getCreatedBy());
+        trainDTO.setLastModifiedBy(train.getLastModifiedBy());
         trainDTO.setTrainNumber(train.getTrainNumber());
         trainDTO.setNumberOfCompartmentSeats(train.getNumberOfCompartmentSeats());
         trainDTO.setNumberOfSuiteSeats(train.getNumberOfSuiteSeats());
         trainDTO.setRelevant(train.isRelevant());
         return trainDTO;
     }
-
-
 
     public LocalDateTime localDateTimeBuilder(String localDate,String localTime){
         LocalDate selectedDates = LocalDate.parse(localDate);

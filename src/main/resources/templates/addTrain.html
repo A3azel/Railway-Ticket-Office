@@ -26,6 +26,9 @@
                                   th:if="${#fields.hasErrors('trainNumber')}"
                                   th:errors="*{trainNumber}" style="color: red">
                             </span>
+                            <th:block th:if="${TrainAlreadyExist}">
+                                <p th:text="${TrainAlreadyExist}" style="color: red"></p>
+                            </th:block>
                         </div>
                     </div>
                     <hr>

@@ -56,7 +56,8 @@ public class AdminTrainController {
     public String getTrainForAdminByID(Model model, @PathVariable("id") String id){
         Train train = trainService.findTrainByID(Long.parseLong(id));
         TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
-        model.addAttribute("train",selectedTrain);
+        System.out.println(selectedTrain);
+        model.addAttribute("trainDTO",selectedTrain);
         return "changeTrainDetails";
     }
 
@@ -71,17 +72,17 @@ public class AdminTrainController {
             return "forward:/admin/train/all/page/1";
         }
         TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
-        model.addAttribute("train",selectedTrain);
+        model.addAttribute("trainDTO",selectedTrain);
         return "changeTrainDetails";
     }
 
     @PostMapping("/update")
-    public String updateInfoAboutTrain(@RequestParam("id") Long id, @Valid @ModelAttribute Train train, Errors errors, Model model){
+    public String updateInfoAboutTrain(@RequestParam("id") Long id, @Valid @ModelAttribute TrainDTO trainDTO, Errors errors, Model model){
         if (errors.hasErrors()) {
             return "changeTrainDetails";
         }
         try {
-            trainService.updateTrain(train,id);
+            trainService.updateTrain(trainDTO,id);
         } catch (TrainAlreadyExist e) {
             model.addAttribute("TrainAlreadyExist", e.getMessage());
             return "changeTrainDetails";

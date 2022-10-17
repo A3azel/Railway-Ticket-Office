@@ -16,12 +16,12 @@ public interface RouteServiceInterface {
     /*void addRoute(String trainNumber, String startStation, String arrivalStation, LocalDate dateOfDispatch, LocalDate dateOfArrival
             , LocalTime timeOfDispatch, LocalTime timeOfArrival, LocalTime travelTime, int numberOfCompartmentSeats
             , int numberOfSuiteSeats, BigDecimal priseOfCompartmentTicket, BigDecimal priseOfSuiteTicket);*/
-    void addRoute(RouteDTO routeDTO) throws StationNotFound, DataCompareError, ProblemWithSeatsCount;
+    Map<String,String> addRoute(RouteDTO routeDTO) throws StationNotFound, DataCompareError, ProblemWithSeatsCount;
     void updateRoute(Map<String,String> allParam);
     void deleteRoute(Long Id);
     Route findRouteById(Long Id);
     Route findById(Long Id) throws RouteNotFound;
-    Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival,  String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) throws InvalidNameOfCity;
+    Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival,  String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) throws InvalidNameOfCity, RouteNotFound;
     Page<RouteDTO> getAll(Pageable pageable, int pageNumber, String direction, String sort);
     void reduceNumberOfCompartmentFreeSeats(Long routeId, int countOfPurchasedTickets);
     void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets);

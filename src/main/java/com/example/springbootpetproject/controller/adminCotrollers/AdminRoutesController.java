@@ -85,15 +85,13 @@ public class AdminRoutesController {
         if(errors.hasErrors()){
             return "addRoute";
         }
-        try {
-            routeService.addRoute(routeDTO);
-        } catch (StationNotFound e) {
-            e.printStackTrace();
-        } catch (DataCompareError e) {
-            e.printStackTrace();
-        } catch (ProblemWithSeatsCount e) {
-            e.printStackTrace();
+
+        Map<String,String> errorsMap = routeService.addRoute(routeDTO);
+        if(!errorsMap.isEmpty()){
+            model.addAttribute("errors",errorsMap);
+            return "addRoute";
         }
+
         return "redirect:/admin/all/route/page/1";
     }
 

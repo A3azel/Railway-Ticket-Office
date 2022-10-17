@@ -22,9 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -57,25 +60,47 @@ public class RouteService implements RouteServiceInterface {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void addRoute(RouteDTO routeDTO) throws StationNotFound, DataCompareError, ProblemWithSeatsCount {
+    public Map<String,String> addRoute(RouteDTO routeDTO) {
+        Map<String,String> errorsMap = new HashMap<>();
         if(!stationService.existStationByStationNameAndCity(routeDTO.getStartStationName(),routeDTO.getStartCityName())){
-            throw new StationNotFound("Station with the specified name was not found");
+            errorsMap.put("First Station","Station with the specified name was not found");
+            //throw new StationNotFound("Station with the specified name was not found");
         }
         if(!routeDTO.getDepartureTime().isAfter(LocalDateTime.now())){
-            throw new DataCompareError("Selected date has already passed");
+            errorsMap.put("First Date","Selected date has already passed");
+            //throw new DataCompareError("Selected date has already passed");
         }
         if(!stationService.existStationByStationNameAndCity(routeDTO.getArrivalStationName(),routeDTO.getArrivalCityName())){
-            throw new StationNotFound("Station with the specified name was not found");
+            errorsMap.put("Second Station","Station with the specified name was not found");
+            //throw new StationNotFound("Station with the specified name was not found");
         }
         if(!routeDTO.getArrivalTime().isAfter(LocalDateTime.now())){
-            throw new DataCompareError("Selected date has already passed");
+            errorsMap.put("Second Date","Selected date has already passed");
+            //throw new DataCompareError("Selected date has already passed");
         }
         if(!routeDTO.getArrivalTime().isAfter(routeDTO.getDepartureTime())){
-            throw new DataCompareError("Selected date must be after the departure time");
+            errorsMap.put("Date problems","Selected date must be after the departure time");
+            //throw new DataCompareError("Selected date must be after the departure time");
         }
         if(routeDTO.getNumberOfCompartmentSeats()< routeDTO.getNumberOfCompartmentFreeSeats()){
-            throw new ProblemWithSeatsCount("");
+            errorsMap.put("Number of seats problems","Selected date must be after the departure time");
+            //throw new ProblemWithSeatsCount("");
         }
+        if(!errorsMap.isEmpty()){
+            return errorsMap;
+        }
+
+        Route route = new Route();
+        route.setStartStation(stationService.findStationByStationName(routeDTO.getStartStationName()));
+        route.setDepartureTime(routeDTO.getDepartureTime());
+        route.setTravelTime(routeDTO.getTravelTime());
+        route.setArrivalStation(stationService.findStationByStationName(routeDTO.getArrivalStationName()));
+        route.setArrivalTime(routeDTO.getArrivalTime());
+        route.setNumberOfCompartmentFreeSeats((routeDTO.getNumberOfCompartmentFreeSeats()));
+        route.setNumberOfSuiteFreeSeats(routeDTO.getNumberOfSuiteFreeSeats());
+        route.setPriseOfCompartmentTicket(routeDTO.getPriseOfCompartmentTicket());
+        route.setPriseOfSuiteTicket(routeDTO.getPriseOfSuiteTicket());
+
 
 /*        String trainNumber = allParam.get("trainNumber");
         String startStation = allParam.get("startStation");
@@ -100,6 +125,7 @@ public class RouteService implements RouteServiceInterface {
         Route route = new Route(stStation,departureTime,travelTime,endStation,arrivalTime,numberOfCompartmentFreeSeats,numberOfSuiteFreeSeats,priseOfCompartmentTicket,priseOfSuiteTicket,train);
 */
         routeRepository.save(new Route());
+        return errorsMap;
     }
 
     @Override
@@ -166,7 +192,8 @@ public class RouteService implements RouteServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable, int pageNumber, String direction, String sort) throws InvalidNameOfCity {
+    public Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable
+            , int pageNumber, String direction, String sort) throws RouteNotFound {
         LocalDate selectedDates = LocalDate.parse(selectedDatesString);
         LocalTime selectedTime = LocalTime.parse(selectedTimeString);
         LocalDateTime selectedLocalDateTime = LocalDateTime.of(selectedDates,selectedTime);
@@ -177,7 +204,7 @@ public class RouteService implements RouteServiceInterface {
                 senderCity, cityOfArrival, selectedLocalDateTime, finalLocalDateTime, changePageable);
         Page<RouteDTO> routeDTOPage = routePage.map(this::convertRouteToRouteDTO);
         if (routeDTOPage.getContent().size() == 0){
-            throw new InvalidNameOfCity();
+            throw new RouteNotFound("No routes were found for this request");
         }
         return routeDTOPage;
     }
@@ -207,7 +234,12 @@ public class RouteService implements RouteServiceInterface {
     @Override
     public RouteDTO convertRouteToRouteDTO(Route route){
         RouteDTO routeDTO = new RouteDTO();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         routeDTO.setId(route.getId());
+        routeDTO.setCreated(formatter.format(route.getCreated()));
+        routeDTO.setUpdated(formatter.format(route.getUpdated()));
+        routeDTO.setCreatedBy(route.getCreatedBy());
+        routeDTO.setLastModifiedBy(route.getLastModifiedBy());
         routeDTO.setStartStationName(route.getStartStation().getStationName());
         routeDTO.setStartCityName(route.getStartStation().getCity().getCityName());
         routeDTO.setDepartureTime(route.getDepartureTime());

@@ -22,7 +22,7 @@ public interface TrainServiceInterface {
 
     void addTrain(Train train) throws TrainAlreadyExist;
 
-    void updateTrain(Train train, Long id) throws TrainAlreadyExist;
+    void updateTrain(TrainDTO trainDTO, Long id) throws TrainAlreadyExist;
 
     Train findTrainByID(Long id);
 

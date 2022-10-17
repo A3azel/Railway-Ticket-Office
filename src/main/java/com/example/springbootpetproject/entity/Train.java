@@ -23,11 +23,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Train implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class Train extends BaseEntity implements Serializable {
 
     @NotBlank(message = "This field can't be blank")
     @Column(name = "train_number")
@@ -52,4 +48,5 @@ public class Train implements Serializable {
     @OneToMany(mappedBy = "train")
     @JsonManagedReference
     private Set<Route> routeSet;
+
 }

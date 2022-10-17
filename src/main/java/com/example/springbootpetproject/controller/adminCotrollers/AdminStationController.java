@@ -16,6 +16,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -87,7 +89,7 @@ public class AdminStationController {
             model.addAttribute("StationAlreadyExist" ,e.getMessage());
             return "addStation";
         }
-        return "redirect:/admin/station/all/"+stationDTO.getCityName()+"/page/1";
+        return "redirect:/admin/station/all/"+URLEncoder.encode(stationDTO.getCityName(),StandardCharsets.UTF_8)+"/page/1";
     }
 
     @PostMapping("/update")
@@ -105,12 +107,13 @@ public class AdminStationController {
             model.addAttribute("CityNotFound",e.getMessage());
             return "updateStation";
         }
-        return "redirect:/admin/station/all/"+stationDTO.getCityName()+"/page/1";
+        return "redirect:/admin/station/all/"+URLEncoder.encode(stationDTO.getCityName(),StandardCharsets.UTF_8)+"/page/1";
     }
 
     @PostMapping("/relevant/{cityName}/{id}")
     public String setRelevant(@PathVariable("id") Long id, @PathVariable("cityName") String cityName){
         stationService.setStationRelevant(id);
-        return "redirect:/admin/station/all/"+cityName+"/page/1";
+        System.out.println(cityName);
+        return "redirect:/admin/station/all/"+URLEncoder.encode(cityName,StandardCharsets.UTF_8)+"/page/1";
     }
 }

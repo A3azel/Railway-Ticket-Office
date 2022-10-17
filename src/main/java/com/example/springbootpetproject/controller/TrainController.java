@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.controller;
 
 import com.example.springbootpetproject.customExceptions.cityExceptions.InvalidNameOfCity;
+import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.Route;
@@ -48,11 +49,12 @@ public class TrainController {
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
 
         Page<RouteDTO> routeDTOPage = null;
-        try {
-            routeDTOPage = routeService.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber,direction,sort);
-        } catch (InvalidNameOfCity e) {
-            return "TestPage";
-        }
+            try {
+                routeDTOPage = routeService.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber,direction,sort);
+            } catch (RouteNotFound e) {
+                model.addAttribute("RouteNotFound", e.getMessage());
+                return "mainPage";
+            }
         List<RouteDTO> routeDTOList = routeDTOPage.getContent();
 
         model.addAttribute("selectedDates",selectedDatesString);

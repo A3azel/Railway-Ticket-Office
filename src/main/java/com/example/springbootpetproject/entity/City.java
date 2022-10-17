@@ -1,13 +1,13 @@
 package com.example.springbootpetproject.entity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,13 +20,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 //@ToString
-public class City implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
+public class City extends BaseEntity implements Serializable {
 
-    //@UniqueElements(message = "Emmm")
     @NotBlank(message = "This field can't be blank")
     @Column(name = "city_name")
     private String cityName;

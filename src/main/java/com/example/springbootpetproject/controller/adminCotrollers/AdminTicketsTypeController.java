@@ -59,18 +59,18 @@ public class AdminTicketsTypeController {
             return "forward:/admin/ticket/all/page/1";
         }
         TicketTypeDTO selectedTicketDTO = ticketTypeService.convertTicketTypeToTicketTypeDTO(selectedTicket);
-        model.addAttribute("ticket", selectedTicketDTO);
+        model.addAttribute("ticketTypeDTO", selectedTicketDTO);
         return "updateTicketInfo";
     }
 
     @PostMapping("/update")
-    public String updateInfoAboutTicket(@RequestParam("id") Long id, @Valid @ModelAttribute TicketType ticket
+    public String updateInfoAboutTicket(@RequestParam("id") Long id, @Valid @ModelAttribute TicketTypeDTO ticketTypeDTO
             , Errors errors, Model model){
         if (errors.hasErrors()) {
             return "updateTicketInfo";
         }
         try {
-            ticketTypeService.updateTicketInfo(ticket,id);
+            ticketTypeService.updateTicketInfo(ticketTypeDTO,id);
         } catch (TicketAlreadyExist e) {
             model.addAttribute("TicketAlreadyExist", e.getMessage());
             return "updateTicketInfo";
@@ -82,23 +82,23 @@ public class AdminTicketsTypeController {
     public String getTicketById(Model model, @PathVariable("id") Long id){
         TicketTypeDTO selectedTicket = ticketTypeService
                 .convertTicketTypeToTicketTypeDTO(ticketTypeService.getTicketById(id));
-        model.addAttribute("ticket",selectedTicket);
+        model.addAttribute("ticketTypeDTO",selectedTicket);
         return "updateTicketInfo";
     }
 
     @GetMapping("/add")
     public String pageAddTicket(Model model){
-        model.addAttribute("ticket", new TicketType());
+        model.addAttribute("ticketType", new TicketType());
         return "addTicket";
     }
 
     @PostMapping("/add")
-    public String addTicket(@Valid @ModelAttribute TicketType ticket, Errors errors, Model model){
+    public String addTicket(@Valid @ModelAttribute TicketType ticketType, Errors errors, Model model){
         if(errors.hasErrors()){
             return "addTicket";
         }
         try {
-            ticketTypeService.addTicketType(ticket);
+            ticketTypeService.addTicketType(ticketType);
         } catch (TicketAlreadyExist e) {
             model.addAttribute("TicketAlreadyExist", e.getMessage());
             return "addTicket";

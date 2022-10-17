@@ -9,20 +9,12 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "station_list")
 @Data
 @NoArgsConstructor
-/*@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor*/
-@ToString
-public class Station implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class Station extends BaseEntity implements Serializable {
 
     @Column(name = "station_name")
     private String stationName;

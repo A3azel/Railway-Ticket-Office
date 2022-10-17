@@ -20,11 +20,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Route implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class Route extends BaseEntity implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "start_station_id")
@@ -46,7 +42,7 @@ public class Route implements Serializable {
     @Column(name = "arrival_time")
     private LocalDateTime arrivalTime;
 
-    @NotBlank
+    @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 0 , message = "Count of compartment free seats can't negative")
     @Column(name = "number_of_compartment_free_seats")
@@ -74,17 +70,4 @@ public class Route implements Serializable {
     @JoinColumn(name = "train_id")
     @JsonBackReference
     private Train train;
-
-    public Route(Station startStation, LocalDateTime departureTime, LocalTime travelTime, Station arrivalStation, LocalDateTime arrivalTime, int numberOfCompartmentFreeSeats, int numberOfSuiteFreeSeats, BigDecimal priseOfCompartmentTicket, BigDecimal priseOfSuiteTicket, Train train) {
-        this.startStation = startStation;
-        this.departureTime = departureTime;
-        this.travelTime = travelTime;
-        this.arrivalStation = arrivalStation;
-        this.arrivalTime = arrivalTime;
-        this.numberOfCompartmentFreeSeats = numberOfCompartmentFreeSeats;
-        this.numberOfSuiteFreeSeats = numberOfSuiteFreeSeats;
-        this.priseOfCompartmentTicket = priseOfCompartmentTicket;
-        this.priseOfSuiteTicket = priseOfSuiteTicket;
-        this.train = train;
-    }
 }

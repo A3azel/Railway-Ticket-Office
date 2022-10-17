@@ -16,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 @Service
@@ -92,7 +94,11 @@ public class CityService implements CityServiceInterface {
     @Override
     public CityDTO convertCityToCityDTO(City city){
         CityDTO cityDTO = new CityDTO();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         cityDTO.setId(city.getId());
+        cityDTO.setCreated(formatter.format(city.getCreated()));
+        cityDTO.setUpdated(formatter.format(city.getUpdated()));
+        cityDTO.setCreatedBy(city.getCreatedBy());
         cityDTO.setCityName(city.getCityName());
         cityDTO.setRelevant(city.isRelevant());
         return cityDTO;

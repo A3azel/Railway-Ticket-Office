@@ -12,7 +12,7 @@
 <div th:include="header::head"></div>
 
 <div class="row mainRow">
-    <form method="post" th:action="@{/admin/route/add}">
+    <form method="post" th:action="@{/admin/route/add}" th:object="${routeDTO}">
         <div class="col-lg-6" style="margin: 20px">
             <div class="card mb-4">
                 <div class="card-body">
@@ -21,7 +21,14 @@
                             <p class="mb-0">[[#{label.train.number}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="trainNumber"/>
+                            <input type="text" class="form-control" th:field="*{trainNumber}" name="trainNumber"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('trainNumber')}"
+                                  th:errors="*{trainNumber}" style="color: red">
+                            </span>
+                            <th:block th:if="${First Station}">
+                                <p th:text="${First Station}" style="color: red"></p>
+                            </th:block>
                         </div>
                     </div>
                     <hr>
@@ -30,7 +37,11 @@
                             <p class="mb-0">[[#{label.route.startStation}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" name="startStation" class="form-control"/>
+                            <input type="text" class="form-control" th:field="*{startStation}" name="startStation"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('startStation')}"
+                                  th:errors="*{startStation}" style="color: red">
+                            </span>
                         </div>
                     </div>
                     <hr>
@@ -39,7 +50,11 @@
                             <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="text" name="arrivalStation" class="form-control"/>
+                            <input type="text" class="form-control" th:field="*{arrivalStation}" name="arrivalStation"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('arrivalStation')}"
+                                  th:errors="*{arrivalStation}" style="color: red">
+                            </span>
                         </div>
                     </div>
                     <hr>
@@ -48,7 +63,11 @@
                             <p class="mb-0">[[#{label.route.startDate}]]</p>
                         </div>
                         <div class="col-sm-8">
-                            <input type="date" name="dateOfDispatch" class="form-control"/>
+                            <input type="text" class="form-control" th:field="*{dateOfDispatch}" name="dateOfDispatch"/>
+                            <span class="validationError"
+                                  th:if="${#fields.hasErrors('dateOfDispatch')}"
+                                  th:errors="*{dateOfDispatch}" style="color: red">
+                            </span>
                         </div>
                     </div>
                     <hr>

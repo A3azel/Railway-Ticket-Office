@@ -14,7 +14,7 @@ public interface TicketTypeServiceInterface {
     void addTicketType(TicketType ticketType) throws TicketAlreadyExist;
 
     //void updateTicketInfo(Map<String,String> allParam);
-    void updateTicketInfo(TicketType ticket, Long id) throws TicketAlreadyExist;
+    void updateTicketInfo(TicketTypeDTO ticket, Long id) throws TicketAlreadyExist;
 
     boolean deleteTicketTypeByTicketTypeName(String ticketTypeName);
 
