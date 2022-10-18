@@ -1,10 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
-import com.example.springbootpetproject.customExceptions.cityExceptions.InvalidNameOfCity;
-import com.example.springbootpetproject.customExceptions.routeExceptions.DataCompareError;
-import com.example.springbootpetproject.customExceptions.routeExceptions.ProblemWithSeatsCount;
 import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
-import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
@@ -12,6 +8,7 @@ import com.example.springbootpetproject.entity.Station;
 import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.repository.RouteRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.RouteServiceInterface;
+import com.example.springbootpetproject.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,61 +32,58 @@ public class RouteService implements RouteServiceInterface {
     private final RouteRepository routeRepository;
     private final TrainService trainService;
     private final StationService stationService;
+    private final CityService cityService;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, TrainService trainService, StationService stationService) {
+    public RouteService(RouteRepository routeRepository, TrainService trainService, StationService stationService, CityService cityService) {
         this.routeRepository = routeRepository;
         this.trainService = trainService;
         this.stationService = stationService;
+        this.cityService = cityService;
     }
-
-    /*@Override
-    @Transactional
-    public void addRoute(String trainNumber, String startStation, String arrivalStation, LocalDate dateOfDispatch, LocalDate dateOfArrival
-            , LocalTime timeOfDispatch, LocalTime timeOfArrival, LocalTime travelTime, int numberOfCompartmentSeats
-            ,int numberOfSuiteSeats, BigDecimal priseOfCompartmentTicket, BigDecimal priseOfSuiteTicket) {
-        Train train = trainService.findTrainByTrainNumber(trainNumber);
-        Station stStation = stationService.findStationByStationName(startStation);
-        Station endStation = stationService.findStationByStationName(arrivalStation);
-        LocalDateTime departureTime = LocalDateTime.of(dateOfDispatch,timeOfDispatch);
-        LocalDateTime arrivalTime = LocalDateTime.of(dateOfArrival,timeOfArrival);
-        Route newRoute = new Route(stStation,departureTime,travelTime,endStation,arrivalTime,priseOfCompartmentTicket,priseOfSuiteTicket,train);
-        routeRepository.save(newRoute);
-    }*/
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Map<String,String> addRoute(RouteDTO routeDTO) {
-        Map<String,String> errorsMap = new HashMap<>();
+        //Train selectedTrain = null;
+        Map<String,String> errorsMap = Validator.routeValidator(routeDTO);
+        //Map<String,String> errorsMap = new HashMap<>();
+        /*try {
+            selectedTrain = trainService.findTrainByTrainNumber(routeDTO.getTrainNumber());
+            if(selectedTrain.getNumberOfCompartmentSeats()< routeDTO.getNumberOfCompartmentFreeSeats()){
+                errorsMap.put("numberOfCompartmentSeatsProblems",String.format("The number of free seats in the compartment must be less than the number of all seats in the compartment (%s)",selectedTrain.getNumberOfCompartmentSeats()));
+            }
+            if(selectedTrain.getNumberOfSuiteSeats() < routeDTO.getNumberOfSuiteFreeSeats()){
+                errorsMap.put("numberOfSuiteSeatsProblems",String.format("The number of free seats in the suite must be less than the number of all seats in the suite (%s)",selectedTrain.getNumberOfSuiteSeats()));
+            }
+        } catch (TrainNotFound e) {
+            errorsMap.put("trainNotFound", "Train with the specified name was not found");
+        }
+        if(!cityService.cityIsExist(routeDTO.getStartCityName())){
+            errorsMap.put("firstCityNotFound", "City with the specified name was not found");
+        }
+        if(!cityService.cityIsExist(routeDTO.getStartCityName())){
+            errorsMap.put("secondCityNotFound", "City with the specified name was not found");
+        }
         if(!stationService.existStationByStationNameAndCity(routeDTO.getStartStationName(),routeDTO.getStartCityName())){
-            errorsMap.put("First Station","Station with the specified name was not found");
-            //throw new StationNotFound("Station with the specified name was not found");
+            errorsMap.put("firstStation","Station with the specified name was not found");
         }
         if(!routeDTO.getDepartureTime().isAfter(LocalDateTime.now())){
-            errorsMap.put("First Date","Selected date has already passed");
-            //throw new DataCompareError("Selected date has already passed");
+            errorsMap.put("firstDate","Selected date has already passed");
         }
         if(!stationService.existStationByStationNameAndCity(routeDTO.getArrivalStationName(),routeDTO.getArrivalCityName())){
-            errorsMap.put("Second Station","Station with the specified name was not found");
-            //throw new StationNotFound("Station with the specified name was not found");
+            errorsMap.put("secondStation","Station with the specified name was not found");
         }
         if(!routeDTO.getArrivalTime().isAfter(LocalDateTime.now())){
-            errorsMap.put("Second Date","Selected date has already passed");
-            //throw new DataCompareError("Selected date has already passed");
+            errorsMap.put("secondDate","Selected date has already passed");
         }
         if(!routeDTO.getArrivalTime().isAfter(routeDTO.getDepartureTime())){
-            errorsMap.put("Date problems","Selected date must be after the departure time");
-            //throw new DataCompareError("Selected date must be after the departure time");
-        }
-        if(routeDTO.getNumberOfCompartmentSeats()< routeDTO.getNumberOfCompartmentFreeSeats()){
-            errorsMap.put("Number of seats problems","Selected date must be after the departure time");
-            //throw new ProblemWithSeatsCount("");
-        }
+            errorsMap.put("dateProblems","Selected date must be after the departure time");
+        }*/
         if(!errorsMap.isEmpty()){
             return errorsMap;
         }
-
         Route route = new Route();
         route.setStartStation(stationService.findStationByStationName(routeDTO.getStartStationName()));
         route.setDepartureTime(routeDTO.getDepartureTime());
@@ -100,75 +94,37 @@ public class RouteService implements RouteServiceInterface {
         route.setNumberOfSuiteFreeSeats(routeDTO.getNumberOfSuiteFreeSeats());
         route.setPriseOfCompartmentTicket(routeDTO.getPriseOfCompartmentTicket());
         route.setPriseOfSuiteTicket(routeDTO.getPriseOfSuiteTicket());
-
-
-/*        String trainNumber = allParam.get("trainNumber");
-        String startStation = allParam.get("startStation");
-        String arrivalStation = allParam.get("arrivalStation");
-        LocalDate dateOfDispatch = LocalDate.parse(allParam.get("dateOfDispatch"));
-        LocalTime timeOfDispatch = LocalTime.parse(allParam.get("timeOfDispatch"));
-        LocalDate dateOfArrival = LocalDate.parse(allParam.get("dateOfArrival"));
-        LocalTime timeOfArrival = LocalTime.parse(allParam.get("timeOfArrival"));
-        LocalTime travelTime = LocalTime.parse(allParam.get("travelTime"));
-        LocalDateTime departureTime = LocalDateTime.of(dateOfDispatch,timeOfDispatch);
-        LocalDateTime arrivalTime = LocalDateTime.of(dateOfArrival,timeOfArrival);
-        int numberOfCompartmentFreeSeats = Integer.parseInt(allParam.get("numberOfCompartmentFreeSeats"));
-        BigDecimal priseOfCompartmentTicket = BigDecimal.valueOf(Double.parseDouble(allParam.get("priseOfCompartmentTicket")));
-        int numberOfSuiteFreeSeats = Integer.parseInt(allParam.get("numberOfSuiteFreeSeats"));
-        BigDecimal priseOfSuiteTicket = BigDecimal.valueOf(Double.parseDouble(allParam.get("priseOfSuiteTicket")));
-        Train train = trainService.findTrainByTrainNumber(trainNumber);
-        if(train.getNumberOfCompartmentSeats() < numberOfCompartmentFreeSeats || train.getNumberOfSuiteSeats() < numberOfSuiteFreeSeats){
-            throw new IllegalArgumentException("ліміт місць");
+        try {
+            route.setTrain(trainService.findTrainByTrainNumber(routeDTO.getTrainNumber()));
+        } catch (TrainNotFound e) {
+            e.printStackTrace();
         }
-        Station stStation = stationService.findStationByStationName(startStation);
-        Station endStation = stationService.findStationByStationName(arrivalStation);
-        Route route = new Route(stStation,departureTime,travelTime,endStation,arrivalTime,numberOfCompartmentFreeSeats,numberOfSuiteFreeSeats,priseOfCompartmentTicket,priseOfSuiteTicket,train);
-*/
-        routeRepository.save(new Route());
+        routeRepository.save(route);
         return errorsMap;
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void updateRoute(Map<String,String> allParam) {
-        Long id = Long.parseLong(allParam.get("id"));
-        String trainNumber = allParam.get("trainNumber");
-        String startStation = allParam.get("startStation");
-        String arrivalStation = allParam.get("arrivalStation");
-        LocalDate dateOfDispatch = LocalDate.parse(allParam.get("dateOfDispatch"));
-        LocalTime timeOfDispatch = LocalTime.parse(allParam.get("timeOfDispatch"));
-        LocalDate dateOfArrival = LocalDate.parse(allParam.get("dateOfArrival"));
-        LocalTime timeOfArrival = LocalTime.parse(allParam.get("timeOfArrival"));
-        LocalTime travelTime = LocalTime.parse(allParam.get("travelTime"));
-        LocalDateTime departureTime = LocalDateTime.of(dateOfDispatch,timeOfDispatch);
-        LocalDateTime arrivalTime = LocalDateTime.of(dateOfArrival,timeOfArrival);
-        int numberOfCompartmentFreeSeats = Integer.parseInt(allParam.get("numberOfCompartmentFreeSeats"));
-        BigDecimal priseOfCompartmentTicket = BigDecimal.valueOf(Double.parseDouble(allParam.get("priseOfCompartmentTicket")));
-        int numberOfSuiteFreeSeats = Integer.parseInt(allParam.get("numberOfSuiteFreeSeats"));
-        BigDecimal priseOfSuiteTicket = BigDecimal.valueOf(Double.parseDouble(allParam.get("priseOfSuiteTicket")));
-
-        Route updateRoute = findRouteById(id);
-        Train train = null;
+    public Map<String,String> updateRoute(RouteDTO routeDTO, Long id) {
+        Map<String,String> errorsMap = Validator.routeValidator(routeDTO);
+        Route route = findRouteById(id);
+        route.setStartStation(stationService.findStationByStationName(routeDTO.getStartStationName()));
+        route.setDepartureTime(routeDTO.getDepartureTime());
+        route.setTravelTime(routeDTO.getTravelTime());
+        route.setArrivalStation(stationService.findStationByStationName(routeDTO.getArrivalStationName()));
+        route.setArrivalTime(routeDTO.getArrivalTime());
+        route.setNumberOfCompartmentFreeSeats((routeDTO.getNumberOfCompartmentFreeSeats()));
+        route.setNumberOfSuiteFreeSeats(routeDTO.getNumberOfSuiteFreeSeats());
+        route.setPriseOfCompartmentTicket(routeDTO.getPriseOfCompartmentTicket());
+        route.setPriseOfSuiteTicket(routeDTO.getPriseOfSuiteTicket());
         try {
-            train = trainService.findTrainByTrainNumber(trainNumber);
+            route.setTrain(trainService.findTrainByTrainNumber(routeDTO.getTrainNumber()));
         } catch (TrainNotFound e) {
             e.printStackTrace();
         }
-        Station stStation = stationService.findStationByStationName(startStation);
-        Station endStation = stationService.findStationByStationName(arrivalStation);
-        updateRoute.setArrivalStation(endStation);
-        updateRoute.setStartStation(stStation);
-        updateRoute.setTrain(train);
-        updateRoute.setArrivalTime(arrivalTime);
-        updateRoute.setDepartureTime(departureTime);
-        updateRoute.setTravelTime(travelTime);
-        updateRoute.setNumberOfCompartmentFreeSeats(numberOfCompartmentFreeSeats);
-        updateRoute.setNumberOfSuiteFreeSeats(numberOfSuiteFreeSeats);
-        updateRoute.setPriseOfCompartmentTicket(priseOfCompartmentTicket);
-        updateRoute.setPriseOfSuiteTicket(priseOfSuiteTicket);
-
-        routeRepository.save(updateRoute);
+        routeRepository.save(route);
+        return errorsMap;
     }
 
     @Override

@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,11 +28,13 @@ public class Route extends BaseEntity implements Serializable {
     @JoinColumn(name = "start_station_id")
     private Station startStation;
 
-    @NotBlank
+    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column(name = "departure_time")
     private LocalDateTime departureTime;
 
-    @NotBlank
+    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     @Column(name = "travel_time")
     private LocalTime travelTime;
 
@@ -38,29 +42,32 @@ public class Route extends BaseEntity implements Serializable {
     @JoinColumn(name = "arrival_station_id")
     private Station arrivalStation;
 
-    @NotBlank
+    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column(name = "arrival_time")
     private LocalDateTime arrivalTime;
 
     @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 0 , message = "Count of compartment free seats can't negative")
+    @Max(value = 9999, message = "The number of free seats in the compartment cannot exceed 9999")
     @Column(name = "number_of_compartment_free_seats")
     private int numberOfCompartmentFreeSeats;
 
-    @NotBlank
+    @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 0 , message = "Count of suite free seats can't negative")
+    @Max(value = 9999, message = "The number of free seats in the suite cannot exceed 9999")
     @Column(name = "number_of_suite_free_seats")
     private int numberOfSuiteFreeSeats;
 
-    @NotBlank
+    @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 0 , message = "Count of compartment seats can't negative")
     @Column(name = "prise_of_compartment_ticket")
     private BigDecimal priseOfCompartmentTicket;
 
-    @NotBlank
+    @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 0 , message = "Count of suite seats can't negative")
     @Column(name = "prise_of_suite_ticket")

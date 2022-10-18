@@ -13,11 +13,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 public interface RouteServiceInterface {
-    /*void addRoute(String trainNumber, String startStation, String arrivalStation, LocalDate dateOfDispatch, LocalDate dateOfArrival
-            , LocalTime timeOfDispatch, LocalTime timeOfArrival, LocalTime travelTime, int numberOfCompartmentSeats
-            , int numberOfSuiteSeats, BigDecimal priseOfCompartmentTicket, BigDecimal priseOfSuiteTicket);*/
-    Map<String,String> addRoute(RouteDTO routeDTO) throws StationNotFound, DataCompareError, ProblemWithSeatsCount;
-    void updateRoute(Map<String,String> allParam);
+    Map<String,String> addRoute(RouteDTO routeDTO);
+    Map<String,String> updateRoute(RouteDTO routeDTO, Long id);
     void deleteRoute(Long Id);
     Route findRouteById(Long Id);
     Route findById(Long Id) throws RouteNotFound;

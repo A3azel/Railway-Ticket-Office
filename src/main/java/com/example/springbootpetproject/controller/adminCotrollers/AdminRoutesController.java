@@ -1,9 +1,6 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
-import com.example.springbootpetproject.customExceptions.routeExceptions.DataCompareError;
-import com.example.springbootpetproject.customExceptions.routeExceptions.ProblemWithSeatsCount;
 import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
-import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.service.serviceImplementation.RouteService;
@@ -64,35 +61,43 @@ public class AdminRoutesController {
             return "forward:/admin/route/all/page/1";
         }
         RouteDTO selectedRoute = routeService.convertRouteToRouteDTO(route);
-        model.addAttribute("selectedRoute",selectedRoute);
+        model.addAttribute("routeDTO",selectedRoute);
         return "changeRouteDetails";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateRoute(@RequestParam Map<String,String> allParam, @PathVariable("id") Long id){
-        routeService.updateRoute(allParam);
-        return "redirect:/admin/route/update/" + id;
+    @PostMapping("/update")
+    public String updateRoute(@Valid @ModelAttribute RouteDTO routeDTO, @RequestParam("id") Long id, Errors errors, Model model){
+        if(errors.hasErrors()){
+            System.out.println(errors);
+            return "changeRouteDetails";
+        }
+        Map<String,String> errorsMap = routeService.updateRoute(routeDTO,id);
+        if(!errorsMap.isEmpty()){
+            model.mergeAttributes(errorsMap);
+            return "changeRouteDetails";
+        }
+        return "redirect:/admin/route/all/page/1";
     }
 
     @GetMapping("/add")
     public String getPageToAddRoute(Model model){
-        model.addAttribute("RouteDTO", new RouteDTO());
+        model.addAttribute("routeDTO", new RouteDTO());
         return "addRoute";
     }
 
     @PostMapping("/add")
     public String addRoute(@Valid @ModelAttribute RouteDTO routeDTO, Errors errors, Model model){
         if(errors.hasErrors()){
+            System.out.println(errors);
             return "addRoute";
         }
 
         Map<String,String> errorsMap = routeService.addRoute(routeDTO);
         if(!errorsMap.isEmpty()){
-            model.addAttribute("errors",errorsMap);
+            model.mergeAttributes(errorsMap);
             return "addRoute";
         }
-
-        return "redirect:/admin/all/route/page/1";
+        return "redirect:/admin/route/all/route/page/1";
     }
 
     @GetMapping("/find")
@@ -105,7 +110,7 @@ public class AdminRoutesController {
             return "forward:/admin/route/all/page/1";
         }
         RouteDTO selectedRoute = routeService.convertRouteToRouteDTO(route);
-        model.addAttribute("selectedRoute",selectedRoute);
+        model.addAttribute("routeDTO",selectedRoute);
         return "changeRouteDetails";
     }
 }
