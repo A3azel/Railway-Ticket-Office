@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class RegistrationService {
@@ -33,21 +35,32 @@ public class RegistrationService {
 
 
     @Transactional
-    public void sendRegistrationConfirmationEmail(User user, String secondPassword) throws DifferentPasswords, UserAlreadyExist {
-
+    public Map<String,String> sendRegistrationConfirmationEmail(User user, String secondPassword, String userGender) {
+        Map<String,String> errorsMap = new HashMap<>();
         if(userService.existsUserByUsername(user.getUsername())){
-            throw new UserAlreadyExist("user already exists");
+            errorsMap.put("userAlreadyExists","the user with selected name already exists");
+        }
+        if(userService.existsUserByUserEmail(user.getUserEmail())){
+            errorsMap.put("emailAlreadyExists","the email with selected name already exists");
         }
         if(!Validator.isTheSamePassword(user.getPassword(), secondPassword)){
-            throw new DifferentPasswords("password are not the same");
+            errorsMap.put("differentPasswords","different passwords");
         }
-        String token = userService.addUser(user);
+        if(!errorsMap.isEmpty()){
+            return errorsMap;
+        }
+
+        user.setUserRole(UserRole.USER);
+        user.setUserGender(UserGender.valueOf(userGender));
+
+        /*String token = userService.addUser(user);
         String link = "http://localhost:8080/registration/activate?token=" + token;
         mailService.sendSimpleMessage(
                 user.getUserEmail(),
                 "Registration",
                 link
-        );
+        );*/
+        return errorsMap;
     }
 
     @Transactional

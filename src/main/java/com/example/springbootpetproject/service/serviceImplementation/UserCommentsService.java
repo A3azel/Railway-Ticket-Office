@@ -1,6 +1,9 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.orderExceptions.OrderNotFound;
+import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.UserCommentsDTO;
+import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.entity.UserComments;
 import com.example.springbootpetproject.repository.UserCommentsRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.UserCommentsServiceInterface;
@@ -9,37 +12,70 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserCommentsService implements UserCommentsServiceInterface {
     private final UserCommentsRepository userCommentsRepository;
-/*    private final UserCommentsService userCommentsService;
-    private final OrdersService ordersService;*/
+    private final TrainService trainService;
+    private final OrdersService ordersService;
+    private final UserService userService;
+
 
     @Autowired
-    public UserCommentsService(UserCommentsRepository userCommentsRepository/*, UserCommentsService userCommentsService, OrdersService ordersService*/) {
+    public UserCommentsService(UserCommentsRepository userCommentsRepository, TrainService trainService, OrdersService ordersService, UserService userService) {
         this.userCommentsRepository = userCommentsRepository;
-    /*    this.userCommentsService = userCommentsService;
-        this.ordersService = ordersService*/;
+        this.trainService = trainService;
+        this.ordersService = ordersService;
+        this.userService = userService;
     }
 
     @Override
     @Transactional
-    public void addComment(UserComments userComments) {
+    public void addComment(UserCommentsDTO userCommentsDTO) {
+        String userComment = userCommentsDTO.getUserComments();
+        String trainNumber = userCommentsDTO.getTrainNumber();
+        String username = userCommentsDTO.getUsername();
+        Train train = null;
+        try {
+            train = trainService.findTrainByTrainNumber(trainNumber);
+        } catch (TrainNotFound e) {
+            e.printStackTrace();
+        }
+        if(ordersService.exitByUserNameAndTrainName(username,trainNumber) && !userComment.equals("")){
+            UserComments userComments = new UserComments();
+            userComments.setUser(userService.findUserByUsername(username));
+            userComments.setUserComments(userComment);
+            userComments.setTrain(train);
+            userCommentsRepository.save(userComments);
+        }
+        throw new IllegalArgumentException("Користувач не робив данного замовлення");
+
+    }
+
+    @Override
+    @Transactional
+    public void setComment(UserCommentsDTO userCommentsDTO) {
+        UserComments userComments = new UserComments();
         userCommentsRepository.save(userComments);
     }
 
     @Override
     @Transactional
-    public void setComment(UserComments userComments) {
-        userCommentsRepository.save(userComments);
+    @PreAuthorize("#username == authentication.principal.username")
+    public void deleteComment(String username, String trainNumber) throws OrderNotFound {
+        UserComments userComments = findByUserNameAndTrainNumber(username,trainNumber);
+        if(!ordersService.exitByUserNameAndTrainName(username,trainNumber)) {
+           throw new OrderNotFound("Order not found");
+        }
+        userCommentsRepository.deleteById(userComments.getId());
     }
 
     /*@Override
@@ -82,8 +118,7 @@ public class UserCommentsService implements UserCommentsServiceInterface {
     //???
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ADMIN') || " +
-            "#username == authentication.principal.username")
+    @PreAuthorize("#username == authentication.principal.username")
     public UserComments findByUserNameAndTrainNumber(String username, String trainNumber) {
         return userCommentsRepository.findByUserUsernameAndTrainTrainNumber(username, trainNumber);
     }
@@ -108,11 +143,15 @@ public class UserCommentsService implements UserCommentsServiceInterface {
     @Override
     public UserCommentsDTO convertUserCommentsToUserCommentsDTO(UserComments userComments){
         UserCommentsDTO userCommentsDTO = new UserCommentsDTO();
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         userCommentsDTO.setId(userComments.getId());
+        userCommentsDTO.setCreated(formatter.format(userComments.getCreated()));
+        userCommentsDTO.setUpdated(formatter.format(userComments.getUpdated()));
+        userCommentsDTO.setCreatedBy(userComments.getCreatedBy());
+        userCommentsDTO.setLastModifiedBy(userComments.getLastModifiedBy());
         userCommentsDTO.setUsername(userComments.getUser().getUsername());
         userCommentsDTO.setTrainNumber(userComments.getTrain().getTrainNumber());
         userCommentsDTO.setUserComments(userComments.getUserComments());
-        userCommentsDTO.setPublicationTime(userComments.getPublicationTime());
         return userCommentsDTO;
     }
 }

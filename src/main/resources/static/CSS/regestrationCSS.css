@@ -1,7 +1,9 @@
-label.required:after
-{
-    color: red;
-    content: " *";
+.gradient-custom {
+    background: #93fbf8;
+
+    background: -webkit-linear-gradient(to bottom right, rgb(147, 251, 232), rgb(87, 95, 245));
+
+    background: linear-gradient(to bottom right, rgb(147, 251, 232), rgb(87, 95, 245))
 }
 
 .card-registration .select-input.form-control[readonly]:not([disabled]) {
@@ -10,10 +12,22 @@ label.required:after
     padding-left: .75em;
     padding-right: .75em;
 }
+
 .card-registration .select-arrow {
     top: 13px;
 }
 
+label.requiredLable:after
+{
+    color: red;
+    content: " *";
+}
+
 .error{
     box-shadow: 0 0 15px red;
+}
+
+.errorMassage {
+    color: red;
+    display: none;
 }

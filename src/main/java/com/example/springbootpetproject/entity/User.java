@@ -1,20 +1,14 @@
 package com.example.springbootpetproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.NumberFormat;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -29,22 +23,25 @@ public class User implements Serializable {
     private Long id;
 
     @NotBlank
+    @Pattern(regexp = "\\w{4,64}")
     @Size(min = 4, max = 64, message = "length must be from 4 to 64 characters")
     @Column(name = "username")
     private String username;
 
     @NotBlank
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁёІіЇїЄє]{1,40}$")
     @Size(min = 1, max = 64, message = "length must be from 1 to 64 characters")
     @Column(name = "first_name")
     private String firstName;
 
-    @NotNull
+    @NotBlank
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁёІіЇїЄє]{1,40}$")
     @Size(min = 1, max = 64, message = "length must be from 1 to 64 characters")
     @Column(name = "last_name")
     private String lastName;
 
-    @NotNull
-    @Size(min = 8, max = 64, message = "length must be from 1 to 64 characters")
+    @NotBlank
+    @Size(min = 8, max = 64, message = "length must be from 8 to 64 characters")
     @Column(name = "user_password")
     private String password;
 
@@ -57,19 +54,19 @@ public class User implements Serializable {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "role_id")
-    @NotNull
     private UserRole userRole;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "user_gender_id")
-    @NotNull
     private UserGender userGender;
 
+    //@Pattern(regexp = "\\(?\\+?[0-9]{1,3}\\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\\w{1,10}\\s?\\d{1,6})?")
     @Column(name = "user_phone")
     private String userPhone;
 
+    @Pattern(regexp = "^([A-Za-z0-9_-]+\\.)*[A-Za-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$")
     @Column(name = "user_email")
-    @NotEmpty
+    @NotNull
     @Email
     private String userEmail;
 
@@ -83,53 +80,5 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private Set<ConfirmationToken> confirmationTokens;
-
-    public User(String username, String firstName, String lastName, String password, UserGender userGender, String userEmail) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.userGender = userGender;
-        this.userEmail = userEmail;
-    }
-
-    public User(String username, String firstName, String lastName, String password, UserGender userGender, String userPhone, String userEmail) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.userGender = userGender;
-        this.userPhone = userPhone;
-        this.userEmail = userEmail;
-    }
-
-    /*@Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id == user.id && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && Objects.equals(userCountOfMoney, user.userCountOfMoney) && userRole == user.userRole && userGender == user.userGender && Objects.equals(userPhone, user.userPhone) && Objects.equals(userEmail, user.userEmail) && Objects.equals(userCommentsSet, user.userCommentsSet);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, firstName, lastName, password, userCountOfMoney, userRole, userGender, userPhone, userEmail);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", userCountOfMoney=" + userCountOfMoney +
-                ", userRole=" + userRole +
-                ", userGender=" + userGender +
-                ", userPhone='" + userPhone + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                '}';
-    }*/
 
 }

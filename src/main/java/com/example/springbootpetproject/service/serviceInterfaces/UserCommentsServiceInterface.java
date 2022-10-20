@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.customExceptions.orderExceptions.OrderNotFound;
 import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.UserComments;
 import org.springframework.data.domain.Page;
@@ -9,11 +10,11 @@ import java.util.List;
 
 public interface UserCommentsServiceInterface {
 
-    void addComment(UserComments userComments);
+    void addComment(UserCommentsDTO userCommentsDTO);
 
-    void setComment(UserComments userComments);
+    void setComment(UserCommentsDTO userCommentsDTO);
 
-    //void deleteComment(String username,String trainNumber);
+    void deleteComment(String username,String trainNumber) throws OrderNotFound;
 
     void deleteCommentForAdmin(Long id);
 

@@ -4,16 +4,16 @@ import com.example.springbootpetproject.customExceptions.registrationExeptions.D
 import com.example.springbootpetproject.customExceptions.registrationExeptions.UserAlreadyExist;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserGender;
+import com.example.springbootpetproject.entity.UserRole;
 import com.example.springbootpetproject.service.anotherServices.RegistrationService;
-import com.example.springbootpetproject.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/registration")
@@ -28,23 +28,24 @@ public class RegistrationController {
 
     @GetMapping
     public String toRegistration(Model model){
-        model.addAttribute("user", new User());
+        User user = new User();
+        model.addAttribute("user", user);
         return "registration";
     }
 
     @PostMapping
-    public String makeAnRegistration(@ModelAttribute @Valid User user, Errors errors, Model model,
-                                     @RequestParam ("secondPassword")  String secondPassword){
+    public String makeAnRegistration(@ModelAttribute @Valid User user,@RequestParam("radioName") String userGender, Errors errors
+            , Model model, @RequestParam ("secondPassword")  String secondPassword){
+        user.setUserGender(UserGender.valueOf(userGender));
         if(errors.hasErrors()){
+            System.out.println(errors);
             return "registration";
         }
-        try{
-            registrationService.sendRegistrationConfirmationEmail(user,secondPassword);
-        } catch (UserAlreadyExist userAlreadyExist) {
-            model.addAttribute("userAlreadyExist", userAlreadyExist.getMessage());
-            return "registration";
-        } catch (DifferentPasswords differentPasswords) {
-            model.addAttribute("differentPasswords", differentPasswords.getMessage());
+
+        Map<String,String> errorsMap = registrationService.sendRegistrationConfirmationEmail(user, secondPassword, userGender);
+        if(!errorsMap.isEmpty()){
+            model.mergeAttributes(errorsMap);
+            System.out.println(errorsMap);
             return "registration";
         }
 

@@ -17,7 +17,7 @@
             <a th:href="@{'/admin/users/selectedUser/' + ${userComment.username}}">[[${userComment.username}]]</a>
         </h5>
         <div class="card-body">
-            <h5 class="card-title">[[${#temporals.format(userComment.publicationTime, 'dd-MM-yyyy HH:mm')}]]</h5>
+            <h5 class="card-title">[[${userComment.updated}]]</h5>
             <p class="card-text">[[${userComment.userComments}]]</p>
             <form method="post" th:action="@{'/admin/train/delete/' + ${trainId} + '/comment/1'}">
                 <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>Delete</button>

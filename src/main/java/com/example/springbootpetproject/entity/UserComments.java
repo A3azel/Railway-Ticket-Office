@@ -2,6 +2,7 @@ package com.example.springbootpetproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,11 +10,12 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "user_comments")
 @Data
 @NoArgsConstructor
-public class UserComments implements Serializable {
+public class UserComments extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -23,9 +25,6 @@ public class UserComments implements Serializable {
     @Column(name = "user_comment")
     private String userComments;
 
-    @Column(name = "publication_time")
-    private LocalDateTime publicationTime;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
@@ -34,11 +33,4 @@ public class UserComments implements Serializable {
     @OneToOne
     @JoinColumn(name = "train_id")
     private Train train;
-
-    public UserComments(String userComments, LocalDateTime publicationTime, User user, Train train) {
-        this.userComments = userComments;
-        this.publicationTime = publicationTime;
-        this.user = user;
-        this.train = train;
-    }
 }

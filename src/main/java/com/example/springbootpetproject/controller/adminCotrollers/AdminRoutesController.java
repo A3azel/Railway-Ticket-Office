@@ -68,7 +68,6 @@ public class AdminRoutesController {
     @PostMapping("/update")
     public String updateRoute(@Valid @ModelAttribute RouteDTO routeDTO, @RequestParam("id") Long id, Errors errors, Model model){
         if(errors.hasErrors()){
-            System.out.println(errors);
             return "changeRouteDetails";
         }
         Map<String,String> errorsMap = routeService.updateRoute(routeDTO,id);
@@ -88,7 +87,6 @@ public class AdminRoutesController {
     @PostMapping("/add")
     public String addRoute(@Valid @ModelAttribute RouteDTO routeDTO, Errors errors, Model model){
         if(errors.hasErrors()){
-            System.out.println(errors);
             return "addRoute";
         }
 

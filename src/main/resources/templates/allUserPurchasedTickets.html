@@ -26,7 +26,7 @@
         <th scope="col">
             <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=orderPrise'}"></a>[[#{user.order.label.prise}]]
         </th>
-        <th scope="col">[[{user.order.label.details}]]</th>
+        <th scope="col">[[#{user.order.label.details}]]</th>
     </tr>
     </thead>
     <tbody>

@@ -4,8 +4,6 @@ import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNo
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
-import com.example.springbootpetproject.entity.Station;
-import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.repository.RouteRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.RouteServiceInterface;
 import com.example.springbootpetproject.validator.Validator;
@@ -18,13 +16,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -32,55 +28,19 @@ public class RouteService implements RouteServiceInterface {
     private final RouteRepository routeRepository;
     private final TrainService trainService;
     private final StationService stationService;
-    private final CityService cityService;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, TrainService trainService, StationService stationService, CityService cityService) {
+    public RouteService(RouteRepository routeRepository, TrainService trainService, StationService stationService) {
         this.routeRepository = routeRepository;
         this.trainService = trainService;
         this.stationService = stationService;
-        this.cityService = cityService;
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public Map<String,String> addRoute(RouteDTO routeDTO) {
-        //Train selectedTrain = null;
         Map<String,String> errorsMap = Validator.routeValidator(routeDTO);
-        //Map<String,String> errorsMap = new HashMap<>();
-        /*try {
-            selectedTrain = trainService.findTrainByTrainNumber(routeDTO.getTrainNumber());
-            if(selectedTrain.getNumberOfCompartmentSeats()< routeDTO.getNumberOfCompartmentFreeSeats()){
-                errorsMap.put("numberOfCompartmentSeatsProblems",String.format("The number of free seats in the compartment must be less than the number of all seats in the compartment (%s)",selectedTrain.getNumberOfCompartmentSeats()));
-            }
-            if(selectedTrain.getNumberOfSuiteSeats() < routeDTO.getNumberOfSuiteFreeSeats()){
-                errorsMap.put("numberOfSuiteSeatsProblems",String.format("The number of free seats in the suite must be less than the number of all seats in the suite (%s)",selectedTrain.getNumberOfSuiteSeats()));
-            }
-        } catch (TrainNotFound e) {
-            errorsMap.put("trainNotFound", "Train with the specified name was not found");
-        }
-        if(!cityService.cityIsExist(routeDTO.getStartCityName())){
-            errorsMap.put("firstCityNotFound", "City with the specified name was not found");
-        }
-        if(!cityService.cityIsExist(routeDTO.getStartCityName())){
-            errorsMap.put("secondCityNotFound", "City with the specified name was not found");
-        }
-        if(!stationService.existStationByStationNameAndCity(routeDTO.getStartStationName(),routeDTO.getStartCityName())){
-            errorsMap.put("firstStation","Station with the specified name was not found");
-        }
-        if(!routeDTO.getDepartureTime().isAfter(LocalDateTime.now())){
-            errorsMap.put("firstDate","Selected date has already passed");
-        }
-        if(!stationService.existStationByStationNameAndCity(routeDTO.getArrivalStationName(),routeDTO.getArrivalCityName())){
-            errorsMap.put("secondStation","Station with the specified name was not found");
-        }
-        if(!routeDTO.getArrivalTime().isAfter(LocalDateTime.now())){
-            errorsMap.put("secondDate","Selected date has already passed");
-        }
-        if(!routeDTO.getArrivalTime().isAfter(routeDTO.getDepartureTime())){
-            errorsMap.put("dateProblems","Selected date must be after the departure time");
-        }*/
         if(!errorsMap.isEmpty()){
             return errorsMap;
         }
