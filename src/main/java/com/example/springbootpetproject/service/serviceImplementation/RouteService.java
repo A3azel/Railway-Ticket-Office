@@ -7,6 +7,7 @@ import com.example.springbootpetproject.entity.Route;
 import com.example.springbootpetproject.repository.RouteRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.RouteServiceInterface;
 import com.example.springbootpetproject.validator.Validator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import java.time.LocalTime;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class RouteService implements RouteServiceInterface {
     private final RouteRepository routeRepository;
     private final TrainService trainService;

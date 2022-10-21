@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.anotherServices;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 @Service
+@Slf4j
 public class MailService {
     private static final String MAIL_ADDRESS = "testspringwebapp@gmail.com";
 
@@ -23,19 +25,20 @@ public class MailService {
     }
 
     public void sendSimpleMessage(String to, String subject, String text) {
+        log.debug("In the sendSimpleMessage method");
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(MAIL_ADDRESS);
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
         javaMailSender.send(message);
-        System.out.println("Message send...");
+        log.info("Message send...");
+        log.debug("End of sendSimpleMessage method");
     }
 
     public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment) throws MessagingException {
-
+        log.debug("In the sendMessageWithAttachment method");
         MimeMessage message = javaMailSender.createMimeMessage();
-
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setFrom(MAIL_ADDRESS);
@@ -48,6 +51,7 @@ public class MailService {
         helper.addAttachment("Invoice", file);
 
         javaMailSender.send(message);
-        System.out.println("Message send...");
+        log.info("Message send...");
+        log.debug("End of sendMessageWithAttachment method");
     }
 }

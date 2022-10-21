@@ -7,6 +7,7 @@ import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserRole;
 import com.example.springbootpetproject.repository.UserRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.UserServiceInterface;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserService implements UserServiceInterface {
     private final UserRepository userRepository;
     private final CustomBCryptPasswordEncoder bCryptPasswordEncoder;
@@ -35,6 +37,7 @@ public class UserService implements UserServiceInterface {
     @Override
     @Transactional
     public String addUser(User user) {
+        log.debug("In the findByToken method");
         String encodePassword = bCryptPasswordEncoder.passwordEncoder().encode(user.getPassword());
 
         user.setPassword(encodePassword);
@@ -42,7 +45,7 @@ public class UserService implements UserServiceInterface {
         user.setUserRole(UserRole.USER);
 
         userRepository.save(user);
-
+        log.info("user was saved");
         String token = UUID.randomUUID().toString();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
@@ -53,7 +56,7 @@ public class UserService implements UserServiceInterface {
         );
 
         confirmationTokenService.saveToken(confirmationToken);
-
+        log.debug("End of findAllCity method");
         return token;
     }
 
@@ -61,11 +64,14 @@ public class UserService implements UserServiceInterface {
     @Override
     @Transactional
     public boolean deleteUserById(Long id) {
+        log.debug("In the deleteUserById method");
         if(userRepository.existsUserById(id)){
             userRepository.deleteById(id);
+            log.info("user with {} id was deleted",id);
             return true;
         }
-
+        log.warn("user with {} id not found", id);
+        log.debug("End of deleteUserById method");
         return false;
     }
 
@@ -133,6 +139,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public UserDTO convertUserToUserDTO(User user){
+        log.debug("In the convertUserToUserDTO method");
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
@@ -144,6 +151,8 @@ public class UserService implements UserServiceInterface {
         userDTO.setUserGender(user.getUserGender().name());
         userDTO.setUserEmail(user.getUserEmail());
         userDTO.setUserPhone(user.getUserPhone());
+        log.info("UserDTO converted user: {}", userDTO);
+        log.debug("End of convertUserToUserDTO method");
         return userDTO;
     }
 

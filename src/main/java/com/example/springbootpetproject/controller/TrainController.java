@@ -1,11 +1,9 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.customExceptions.cityExceptions.InvalidNameOfCity;
 import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.dto.UserCommentsDTO;
 import com.example.springbootpetproject.entity.Route;
-
 import com.example.springbootpetproject.service.serviceImplementation.RouteService;
 import com.example.springbootpetproject.service.serviceImplementation.TrainService;
 import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;

@@ -1,10 +1,7 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.customExceptions.registrationExeptions.DifferentPasswords;
-import com.example.springbootpetproject.customExceptions.registrationExeptions.UserAlreadyExist;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserGender;
-import com.example.springbootpetproject.entity.UserRole;
 import com.example.springbootpetproject.service.anotherServices.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,17 +35,14 @@ public class RegistrationController {
             , Model model, @RequestParam ("secondPassword")  String secondPassword){
         user.setUserGender(UserGender.valueOf(userGender));
         if(errors.hasErrors()){
-            System.out.println(errors);
             return "registration";
         }
 
         Map<String,String> errorsMap = registrationService.sendRegistrationConfirmationEmail(user, secondPassword, userGender);
         if(!errorsMap.isEmpty()){
             model.mergeAttributes(errorsMap);
-            System.out.println(errorsMap);
             return "registration";
         }
-
         return "redirect:/login";
     }
 

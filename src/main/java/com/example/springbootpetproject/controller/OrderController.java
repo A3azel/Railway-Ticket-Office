@@ -3,8 +3,6 @@ package com.example.springbootpetproject.controller;
 import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.Orders;
 import com.example.springbootpetproject.entity.Route;
-import com.example.springbootpetproject.entity.TicketType;
-import com.example.springbootpetproject.entity.Train;
 import com.example.springbootpetproject.service.serviceImplementation.RouteService;
 import com.example.springbootpetproject.service.serviceImplementation.TicketTypeService;
 import com.example.springbootpetproject.service.serviceImplementation.TrainService;
