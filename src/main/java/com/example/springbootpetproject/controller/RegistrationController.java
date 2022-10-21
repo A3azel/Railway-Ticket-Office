@@ -52,8 +52,8 @@ public class RegistrationController {
         return "redirect:/login";
     }
 
-    @GetMapping("/activate/{token}")
-    public String activateAccount(@PathVariable("token") String tokenCode){
+    @GetMapping("/activate")
+    public String activateAccount(@RequestParam("token") String tokenCode){
         registrationService.confirmToken(tokenCode);
         return "/login";
     }

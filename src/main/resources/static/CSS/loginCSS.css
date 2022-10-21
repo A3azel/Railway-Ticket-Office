@@ -1,7 +1,7 @@
 /* Importing fonts from Google */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Reseting */
+
 * {
     margin: 0;
     padding: 0;
@@ -102,4 +102,12 @@ body {
         margin: 30px 20px;
         padding: 40px 15px 15px 15px;
     }
+}
+
+.gradient-custom {
+    background: #93fbf8;
+
+    background: -webkit-linear-gradient(to bottom right, rgb(147, 251, 232), rgb(87, 95, 245));
+
+    background: linear-gradient(to bottom right, rgb(147, 251, 232), rgb(87, 95, 245));
 }

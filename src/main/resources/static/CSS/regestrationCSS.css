@@ -3,7 +3,7 @@
 
     background: -webkit-linear-gradient(to bottom right, rgb(147, 251, 232), rgb(87, 95, 245));
 
-    background: linear-gradient(to bottom right, rgb(147, 251, 232), rgb(87, 95, 245))
+    background: linear-gradient(to bottom right, rgb(147, 251, 232), rgb(87, 95, 245));
 }
 
 .card-registration .select-input.form-control[readonly]:not([disabled]) {

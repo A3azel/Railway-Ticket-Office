@@ -25,7 +25,6 @@ public class MvcConfig implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
         Locale ukraineLocale = new Locale("uk","UA");
-        //slr.setDefaultLocale(Locale.US);
         slr.setDefaultLocale(ukraineLocale);
         return slr;
     }
@@ -45,7 +44,7 @@ public class MvcConfig implements WebMvcConfigurer {
         return messageResource;
     }
 
-    /*@Bean
+    @Bean
     public StringHttpMessageConverter stringHttpMessageConverter() {
         return new StringHttpMessageConverter(StandardCharsets.UTF_8);
     }
@@ -58,7 +57,7 @@ public class MvcConfig implements WebMvcConfigurer {
         characterEncodingFilter.setEncoding("UTF-8");
         registrationBean.setFilter(characterEncodingFilter);
         return registrationBean;
-    }*/
+    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {

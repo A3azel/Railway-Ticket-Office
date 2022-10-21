@@ -5,7 +5,8 @@ import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserRole;
-import com.example.springbootpetproject.validator.Validator;
+import com.example.springbootpetproject.repository.UserRepository;
+import com.example.springbootpetproject.service.serviceInterfaces.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.springbootpetproject.repository.UserRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.UserServiceInterface;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,22 +35,6 @@ public class UserService implements UserServiceInterface {
     @Override
     @Transactional
     public String addUser(User user) {
-        if(existsUserByUsername(user.getUsername())){
-            throw new IllegalArgumentException("Login вже використовується");
-        }
-        if(existsUserByUserEmail(user.getUserEmail())){
-            throw new IllegalArgumentException("Email вже використовується");
-        }
-        if(Validator.isEmail(user.getUserEmail())){
-            throw new IllegalArgumentException("Не коректний Email");
-        }
-        if(Validator.isNameOrSurname(user.getFirstName())){
-            throw new IllegalArgumentException("Не коректне імя");
-        }
-        if(Validator.isNameOrSurname(user.getLastName())){
-            throw new IllegalArgumentException("Не коректне прізвище");
-        }
-
         String encodePassword = bCryptPasswordEncoder.passwordEncoder().encode(user.getPassword());
 
         user.setPassword(encodePassword);

@@ -53,13 +53,13 @@ public class RegistrationService {
         user.setUserRole(UserRole.USER);
         user.setUserGender(UserGender.valueOf(userGender));
 
-        /*String token = userService.addUser(user);
+        String token = userService.addUser(user);
         String link = "http://localhost:8080/registration/activate?token=" + token;
         mailService.sendSimpleMessage(
                 user.getUserEmail(),
                 "Registration",
                 link
-        );*/
+        );
         return errorsMap;
     }
 
@@ -74,6 +74,8 @@ public class RegistrationService {
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
+            userService.deleteUserById(confirmationToken.getUser().getId());
+            confirmationTokenService.deleteToken(token);
             throw new IllegalStateException("token expired");
         }
         //confirmationTokenService.updateConfirmedAt(token);

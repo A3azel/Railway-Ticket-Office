@@ -13,6 +13,7 @@ import java.io.File;
 
 @Service
 public class MailService {
+    private static final String MAIL_ADDRESS = "testspringwebapp@gmail.com";
 
     private final JavaMailSender javaMailSender;
 
@@ -23,7 +24,7 @@ public class MailService {
 
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("my Email");
+        message.setFrom(MAIL_ADDRESS);
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
@@ -37,7 +38,7 @@ public class MailService {
 
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setFrom("my Email");
+        helper.setFrom(MAIL_ADDRESS);
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(text);
