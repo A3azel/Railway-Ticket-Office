@@ -7,189 +7,194 @@
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link th:href="@{/CSS/roundButton.css}" rel="stylesheet">
+    <link th:href="@{/CSS/footer.css}" rel="stylesheet">
 </head>
 <body>
 
-<div th:include="header::head"></div>
+<div class="wrapper">
+    <div th:include="header::head"></div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin: 20px">
-    <form method="get" th:action="@{/admin/ticket/find}">
-        <label>[[#{label.station.find}]]</label>
-        <label>
-            <input type="text" name="ticketName" class="form-control" th:placeholder="#{placeholder.ticket.search}"/>
-        </label>
-        <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
-        <th:block th:if="${TicketNotFound}">
-            <p th:text="${TicketNotFound}" style="color: red"></p>
-        </th:block>
-    </form>
-    <form method="get" th:action="@{/admin/ticket/add}">
-        <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.ticket.add}]]</button>
-    </form>
-</div>
-
-<table class="table table-bordered table-striped text-center" style="margin: 20px; width: 80%; margin-left: auto; margin-right: auto">
-    <thead class="table-info" >
-    <tr>
-        <th scope="col">
-            <a th:href="@{'/admin/ticket/all/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=id'}">id</a>
-        </th>
-        <th scope="col">
-            <a th:href="@{'/admin/ticket/all/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=ticketType'}">[[#{label.ticket.ticketName}]]</a>
-        </th>
-        <th scope="col">
-            <a th:href="@{'/admin/ticket/all/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=ticketPriceFactor'}">[[#{label.ticket.ticketPriceFactor}]]</a>
-        </th>
-        <th scope="col">[[#{buttonGroup.updateData.delete}]]</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="ticket : ${ticketTypeList}">
-        <td th:text="${ticket.id}"></td>
-        <td th:text="${ticket.ticketTypeName}"></td>
-        <td th:text="${ticket.ticketPriceFactor}"></td>
-        <td>
-            <div class="d-grid gap-3 d-md-flex justify-content-md-center">
-                <form  method="get" th:action="@{/admin/ticket/find}">
-                    <button type="submit" name="ticketName" th:value="${ticket.ticketTypeName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
-                </form>
-                <!--<form th:action="@{'/admin/ticket/delete/' ${ticket.id}}"  method="post">
-                    <button type="submit" class="btn btn-outline-danger">[[#{button.delete}]]</button>
-                </form>-->
-
-                <th:block th:if="${ticket.isRelevant} == true">
-                    <form th:action="@{'/admin/ticket/relevant/' + ${ticket.id}}"  method="post">
-                        <button type="submit" class="btn btn-outline-warning btn-rounded">
-                            <i class="bi bi-exclamation-triangle"></i>[[#{button.block}]]
-                        </button>
-                    </form>
+    <main>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin: 20px">
+            <form method="get" th:action="@{/admin/ticket/find}">
+                <label>[[#{label.station.find}]]</label>
+                <label>
+                    <input type="text" name="ticketName" class="form-control" th:placeholder="#{placeholder.ticket.search}"/>
+                </label>
+                <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+                <th:block th:if="${TicketNotFound}">
+                    <p th:text="${TicketNotFound}" style="color: red"></p>
                 </th:block>
-                <th:block th:unless="${ticket.isRelevant} == true">
-                    <form th:action="@{'/admin/ticket/relevant/'+ ${ticket.id}}"  method="post">
-                        <button type="submit" class="btn btn-outline-success btn-rounded">
-                            <i class="bi bi-exclamation-triangle"></i>[[#{button.unblock}]]
+            </form>
+            <form method="get" th:action="@{/admin/ticket/add}">
+                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.ticket.add}]]</button>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-striped text-center" style="margin: 20px; width: 80%; margin-left: auto; margin-right: auto">
+            <thead class="table-info" >
+            <tr>
+                <th scope="col">
+                    <a th:href="@{'/admin/ticket/all/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=id'}">id</a>
+                </th>
+                <th scope="col">
+                    <a th:href="@{'/admin/ticket/all/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=ticketType'}">[[#{label.ticket.ticketName}]]</a>
+                </th>
+                <th scope="col">
+                    <a th:href="@{'/admin/ticket/all/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=ticketPriceFactor'}">[[#{label.ticket.ticketPriceFactor}]]</a>
+                </th>
+                <th scope="col">[[#{buttonGroup.updateData.delete}]]</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ticket : ${ticketTypeList}">
+                <td th:text="${ticket.id}"></td>
+                <td th:text="${ticket.ticketTypeName}"></td>
+                <td th:text="${ticket.ticketPriceFactor}"></td>
+                <td>
+                    <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                        <form  method="get" th:action="@{/admin/ticket/find}">
+                            <button type="submit" name="ticketName" th:value="${ticket.ticketTypeName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
+                        </form>
+                        <!--<form th:action="@{'/admin/ticket/delete/' ${ticket.id}}"  method="post">
+                            <button type="submit" class="btn btn-outline-danger">[[#{button.delete}]]</button>
+                        </form>-->
+
+                        <th:block th:if="${ticket.isRelevant} == true">
+                            <form th:action="@{'/admin/ticket/relevant/' + ${ticket.id}}"  method="post">
+                                <button type="submit" class="btn btn-outline-warning btn-rounded">
+                                    <i class="bi bi-exclamation-triangle"></i>[[#{button.block}]]
+                                </button>
+                            </form>
+                        </th:block>
+                        <th:block th:unless="${ticket.isRelevant} == true">
+                            <form th:action="@{'/admin/ticket/relevant/'+ ${ticket.id}}"  method="post">
+                                <button type="submit" class="btn btn-outline-success btn-rounded">
+                                    <i class="bi bi-exclamation-triangle"></i>[[#{button.unblock}]]
+                                </button>
+                            </form>
+                        </th:block>
+
+                        <button type="button" class="btn btn-outline-danger btn-rounded" data-bs-toggle="modal" data-bs-target="#myModal" th:data-id="${ticket.id}">
+                            <i class="bi bi-trash"></i>[[#{button.delete}]]
                         </button>
-                    </form>
-                </th:block>
-
-                <button type="button" class="btn btn-outline-danger btn-rounded" data-bs-toggle="modal" data-bs-target="#myModal" th:data-id="${ticket.id}">
-                    <i class="bi bi-trash"></i>[[#{button.delete}]]
-                </button>
 
 
 
-                <!--<div class="modal fade" tabindex="-1" id="myModal">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Modal title</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <!--<div class="modal fade" tabindex="-1" id="myModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Modal title</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><i class="bi bi-exclamation-triangle"></i> Are you sure you really want to delete this ticket [[${ticket.ticketTypeName}]]? </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary btn-rounded" data-bs-dismiss="modal"><i class="bi bi-door-open-fill"></i>Close</button>
+                                        <form method="post" th:action="@{'/admin/ticket/delete/' + ${ticket.id}}">
+                                            <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <p><i class="bi bi-exclamation-triangle"></i> Are you sure you really want to delete this ticket [[${ticket.ticketTypeName}]]? </p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary btn-rounded" data-bs-dismiss="modal"><i class="bi bi-door-open-fill"></i>Close</button>
-                                <form method="post" th:action="@{'/admin/ticket/delete/' + ${ticket.id}}">
-                                    <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
-                                </form>
-                            </div>
-                        </div>
+                        </div>-->
+
                     </div>
-                </div>-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<nav aria-label="...">
-    <ul class="pagination justify-content-center">
-        <th:block th:if="${pageNumber}>1">
-            <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + 1 + '?direction=' + ${direction} + '&sort=' + ${sort}}">First</a>
-            </li>
-        </th:block>
-        <th:block th:unless="${pageNumber}>1">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">First</a>
-            </li>
-        </th:block>
-        <!-- Previous -->
-        <th:block th:if="${pageNumber}>1">
-            <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageNumber - 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Previous</a>
-            </li>
-        </th:block>
-        <th:block th:unless="${pageNumber}>1">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>
-        </th:block>
-        <!-- f -->
-        <th:block th:if="${pageable.getTotalPages()} <= 10">
-            <th:block th:each="i : ${#numbers.sequence(1,pageable.getTotalPages())}">
-                <th:block th:if="${i} == ${pageNumber}">
-                    <li class="page-item active" aria-current="page">
-                        <span class="page-link">[[${i}]]</span>
-                    </li>
-                </th:block>
-                <th:block th:unless="${i} == ${pageNumber}">
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                <th:block th:if="${pageNumber}>1">
                     <li class="page-item">
-                        <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
+                        <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + 1 + '?direction=' + ${direction} + '&sort=' + ${sort}}">First</a>
                     </li>
                 </th:block>
-            </th:block>
-        </th:block>
+                <th:block th:unless="${pageNumber}>1">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">First</a>
+                    </li>
+                </th:block>
+                <!-- Previous -->
+                <th:block th:if="${pageNumber}>1">
+                    <li class="page-item">
+                        <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageNumber - 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Previous</a>
+                    </li>
+                </th:block>
+                <th:block th:unless="${pageNumber}>1">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                </th:block>
+                <!-- f -->
+                <th:block th:if="${pageable.getTotalPages()} <= 10">
+                    <th:block th:each="i : ${#numbers.sequence(1,pageable.getTotalPages())}">
+                        <th:block th:if="${i} == ${pageNumber}">
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">[[${i}]]</span>
+                            </li>
+                        </th:block>
+                        <th:block th:unless="${i} == ${pageNumber}">
+                            <li class="page-item">
+                                <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+                    </th:block>
+                </th:block>
 
-        <th:block th:if="${pageable.getTotalPages()} >  10">
-            <th:block th:if="${pageNumber <= 5 || pageNumber > pageable.getTotalPages()-4}">
-                <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
-                </li>
+                <th:block th:if="${pageable.getTotalPages()} >  10">
+                    <th:block th:if="${pageNumber <= 5 || pageNumber > pageable.getTotalPages()-4}">
+                        <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
+                            <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
+                        </li>
 
-                <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + '6'+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
+                        <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + '6'+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
 
-                <li th:each="i : ${#numbers.sequence(pageable.getTotalPages()-4,pageable.getTotalPages())}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
-                </li>
-            </th:block>
+                        <li th:each="i : ${#numbers.sequence(pageable.getTotalPages()-4,pageable.getTotalPages())}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
+                            <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${i}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
 
-            <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
-                <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
-                    <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageNumber - 5}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
-                </li>
-            </th:block>
+                    <th:block th:if="${pageNumber > 5 && pageNumber < pageable.getTotalPages()-4}">
+                        <li th:each="i : ${#numbers.sequence(1,5)}" th:class="${pageNumber != i ? 'page-item' : 'page-item active'}">
+                            <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageNumber - 5}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">...</a>
+                        </li>
+                    </th:block>
 
-        </th:block>
+                </th:block>
 
-        <!-- Next -->
-        <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
-            <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageNumber + 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Next</a>
-            </li>
-        </th:block>
-        <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
-            </li>
-        </th:block>
+                <!-- Next -->
+                <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
+                    <li class="page-item">
+                        <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageNumber + 1}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Next</a>
+                    </li>
+                </th:block>
+                <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+                    </li>
+                </th:block>
 
-        <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
-            <li class="page-item">
-                <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageable.getTotalPages()}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Last</a>
-            </li>
-        </th:block>
-        <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Last</a>
-            </li>
-        </th:block>
-    </ul>
-</nav>
+                <th:block th:if="${pageNumber}<${pageable.getTotalPages()}">
+                    <li class="page-item">
+                        <a class="page-link" th:href = "@{'/admin/ticket/all/page/' + ${pageable.getTotalPages()}+ '?direction=' + ${direction} + '&sort=' + ${sort}}">Last</a>
+                    </li>
+                </th:block>
+                <th:block th:unless="${pageNumber}<${pageable.getTotalPages()}">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Last</a>
+                    </li>
+                </th:block>
+            </ul>
+        </nav>
+    </main>
 
-<div th:include="footer::foot"></div>
+    <div th:include="footer::foot"></div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
 

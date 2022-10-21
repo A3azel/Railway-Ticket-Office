@@ -6,205 +6,211 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link th:href="@{/CSS/footer.css}" rel="stylesheet">
 </head>
 <body>
 
-<div th:include="header::head"></div>
+<div class="wrapper">
+    <div th:include="header::head"></div>
 
-<div class="row mainRow">
-    <form method="post" th:action="@{/admin/route/add}" th:object="${routeDTO}">
-        <div class="col-lg-6" style="margin: 20px">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.train.number}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" th:field="*{trainNumber}" name="trainNumber"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('trainNumber')}"
-                                  th:errors="*{trainNumber}" style="color: red">
+    <main>
+        <div class="row mainRow">
+            <form method="post" th:action="@{/admin/route/add}" th:object="${routeDTO}">
+                <div class="col-lg-6" style="margin: 20px">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.train.number}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{trainNumber}" name="trainNumber"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('trainNumber')}"
+                                          th:errors="*{trainNumber}" style="color: red">
                             </span>
-                            <th:block th:if="${trainNotFound}">
-                                <p th:text="${trainNotFound}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.startCity}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" th:field="*{startCityName}" name="startCityName"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('startCityName')}"
-                                  th:errors="*{startCityName}" style="color: red">
+                                    <th:block th:if="${trainNotFound}">
+                                        <p th:text="${trainNotFound}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.startCity}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{startCityName}" name="startCityName"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('startCityName')}"
+                                          th:errors="*{startCityName}" style="color: red">
                             </span>
-                            <th:block th:if="${firstCityNotFound}">
-                                <p th:text="${firstCityNotFound}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.startStation}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" th:field="*{startStationName}" name="startStationName"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('startStationName')}"
-                                  th:errors="*{startStationName}" style="color: red">
+                                    <th:block th:if="${firstCityNotFound}">
+                                        <p th:text="${firstCityNotFound}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.startStation}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{startStationName}" name="startStationName"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('startStationName')}"
+                                          th:errors="*{startStationName}" style="color: red">
                             </span>
-                            <th:block th:if="${firstStation}">
-                                <p th:text="${firstStation}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.arrivalCity}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" th:field="*{arrivalCityName}" name="arrivalCityName"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('arrivalCityName')}"
-                                  th:errors="*{arrivalCityName}" style="color: red">
+                                    <th:block th:if="${firstStation}">
+                                        <p th:text="${firstStation}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.arrivalCity}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{arrivalCityName}" name="arrivalCityName"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('arrivalCityName')}"
+                                          th:errors="*{arrivalCityName}" style="color: red">
                             </span>
-                            <th:block th:if="${secondCityNotFound}">
-                                <p th:text="${secondCityNotFound}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" th:field="*{arrivalStationName}" name="arrivalStationName"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('arrivalStationName')}"
-                                  th:errors="*{arrivalStationName}" style="color: red">
+                                    <th:block th:if="${secondCityNotFound}">
+                                        <p th:text="${secondCityNotFound}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{arrivalStationName}" name="arrivalStationName"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('arrivalStationName')}"
+                                          th:errors="*{arrivalStationName}" style="color: red">
                             </span>
-                            <th:block th:if="${secondStation}">
-                                <p th:text="${secondStation}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.startDate}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="datetime-local" class="form-control" th:field="*{departureTime}" name="departureTime"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('departureTime')}"
-                                  th:errors="*{departureTime}" style="color: red">
+                                    <th:block th:if="${secondStation}">
+                                        <p th:text="${secondStation}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.startDate}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="datetime-local" class="form-control" th:field="*{departureTime}" name="departureTime"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('departureTime')}"
+                                          th:errors="*{departureTime}" style="color: red">
                             </span>
-                            <th:block th:if="${firstDate}">
-                                <p th:text="${firstDate}" style="color: red"></p>
-                            </th:block>
-                            <th:block th:if="${dateProblems}">
-                                <p th:text="${dateProblems}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.arrivalDate}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="datetime-local" class="form-control" th:field="*{arrivalTime}" name="arrivalTime"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('arrivalTime')}"
-                                  th:errors="*{arrivalTime}" style="color: red">
+                                    <th:block th:if="${firstDate}">
+                                        <p th:text="${firstDate}" style="color: red"></p>
+                                    </th:block>
+                                    <th:block th:if="${dateProblems}">
+                                        <p th:text="${dateProblems}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.arrivalDate}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="datetime-local" class="form-control" th:field="*{arrivalTime}" name="arrivalTime"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('arrivalTime')}"
+                                          th:errors="*{arrivalTime}" style="color: red">
                             </span>
-                            <th:block th:if="${secondDate}">
-                                <p th:text="${secondDate}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.travelTime}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="time" class="form-control" th:field="*{travelTime}" name="travelTime"/>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.numberOfCompartmentFreeSeats}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="number" min="0" class="form-control" th:field="*{numberOfCompartmentFreeSeats}" name="numberOfCompartmentFreeSeats"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('numberOfCompartmentFreeSeats')}"
-                                  th:errors="*{numberOfCompartmentFreeSeats}" style="color: red">
+                                    <th:block th:if="${secondDate}">
+                                        <p th:text="${secondDate}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.travelTime}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="time" class="form-control" th:field="*{travelTime}" name="travelTime"/>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.numberOfCompartmentFreeSeats}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="number" min="0" class="form-control" th:field="*{numberOfCompartmentFreeSeats}" name="numberOfCompartmentFreeSeats"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('numberOfCompartmentFreeSeats')}"
+                                          th:errors="*{numberOfCompartmentFreeSeats}" style="color: red">
                             </span>
-                            <th:block th:if="${numberOfCompartmentSeatsProblems}">
-                                <p th:text="${numberOfCompartmentSeatsProblems}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.priseOfCompartmentTicket}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" th:field="*{priseOfCompartmentTicket}" name="priseOfCompartmentTicket"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('priseOfCompartmentTicket')}"
-                                  th:errors="*{priseOfCompartmentTicket}" style="color: red">
+                                    <th:block th:if="${numberOfCompartmentSeatsProblems}">
+                                        <p th:text="${numberOfCompartmentSeatsProblems}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.priseOfCompartmentTicket}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{priseOfCompartmentTicket}" name="priseOfCompartmentTicket"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('priseOfCompartmentTicket')}"
+                                          th:errors="*{priseOfCompartmentTicket}" style="color: red">
                             </span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.numberOfSuiteFreeSeats}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="number" min="0" class="form-control" th:field="*{numberOfSuiteFreeSeats}" name="numberOfSuiteFreeSeats"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('numberOfSuiteFreeSeats')}"
-                                  th:errors="*{numberOfSuiteFreeSeats}" style="color: red">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.numberOfSuiteFreeSeats}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="number" min="0" class="form-control" th:field="*{numberOfSuiteFreeSeats}" name="numberOfSuiteFreeSeats"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('numberOfSuiteFreeSeats')}"
+                                          th:errors="*{numberOfSuiteFreeSeats}" style="color: red">
                             </span>
-                            <th:block th:if="${numberOfSuiteSeatsProblems}">
-                                <p th:text="${numberOfSuiteSeatsProblems}" style="color: red"></p>
-                            </th:block>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mb-0">[[#{label.route.priseOfSuiteTicket}]]</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" th:field="*{priseOfSuiteTicket}" name="priseOfSuiteTicket"/>
-                            <span class="validationError"
-                                  th:if="${#fields.hasErrors('priseOfSuiteTicket')}"
-                                  th:errors="*{priseOfSuiteTicket}" style="color: red">
+                                    <th:block th:if="${numberOfSuiteSeatsProblems}">
+                                        <p th:text="${numberOfSuiteSeatsProblems}" style="color: red"></p>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">[[#{label.route.priseOfSuiteTicket}]]</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" th:field="*{priseOfSuiteTicket}" name="priseOfSuiteTicket"/>
+                                    <span class="validationError"
+                                          th:if="${#fields.hasErrors('priseOfSuiteTicket')}"
+                                          th:errors="*{priseOfSuiteTicket}" style="color: red">
                             </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <button type="submit" class="btn btn-outline-success btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addRoute}]]</button>
+            </form>
         </div>
-        <button type="submit" class="btn btn-outline-success btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addRoute}]]</button>
-    </form>
+    </main>
+
+    <div th:include="footer::foot"></div>
 </div>
 
-<div th:include="footer::foot"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
 </script>
