@@ -1,10 +1,7 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
 import com.example.springbootpetproject.customExceptions.cityExceptions.InvalidNameOfCity;
-import com.example.springbootpetproject.customExceptions.routeExceptions.DataCompareError;
-import com.example.springbootpetproject.customExceptions.routeExceptions.ProblemWithSeatsCount;
 import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
-import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
 import org.springframework.data.domain.Page;

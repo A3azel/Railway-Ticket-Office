@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Map;
 
 public interface UserServiceInterface {
 
@@ -31,6 +31,8 @@ public interface UserServiceInterface {
     void spendMoney(BigDecimal money,String userName);
 
     void setUserVerification(String username);
+
+    Map<String,String> changePassword(String oldPassword, String newPassword, String confirmedNewPassword, String username);
 
     UserDTO convertUserToUserDTO(User user);
 

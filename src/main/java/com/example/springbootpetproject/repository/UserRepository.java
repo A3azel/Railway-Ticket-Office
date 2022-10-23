@@ -34,5 +34,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "UPDATE user_info SET acount_verified = :newVerificationStatus WHERE username = :userName", nativeQuery = true)
     void setUserVerification(@Param("newVerificationStatus") boolean newVerificationStatus, @Param("userName") String userName);
 
+    @Modifying
+    @Query(value = "UPDATE user_info SET user_password =:newUserPassword WHERE username = :userName", nativeQuery = true)
+    void changeUserPassword(@Param("newUserPassword") String newUserPassword, @Param("userName") String userName);
+
 
 }

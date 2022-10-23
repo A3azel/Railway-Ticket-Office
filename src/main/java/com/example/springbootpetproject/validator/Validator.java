@@ -30,6 +30,10 @@ public class Validator {
         return password.equals(submitPassword);
     }
 
+    public static boolean isPasswordLengthValid(String password){
+        return password.length()>=8 && password.length()<=64;
+    }
+
     public static Map<String,String> routeValidator(RouteDTO routeDTO){
         Map<String,String> errorsMap = new HashMap<>();
         Train selectedTrain = null;

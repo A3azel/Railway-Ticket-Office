@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.springbootpetproject.controller.Paths.All_TRAINS_BETWEEN_CITIES_FILE;
 
@@ -74,7 +75,11 @@ public class TrainController {
     @GetMapping("/info")
     public String getInfoAboutChangedTrain(@RequestParam("id") String id, Model model){
         Route route = routeService.findRouteById(Long.parseLong(id));
-        List<UserCommentsDTO> userCommentsList = userCommentsService.findByTrainNumber(route.getTrain().getTrainNumber());
+        List<String> userCommentsList = userCommentsService
+                .findByTrainNumber(route.getTrain().getTrainNumber())
+                .stream()
+                .map(UserCommentsDTO::getUserComments)
+                .collect(Collectors.toList());
         model.addAttribute("userCommentsList",userCommentsList);
         model.addAttribute("selectedRoute",route);
         return "trainInfo";

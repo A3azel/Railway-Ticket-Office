@@ -13,7 +13,14 @@
 
 (function setDate(){
     "use strict";
+    let date = new Date();
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    date.setHours(date.getHours() + 1);
+    let currentDate = date.toISOString().substring(0, 10);
+    let currentTime = date.toISOString().substring(11, 16);
     const dataElement = document.getElementById('startDate');
-    dataElement.valueAsDate = new Date();
-    dataElement.setAttribute('min', new Date() );
+    const timeElement = document.getElementById('startTime');
+    dataElement.value = currentDate;
+    timeElement.value = currentTime;
 }());
+

@@ -121,7 +121,7 @@ public class RouteService implements RouteServiceInterface {
         Page<Route> routePage = routeRepository.findAllByStartStation_RelevantIsTrueAndArrivalStation_RelevantIsTrueAndStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
                 senderCity, cityOfArrival, selectedLocalDateTime, finalLocalDateTime, changePageable);
         Page<RouteDTO> routeDTOPage = routePage.map(this::convertRouteToRouteDTO);
-        if (routeDTOPage.getContent().size() == 0){
+        if (routeDTOPage.getContent().size() == 0 || selectedLocalDateTime.isBefore(LocalDateTime.now())){
             throw new RouteNotFound("No routes were found for this request");
         }
         return routeDTOPage;

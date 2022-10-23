@@ -112,7 +112,7 @@
                 </div>
                 <th:block th:if="${RouteNotFound}">
                     <div class="row justify-content-md-center">
-                        <div class="col col-lg-2">
+                        <div class="col col-lg-4">
                             <p th:text="${RouteNotFound}" style="color: red"></p>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                     </div>
                     <div class="col col-lg-2">
                         <label for="startTime" style="padding-bottom:20px">[[#{select.time.of.shipment}]]</label>
-                        <input  id="startTime" name="selectedTime" class="form-control" type="time" value="00:00" />
+                        <input  id="startTime" name="selectedTime" class="form-control" type="time" />
                     </div>
                 </div>
                 <div class="form-row text-center" style="padding-top: 20px">
@@ -157,14 +157,5 @@
 <script type="text/javascript" th:src="@{/JS/Internationalization.js}">
 
 </script>
-<!--<script>
-    $.ajax({method: "GET", url: "http://localhost:8080/"})
-    .done(function (){
-        alert("OK");
-    })
-    .fail(function (){
-        alert("Fail");
-    })
-</script>-->
 </body>
 </html>

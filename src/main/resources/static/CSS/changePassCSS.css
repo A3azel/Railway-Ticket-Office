@@ -23,3 +23,23 @@
 .pass_show .ptxt:hover {
     color: #333333;
 }
+
+.change-pass .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+}
+
+.change-pass .select-arrow {
+    top: 13px;
+}
+
+.error{
+    box-shadow: 0 0 15px red;
+}
+
+.errorMassage {
+    color: red;
+    display: none;
+}

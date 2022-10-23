@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.springbootpetproject.controller.Paths.PERSONAL_OFFICE_PAGE;
 
@@ -54,7 +55,15 @@ public class UserController {
     }
 
     @PostMapping("/changePassword")
-    public String getChangePassword(){
+    public String getChangePassword(HttpServletRequest request, Model model, Principal principal){
+        String oldPassword = request.getParameter("oldPass");
+        String newPassword = request.getParameter("newPass");
+        String conformedNewPassword = request.getParameter("confirmedNewPass");
+        Map<String,String> errorsMap = userService.changePassword(oldPassword,newPassword,conformedNewPassword,principal.getName());
+        if(!errorsMap.isEmpty()){
+            model.mergeAttributes(errorsMap);
+            return "changePassword";
+        }
         return "redirect:/user";
     }
 

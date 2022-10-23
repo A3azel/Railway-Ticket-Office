@@ -10,5 +10,6 @@ body {
 }
 
 main {
+    margin: 20px;
     flex: 1 1 auto;
 }

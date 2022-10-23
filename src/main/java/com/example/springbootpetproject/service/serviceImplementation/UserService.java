@@ -7,6 +7,7 @@ import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserRole;
 import com.example.springbootpetproject.repository.UserRepository;
 import com.example.springbootpetproject.service.serviceInterfaces.UserServiceInterface;
+import com.example.springbootpetproject.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -138,6 +141,34 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
+    @Transactional
+    public Map<String, String> changePassword(String oldPassword, String newPassword, String confirmedNewPassword, String username) {
+        Map<String,String> errorsMap = new HashMap<>();
+        User user = findUserByUsername(username);
+        String activePassword = user.getPassword();
+        String encodePassword = bCryptPasswordEncoder.passwordEncoder().encode(confirmedNewPassword);
+        if(!bCryptPasswordEncoder.passwordEncoder().matches(oldPassword,activePassword)){
+            errorsMap.put("activePasswordNotEquals","Wrong password!!!");
+        }
+        if(!Validator.isPasswordLengthValid(newPassword)){
+            errorsMap.put("firstPasswordError","length must be from 8 to 64 characters");
+        }
+        if(!Validator.isPasswordLengthValid(confirmedNewPassword)){
+            errorsMap.put("secondPasswordError","length must be from 8 to 64 characters");
+        }
+        if(!Validator.isTheSamePassword(newPassword,confirmedNewPassword)){
+            errorsMap.put("differentPasswords","different passwords");
+        }
+        if(!errorsMap.isEmpty()){
+            return errorsMap;
+        }
+
+        userRepository.changeUserPassword(encodePassword,username);
+
+        return errorsMap;
+    }
+
+    @Override
     public UserDTO convertUserToUserDTO(User user){
         log.debug("In the convertUserToUserDTO method");
         UserDTO userDTO = new UserDTO();
@@ -155,6 +186,4 @@ public class UserService implements UserServiceInterface {
         log.debug("End of convertUserToUserDTO method");
         return userDTO;
     }
-
-
 }
