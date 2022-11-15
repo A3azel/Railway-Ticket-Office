@@ -29,10 +29,10 @@ public interface StationRepository extends JpaRepository<Station,Long> {
     boolean existsByStationNameAndCity_CityName(String stationName,String cityName);
 
     @Modifying
-    @Query(value = "UPDATE station_list SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
+    @Query(value = "UPDATE station SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
     void setStationRelevant(@Param("changedRelevant") boolean changedRelevant, @Param("id") Long id);
 
     @Modifying
-    @Query(value = "UPDATE station_list SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
+    @Query(value = "UPDATE station SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
     void setStationRelevantByCity(@Param("changedRelevant") boolean changedRelevant, @Param("id") Long id);
 }

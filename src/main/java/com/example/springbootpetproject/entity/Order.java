@@ -13,9 +13,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "purchased_tickets")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-public class Orders implements Serializable {
+public class Order extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -24,29 +25,28 @@ public class Orders implements Serializable {
     @Column(name = "orders_prise")
     private BigDecimal orderPrise;
 
-    @Column(name = "order_time")
-    private LocalDateTime orderTime;
-
-    @Column(name = "count_of_purchased_tickets")
-    private int countOfPurchasedTickets;
-
-    //@OneToOne
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
-    /*@OneToMany(mappedBy = "train_id")
-    private Set<Train> trainSet;*/
-
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
     private Route route;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
+    private Set<NumberOfPurchasedTicketsTypes> numberOfPurchasedTicketsTypesSet;
+
+/*
+    @Column(name = "count_of_purchased_tickets")
+    private int countOfPurchasedTickets;
+*/
+
+
+/*    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_type_id")
     @JsonBackReference
-    private TicketType ticketType;
+    private TicketType ticketType;*/
 
 
 

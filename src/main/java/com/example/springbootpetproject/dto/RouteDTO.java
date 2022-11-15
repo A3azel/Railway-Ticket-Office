@@ -10,6 +10,7 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -44,10 +45,7 @@ public class RouteDTO {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime arrivalTime;
-   /* private LocalDate dateOfDispatch;
-    private LocalTime timeOfDispatch;
-    private LocalDate dateOfArrival;
-    private LocalTime timeOfArrival;*/
+
     @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 0 , message = "Count of compartment free seats can't negative")
@@ -79,5 +77,7 @@ public class RouteDTO {
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 0 , message = "Count of compartment free seats can't negative")
     private int numberOfSuiteSeats;
+
+    private List<String> intermediateStations;
 
 }

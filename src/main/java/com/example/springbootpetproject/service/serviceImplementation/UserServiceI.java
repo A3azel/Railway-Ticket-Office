@@ -5,8 +5,8 @@ import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserRole;
+import com.example.springbootpetproject.facade.UserFacade;
 import com.example.springbootpetproject.repository.UserRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.UserServiceInterface;
 import com.example.springbootpetproject.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +25,18 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class UserService implements UserServiceInterface {
+public class UserServiceI implements com.example.springbootpetproject.service.serviceInterfaces.UserService {
     private final UserRepository userRepository;
     private final CustomBCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenServiceI confirmationTokenServiceI;
+    private final UserFacade userFacade;
 
     @Autowired
-    public UserService(UserRepository userRepository, CustomBCryptPasswordEncoder bCryptPasswordEncoder, ConfirmationTokenService confirmationTokenService) {
+    public UserServiceI(UserRepository userRepository, CustomBCryptPasswordEncoder bCryptPasswordEncoder, ConfirmationTokenServiceI confirmationTokenServiceI, UserFacade userFacade) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.confirmationTokenService = confirmationTokenService;
+        this.confirmationTokenServiceI = confirmationTokenServiceI;
+        this.userFacade = userFacade;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class UserService implements UserServiceInterface {
                 user
         );
 
-        confirmationTokenService.saveToken(confirmationToken);
+        confirmationTokenServiceI.saveToken(confirmationToken);
         log.debug("End of findAllCity method");
         return token;
     }
@@ -90,7 +92,7 @@ public class UserService implements UserServiceInterface {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         Page<User> userPage = userRepository.findAll(changePageable);
-        Page<UserDTO> userDTOPage = userPage.map(this::convertUserToUserDTO);
+        Page<UserDTO> userDTOPage = userPage.map(userFacade::convertUserToUserDTO);
         return userDTOPage;
     }
 
@@ -168,22 +170,4 @@ public class UserService implements UserServiceInterface {
         return errorsMap;
     }
 
-    @Override
-    public UserDTO convertUserToUserDTO(User user){
-        log.debug("In the convertUserToUserDTO method");
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setLastName(user.getLastName());
-        userDTO.setUserCountOfMoney(user.getUserCountOfMoney());
-        userDTO.setAccountVerified(user.isAccountVerified());
-        userDTO.setUserRole(user.getUserRole().name());
-        userDTO.setUserGender(user.getUserGender().name());
-        userDTO.setUserEmail(user.getUserEmail());
-        userDTO.setUserPhone(user.getUserPhone());
-        log.info("UserDTO converted user: {}", userDTO);
-        log.debug("End of convertUserToUserDTO method");
-        return userDTO;
-    }
 }

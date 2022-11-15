@@ -2,7 +2,7 @@ package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.repository.ConfirmationTokenRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.ConfirmationTokenInterface;
+import com.example.springbootpetproject.service.serviceInterfaces.ConfirmationTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 
 @Service
 @Slf4j
-public class ConfirmationTokenService implements ConfirmationTokenInterface {
+public class ConfirmationTokenServiceI implements ConfirmationTokenService {
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
     @Autowired
-    public ConfirmationTokenService(ConfirmationTokenRepository confirmationTokenRepository) {
+    public ConfirmationTokenServiceI(ConfirmationTokenRepository confirmationTokenRepository) {
         this.confirmationTokenRepository = confirmationTokenRepository;
     }
 

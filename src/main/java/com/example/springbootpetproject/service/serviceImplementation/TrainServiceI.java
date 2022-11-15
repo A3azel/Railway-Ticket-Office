@@ -4,6 +4,7 @@ import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAl
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.TrainDTO;
 import com.example.springbootpetproject.entity.Train;
+import com.example.springbootpetproject.facade.TrainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,21 +14,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.TrainRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.TrainServiceInterface;
-
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Service
-public class TrainService implements TrainServiceInterface {
+public class TrainServiceI implements com.example.springbootpetproject.service.serviceInterfaces.TrainService {
     private final TrainRepository trainRepository;
+    public final TrainFacade trainFacade;
 
     @Autowired
-    public TrainService(TrainRepository trainRepository) {
+    public TrainServiceI(TrainRepository trainRepository, TrainFacade trainFacade) {
         this.trainRepository = trainRepository;
+        this.trainFacade = trainFacade;
     }
 
     @Override
@@ -48,7 +44,7 @@ public class TrainService implements TrainServiceInterface {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         Page<Train> trainPage = trainRepository.findAll(changePageable);
-        Page<TrainDTO> trainDTOPage = trainPage.map(this::convertTrainToTrainDTO);
+        Page<TrainDTO> trainDTOPage = trainPage.map(trainFacade::convertTrainToTrainDTO);
         return trainDTOPage;
     }
 
@@ -112,28 +108,7 @@ public class TrainService implements TrainServiceInterface {
         trainRepository.setTrainRelevant(newRelevant,id);
     }
 
-    @Override
-    public TrainDTO convertTrainToTrainDTO(Train train){
-        TrainDTO trainDTO = new TrainDTO();
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        trainDTO.setId(train.getId());
-        trainDTO.setCreated(formatter.format(train.getCreated()));
-        trainDTO.setUpdated(formatter.format(train.getUpdated()));
-        trainDTO.setCreatedBy(train.getCreatedBy());
-        trainDTO.setLastModifiedBy(train.getLastModifiedBy());
-        trainDTO.setTrainNumber(train.getTrainNumber());
-        trainDTO.setNumberOfCompartmentSeats(train.getNumberOfCompartmentSeats());
-        trainDTO.setNumberOfSuiteSeats(train.getNumberOfSuiteSeats());
-        trainDTO.setRelevant(train.isRelevant());
-        return trainDTO;
-    }
 
-    public LocalDateTime localDateTimeBuilder(String localDate,String localTime){
-        LocalDate selectedDates = LocalDate.parse(localDate);
-        LocalTime selectedTime = LocalTime.parse(localTime);
-        LocalDateTime localDateTime = LocalDateTime.of(selectedDates,selectedTime);
-        return localDateTime;
-    }
 
     public Train helpToBuildTrain(Train train){
         return null;

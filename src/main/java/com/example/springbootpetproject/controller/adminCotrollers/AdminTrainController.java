@@ -3,10 +3,11 @@ package com.example.springbootpetproject.controller.adminCotrollers;
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainAlreadyExist;
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.TrainDTO;
-import com.example.springbootpetproject.dto.UserCommentsDTO;
+import com.example.springbootpetproject.dto.UserCommentDTO;
 import com.example.springbootpetproject.entity.Train;
-import com.example.springbootpetproject.service.serviceImplementation.TrainService;
-import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;
+import com.example.springbootpetproject.facade.TrainFacade;
+import com.example.springbootpetproject.service.serviceImplementation.TrainServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserCommentServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,13 +25,15 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/train")
 public class AdminTrainController {
-    private final TrainService trainService;
-    private final UserCommentsService userCommentsService;
+    private final TrainServiceI trainServiceI;
+    private final UserCommentServiceI userCommentServiceI;
+    private final TrainFacade trainFacade;
 
     @Autowired
-    public AdminTrainController(TrainService trainService, UserCommentsService userCommentsService) {
-        this.trainService = trainService;
-        this.userCommentsService = userCommentsService;
+    public AdminTrainController(TrainServiceI trainServiceI, UserCommentServiceI userCommentServiceI, TrainFacade trainFacade) {
+        this.trainServiceI = trainServiceI;
+        this.userCommentServiceI = userCommentServiceI;
+        this.trainFacade = trainFacade;
     }
 
     @GetMapping("/all/page/{pageNumber}")
@@ -40,7 +42,7 @@ public class AdminTrainController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<TrainDTO> trainDTOPage = trainService.getAllTrain(pageable,pageNumber,direction,sort);
+        Page<TrainDTO> trainDTOPage = trainServiceI.getAllTrain(pageable,pageNumber,direction,sort);
         List<TrainDTO> trainList = trainDTOPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",trainDTOPage);
@@ -54,9 +56,8 @@ public class AdminTrainController {
 
     @GetMapping("/{id}")
     public String getTrainForAdminByID(Model model, @PathVariable("id") String id){
-        Train train = trainService.findTrainByID(Long.parseLong(id));
-        TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
-        System.out.println(selectedTrain);
+        Train train = trainServiceI.findTrainByID(Long.parseLong(id));
+        TrainDTO selectedTrain = trainFacade.convertTrainToTrainDTO(train);
         model.addAttribute("trainDTO",selectedTrain);
         return "changeTrainDetails";
     }
@@ -66,12 +67,12 @@ public class AdminTrainController {
         String trainNumber = request.getParameter("wantedTrain");
         Train train = null;
         try {
-            train = trainService.findTrainByTrainNumber(trainNumber);
+            train = trainServiceI.findTrainByTrainNumber(trainNumber);
         } catch (TrainNotFound e) {
             model.addAttribute("TrainNotFound", e.getMessage());
             return "forward:/admin/train/all/page/1";
         }
-        TrainDTO selectedTrain = trainService.convertTrainToTrainDTO(train);
+        TrainDTO selectedTrain = trainFacade.convertTrainToTrainDTO(train);
         model.addAttribute("trainDTO",selectedTrain);
         return "changeTrainDetails";
     }
@@ -82,7 +83,7 @@ public class AdminTrainController {
             return "changeTrainDetails";
         }
         try {
-            trainService.updateTrain(trainDTO,id);
+            trainServiceI.updateTrain(trainDTO,id);
         } catch (TrainAlreadyExist e) {
             model.addAttribute("TrainAlreadyExist", e.getMessage());
             return "changeTrainDetails";
@@ -103,7 +104,7 @@ public class AdminTrainController {
             return "addTrain";
         }
         try {
-            trainService.addTrain(train);
+            trainServiceI.addTrain(train);
         } catch (TrainAlreadyExist e) {
             model.addAttribute("TrainAlreadyExist", e.getMessage());
             return "addTrain";
@@ -113,7 +114,7 @@ public class AdminTrainController {
 
     @PostMapping("/delete/{id}")
     public String deleteTrain(@PathVariable("id") Long id){
-        trainService.deleteTrainByID(id);
+        trainServiceI.deleteTrainByID(id);
         return "redirect:/admin/train/all/page/1";
     }
 
@@ -123,8 +124,8 @@ public class AdminTrainController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<UserCommentsDTO> userCommentsDTOPage = userCommentsService.findAllCommentsForTrainByTrainID(id, pageable, pageNumber, direction, sort);
-        List<UserCommentsDTO> userCommentsDTOList = userCommentsDTOPage.getContent();
+        Page<UserCommentDTO> userCommentsDTOPage = userCommentServiceI.findAllCommentsForTrainByTrainID(id, pageable, pageNumber, direction, sort);
+        List<UserCommentDTO> userCommentsDTOList = userCommentsDTOPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",userCommentsDTOPage);
         model.addAttribute("userCommentsList",userCommentsDTOList);
@@ -138,13 +139,13 @@ public class AdminTrainController {
 
     @PostMapping("/delete/{trainId}/comment/{commentId}")
     public String deleteComment(@PathVariable("trainId") Long trainId, @PathVariable("commentId") Long commentId, Principal principal){
-        userCommentsService.deleteCommentForAdmin(commentId);
+        userCommentServiceI.deleteCommentForAdmin(commentId);
         return "redirect:/admin/train/all/comment/" + trainId + "/page/1";
     }
 
     @PostMapping("/relevant/{id}")
     public String setRelevant(@PathVariable("id") Long id){
-        trainService.setTrainRelevant(id);
+        trainServiceI.setTrainRelevant(id);
         return "redirect:/admin/train/all/page/1";
     }
 }

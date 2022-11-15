@@ -4,8 +4,8 @@ import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketA
 import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketNotFound;
 import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.TicketType;
-import com.example.springbootpetproject.entity.Train;
-import com.example.springbootpetproject.service.serviceImplementation.TicketTypeService;
+import com.example.springbootpetproject.facade.TicketTypeFacade;
+import com.example.springbootpetproject.service.serviceImplementation.TicketTypeServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,16 +18,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/ticket")
 public class AdminTicketsTypeController {
-    private final TicketTypeService ticketTypeService;
+    private final TicketTypeServiceI ticketTypeServiceI;
+    private final TicketTypeFacade ticketTypeFacade;
 
     @Autowired
-    public AdminTicketsTypeController(TicketTypeService ticketTypeService) {
-        this.ticketTypeService = ticketTypeService;
+    public AdminTicketsTypeController(TicketTypeServiceI ticketTypeServiceI, TicketTypeFacade ticketTypeFacade) {
+        this.ticketTypeServiceI = ticketTypeServiceI;
+        this.ticketTypeFacade = ticketTypeFacade;
     }
 
     @GetMapping("/all/page/{pageNumber}")
@@ -36,7 +37,7 @@ public class AdminTicketsTypeController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypeService.getAllTicketTypes(pageable, pageNumber, direction, sort);
+        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypeServiceI.getAllTicketTypes(pageable, pageNumber, direction, sort);
         List<TicketTypeDTO> ticketTypeDTOList = ticketTypeDTOPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",ticketTypeDTOPage);
@@ -53,12 +54,12 @@ public class AdminTicketsTypeController {
         String ticketType = request.getParameter("ticketName");
         TicketType selectedTicket = null;
         try {
-            selectedTicket = ticketTypeService.findByTicketName(ticketType);
+            selectedTicket = ticketTypeServiceI.findByTicketName(ticketType);
         } catch (TicketNotFound e) {
             model.addAttribute("TicketNotFound", e.getMessage());
             return "forward:/admin/ticket/all/page/1";
         }
-        TicketTypeDTO selectedTicketDTO = ticketTypeService.convertTicketTypeToTicketTypeDTO(selectedTicket);
+        TicketTypeDTO selectedTicketDTO = ticketTypeFacade.convertTicketTypeToTicketTypeDTO(selectedTicket);
         model.addAttribute("ticketTypeDTO", selectedTicketDTO);
         return "updateTicketInfo";
     }
@@ -70,7 +71,7 @@ public class AdminTicketsTypeController {
             return "updateTicketInfo";
         }
         try {
-            ticketTypeService.updateTicketInfo(ticketTypeDTO,id);
+            ticketTypeServiceI.updateTicketInfo(ticketTypeDTO,id);
         } catch (TicketAlreadyExist e) {
             model.addAttribute("TicketAlreadyExist", e.getMessage());
             return "updateTicketInfo";
@@ -80,8 +81,8 @@ public class AdminTicketsTypeController {
 
     @GetMapping("/{id}")
     public String getTicketById(Model model, @PathVariable("id") Long id){
-        TicketTypeDTO selectedTicket = ticketTypeService
-                .convertTicketTypeToTicketTypeDTO(ticketTypeService.getTicketById(id));
+        TicketTypeDTO selectedTicket = ticketTypeFacade
+                .convertTicketTypeToTicketTypeDTO(ticketTypeServiceI.getTicketById(id));
         model.addAttribute("ticketTypeDTO",selectedTicket);
         return "updateTicketInfo";
     }
@@ -98,7 +99,7 @@ public class AdminTicketsTypeController {
             return "addTicket";
         }
         try {
-            ticketTypeService.addTicketType(ticketType);
+            ticketTypeServiceI.addTicketType(ticketType);
         } catch (TicketAlreadyExist e) {
             model.addAttribute("TicketAlreadyExist", e.getMessage());
             return "addTicket";
@@ -108,13 +109,13 @@ public class AdminTicketsTypeController {
 
     @PostMapping("/delete/{id}")
     public String deleteTicket(@PathVariable("id") Long id){
-        ticketTypeService.deleteTicketById(id);
+        ticketTypeServiceI.deleteTicketById(id);
         return "redirect:/admin/ticket/all/page/1";
     }
 
     @PostMapping("/relevant/{id}")
     public String setRelevant(@PathVariable("id") Long id){
-        ticketTypeService.setTicketRelevant(id);
+        ticketTypeServiceI.setTicketRelevant(id);
         return "redirect:/admin/ticket/all/page/1";
     }
 }

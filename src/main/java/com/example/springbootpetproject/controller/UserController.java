@@ -1,13 +1,16 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.dto.OrdersDTO;
+import com.example.springbootpetproject.dto.OrderDTO;
 import com.example.springbootpetproject.dto.UserDTO;
-import com.example.springbootpetproject.entity.Orders;
+import com.example.springbootpetproject.entity.Order;
 import com.example.springbootpetproject.entity.User;
-import com.example.springbootpetproject.entity.UserComments;
-import com.example.springbootpetproject.service.serviceImplementation.OrdersService;
-import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;
-import com.example.springbootpetproject.service.serviceImplementation.UserService;
+import com.example.springbootpetproject.entity.UserComment;
+import com.example.springbootpetproject.facade.OrderFacade;
+import com.example.springbootpetproject.facade.UserFacade;
+import com.example.springbootpetproject.service.anotherServices.PDFService;
+import com.example.springbootpetproject.service.serviceImplementation.OrdersServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserCommentServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +18,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.context.WebContext;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
@@ -27,21 +34,34 @@ import static com.example.springbootpetproject.controller.Paths.PERSONAL_OFFICE_
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private final UserService userService;
-    private final OrdersService ordersService;
-    private final UserCommentsService userCommentsService;
+    private final UserServiceI userServiceI;
+    private final OrdersServiceI ordersServiceI;
+    private final UserCommentServiceI userCommentServiceI;
+    private final PDFService pdfService;
+    private final ServletContext servletContext;
+    private final OrderFacade orderFacade;
+    private final UserFacade userFacade;
 
     @Autowired
-    public UserController(UserService userService, OrdersService ordersService, UserCommentsService userCommentsService) {
-        this.userService = userService;
-        this.ordersService = ordersService;
-        this.userCommentsService = userCommentsService;
+    public UserController(UserServiceI userServiceI, OrdersServiceI ordersServiceI, UserCommentServiceI userCommentServiceI, PDFService pdfService, ServletContext servletContext, OrderFacade orderFacade, UserFacade userFacade) {
+        this.userServiceI = userServiceI;
+        this.ordersServiceI = ordersServiceI;
+        this.userCommentServiceI = userCommentServiceI;
+        this.pdfService = pdfService;
+        this.servletContext = servletContext;
+        this.orderFacade = orderFacade;
+        this.userFacade = userFacade;
     }
 
     @GetMapping
-    public String getUserPage(Model model, Principal principal){
-        User user = userService.findUserByUsername(principal.getName());
-        UserDTO selectedUser = userService.convertUserToUserDTO(user);
+    public String getUserPage(Model model, Principal principal, HttpSession session){
+        User user = userServiceI.findUserByUsername(principal.getName());
+        if(session.getAttribute("username")==null){
+            session.setAttribute("username",principal.getName());
+            session.setAttribute("role",user.getUserRole().name());
+            session.setAttribute("balance",user.getUserCountOfMoney());
+        }
+        UserDTO selectedUser = userFacade.convertUserToUserDTO(user);
         model.addAttribute("selectedUser",selectedUser);
         if(user.getUserRole().name().equals("USER")){
             return PERSONAL_OFFICE_PAGE;
@@ -59,7 +79,7 @@ public class UserController {
         String oldPassword = request.getParameter("oldPass");
         String newPassword = request.getParameter("newPass");
         String conformedNewPassword = request.getParameter("confirmedNewPass");
-        Map<String,String> errorsMap = userService.changePassword(oldPassword,newPassword,conformedNewPassword,principal.getName());
+        Map<String,String> errorsMap = userServiceI.changePassword(oldPassword,newPassword,conformedNewPassword,principal.getName());
         if(!errorsMap.isEmpty()){
             model.mergeAttributes(errorsMap);
             return "changePassword";
@@ -73,8 +93,8 @@ public class UserController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<OrdersDTO> ordersDTOPage =  ordersService.getAllUserOrdersByUserName(principal.getName(),pageable,pageNumber,direction,sort);
-        List<OrdersDTO> ordersListContext = ordersDTOPage.getContent();
+        Page<OrderDTO> ordersDTOPage =  ordersServiceI.getAllUserOrdersByUserName(principal.getName(),pageable,pageNumber,direction,sort);
+        List<OrderDTO> ordersListContext = ordersDTOPage.getContent();
         /*int totalPages = ordersList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -94,13 +114,28 @@ public class UserController {
 
     @GetMapping("/myOrders/{id}")
     public String getMyOrdersById(Model model, @PathVariable("id") long id, Principal principal){
-        Orders selectedOrder = ordersService.getOrderById(id);
-        UserComments comment = userCommentsService.findByUserNameAndTrainNumber(principal.getName(),selectedOrder.getRoute().getTrain().getTrainNumber());
+        Order selectedOrder = ordersServiceI.getOrderById(id);
+        UserComment comment = userCommentServiceI.findByUserNameAndTrainNumber(principal.getName(),selectedOrder.getRoute().getTrain().getTrainNumber());
         if(selectedOrder.getUser().getUsername().equals(principal.getName())){
-            model.addAttribute("selectedOrder",selectedOrder);
+            model.addAttribute("selectedOrder",orderFacade .convertOrdersToOrdersDTO(selectedOrder));
             model.addAttribute("comment",comment);
         }
         return "userSelectedOrder";
+    }
+
+    @PostMapping("/myOrders/pdf/send/{id}")
+    public String generateAndSendPDF(@PathVariable("id") long id, Principal principal){
+        pdfService.sendTicket(id,principal.getName());
+        return "redirect:/user/myOrders/"+id;
+    }
+
+    @GetMapping("/myOrders/pdf/{id}")
+    public void generateAndDownloadPDF(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") long id, Principal principal){
+        Order order = ordersServiceI.getOrderById(id);
+
+        //WebContext context = new WebContext(request, response, servletContext);
+        //context.setVariable("orderEntry", order);
+
     }
 
     @PostMapping("/topUpAccount")
@@ -108,7 +143,7 @@ public class UserController {
         String username = principal.getName();
         String moneyString = request.getParameter("countOfMoney");
         BigDecimal money = BigDecimal.valueOf(Long.parseLong(moneyString));
-        userService.topUpAccount(money,username);
+        userServiceI.topUpAccount(money,username);
         return "redirect:/user";
     }
 

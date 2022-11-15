@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCommentsDTO {
+public class UserCommentDTO {
     private Long id;
     private String created;
     private String updated;
     private String createdBy;
     private String lastModifiedBy;
     @Size(max = 5000, message = "Comment cannot be longer than 5000 characters")
-    private String userComments;
+    private String userComment;
     private String username;
     private String trainNumber;
 }

@@ -1,10 +1,10 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
-import com.example.springbootpetproject.dto.UserCommentsDTO;
+import com.example.springbootpetproject.dto.UserCommentDTO;
 import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.User;
-import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;
-import com.example.springbootpetproject.service.serviceImplementation.UserService;
+import com.example.springbootpetproject.service.serviceImplementation.UserCommentServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,18 +14,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin/users")
 public class AdminUsersController {
-    private final UserService userService;
-    private final UserCommentsService userCommentsService;
+    private final UserServiceI userServiceI;
+    private final UserCommentServiceI userCommentServiceI;
 
     @Autowired
-    public AdminUsersController(UserService userService, UserCommentsService userCommentsService) {
-        this.userService = userService;
-        this.userCommentsService = userCommentsService;
+    public AdminUsersController(UserServiceI userServiceI, UserCommentServiceI userCommentServiceI) {
+        this.userServiceI = userServiceI;
+        this.userCommentServiceI = userCommentServiceI;
     }
 
     @GetMapping("/all/page/{pageNumber}")
@@ -34,7 +36,7 @@ public class AdminUsersController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<UserDTO> userDTOPage = userService.getAllUsers(pageable,pageNumber,direction,sort);
+        Page<UserDTO> userDTOPage = userServiceI.getAllUsers(pageable,pageNumber,direction,sort);
         List<UserDTO> userList = userDTOPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",userDTOPage);
@@ -49,7 +51,7 @@ public class AdminUsersController {
 
     @GetMapping("/selectedUser/{userName}")
     public String getSelectedUser(HttpServletRequest request, Model model, @PathVariable("userName") String userName){
-        User user = userService.findUserByUsername(userName);
+        User user = userServiceI.findUserByUsername(userName);
         model.addAttribute("infoAboutPage",request.getParameter("infoAboutPage"));
         model.addAttribute("selectedUser", user);
         return "userInfoForAdmin";
@@ -57,7 +59,7 @@ public class AdminUsersController {
 
     @PostMapping("/selectedUser/changStatus/{userName}")
     public String changeUserStatus(HttpServletRequest request, @PathVariable("userName") String userName){
-        userService.setUserVerification(userName);
+        userServiceI.setUserVerification(userName);
         String pageNumber = request.getParameter("infoAboutPage");
         return "redirect:/admin/users/all/page/" + pageNumber;
     }
@@ -73,8 +75,8 @@ public class AdminUsersController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<UserCommentsDTO> userCommentsDTOPage = userCommentsService.findAllUserComments(userName,pageable,pageNumber,direction,sort);
-        List<UserCommentsDTO> userCommentsList = userCommentsDTOPage.getContent();
+        Page<UserCommentDTO> userCommentsDTOPage = userCommentServiceI.findAllUserComments(userName,pageable,pageNumber,direction,sort);
+        List<UserCommentDTO> userCommentsList = userCommentsDTOPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",userCommentsDTOPage);
         model.addAttribute("userCommentsList",userCommentsList);
@@ -85,9 +87,10 @@ public class AdminUsersController {
         return "allUserComments";
     }
 
-    @PostMapping("/selectedUser/comment/{id}")
-    public String deleteUserComment(Model model,@PathVariable("id")Long id){
-        userCommentsService.deleteCommentForAdmin(id);
-        return null;
+    @PostMapping("/{username}/comment/delete/{id}")
+    public String deleteUserComment(@PathVariable("username")String username, @PathVariable("id")Long id
+            ,@RequestParam("page") int page){
+        userCommentServiceI.deleteCommentForAdmin(id);
+        return "redirect:/admin/users/selectedUser/"+ URLEncoder.encode(username, StandardCharsets.UTF_8) +"/comment/page/" + page;
     }
 }

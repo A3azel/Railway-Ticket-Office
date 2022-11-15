@@ -15,13 +15,13 @@
 
     <main>
         <th:block th:each="userComment : ${userCommentsList}">
-            <div class="card">
+            <div class="card" style="margin: 20px">
                 <h5 class="card-header">
                     <a th:href="@{'/admin/users/selectedUser/' + ${userComment.username}}">[[${userComment.username}]]</a>
                 </h5>
                 <div class="card-body">
-                    <h5 class="card-title">[[${userComment.updated}]]</h5>
-                    <p class="card-text">[[${userComment.userComments}]]</p>
+                    <h6 class="card-title">[[${userComment.updated}]]</h6>
+                    <p class="card-text">[[${userComment.userComment}]]</p>
                     <form method="post" th:action="@{'/admin/train/delete/' + ${trainId} + '/comment/1'}">
                         <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>Delete</button>
                     </form>

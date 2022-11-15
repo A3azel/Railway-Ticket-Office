@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public interface UserServiceInterface {
+public interface UserService {
 
     String addUser(User user);
 
@@ -33,7 +33,4 @@ public interface UserServiceInterface {
     void setUserVerification(String username);
 
     Map<String,String> changePassword(String oldPassword, String newPassword, String confirmedNewPassword, String username);
-
-    UserDTO convertUserToUserDTO(User user);
-
 }

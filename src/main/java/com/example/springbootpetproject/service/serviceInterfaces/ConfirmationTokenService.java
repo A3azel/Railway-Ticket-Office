@@ -2,7 +2,7 @@ package com.example.springbootpetproject.service.serviceInterfaces;
 
 import com.example.springbootpetproject.entity.ConfirmationToken;
 
-public interface ConfirmationTokenInterface {
+public interface ConfirmationTokenService {
 
     ConfirmationToken findByToken(String token);
 

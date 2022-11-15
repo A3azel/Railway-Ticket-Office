@@ -10,12 +10,13 @@ import org.springframework.format.annotation.NumberFormat;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "route")
@@ -77,4 +78,14 @@ public class Route extends BaseEntity implements Serializable {
     @JoinColumn(name = "train_id")
     @JsonBackReference
     private Train train;
+
+    @OneToMany(mappedBy = "route",fetch = FetchType.LAZY)
+    private Set<Order> ordersSet;
+
+    @ManyToMany
+    @JoinTable(name = "intermediate_stations"
+            ,joinColumns = {@JoinColumn(name = "route_id")}
+            ,inverseJoinColumns = {@JoinColumn(name = "station_id")})
+    private List<Station> stationList;
+
 }

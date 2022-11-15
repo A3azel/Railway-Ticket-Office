@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.service.serviceImplementation.StationService;
+import com.example.springbootpetproject.service.serviceImplementation.StationServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/station")
 public class StationController {
-    public final StationService stationService;
+    public final StationServiceI stationServiceI;
 
     @Autowired
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
+    public StationController(StationServiceI stationServiceI) {
+        this.stationServiceI = stationServiceI;
     }
 
 }

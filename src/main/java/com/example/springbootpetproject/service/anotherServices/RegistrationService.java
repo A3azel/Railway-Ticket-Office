@@ -4,8 +4,8 @@ import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserGender;
 import com.example.springbootpetproject.entity.UserRole;
-import com.example.springbootpetproject.service.serviceImplementation.ConfirmationTokenService;
-import com.example.springbootpetproject.service.serviceImplementation.UserService;
+import com.example.springbootpetproject.service.serviceImplementation.ConfirmationTokenServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserServiceI;
 import com.example.springbootpetproject.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ import java.util.Map;
 @Slf4j
 public class RegistrationService {
 
-    private final UserService userService;
-    private final ConfirmationTokenService confirmationTokenService;
+    private final UserServiceI userServiceI;
+    private final ConfirmationTokenServiceI confirmationTokenServiceI;
     private final MailService mailService;
 
     @Autowired
-    public RegistrationService(UserService userService, ConfirmationTokenService confirmationTokenService, MailService mailService) {
-        this.userService = userService;
-        this.confirmationTokenService = confirmationTokenService;
+    public RegistrationService(UserServiceI userServiceI, ConfirmationTokenServiceI confirmationTokenServiceI, MailService mailService) {
+        this.userServiceI = userServiceI;
+        this.confirmationTokenServiceI = confirmationTokenServiceI;
         this.mailService = mailService;
     }
 
@@ -36,11 +36,11 @@ public class RegistrationService {
     public Map<String,String> sendRegistrationConfirmationEmail(User user, String secondPassword, String userGender) {
         log.debug("In the sendRegistrationConfirmationEmail method");
         Map<String,String> errorsMap = new HashMap<>();
-        if(userService.existsUserByUsername(user.getUsername())){
+        if(userServiceI.existsUserByUsername(user.getUsername())){
             log.warn("the user with {} name already exist",user.getUsername());
             errorsMap.put("userAlreadyExists","user with selected name already exists");
         }
-        if(userService.existsUserByUserEmail(user.getUserEmail())){
+        if(userServiceI.existsUserByUserEmail(user.getUserEmail())){
             log.warn("email with {} name already exists",user.getUserEmail() );
             errorsMap.put("emailAlreadyExists","email with selected name already exists");
         }
@@ -55,7 +55,7 @@ public class RegistrationService {
         user.setUserRole(UserRole.USER);
         user.setUserGender(UserGender.valueOf(userGender));
         log.info("Trying to add a user");
-        String token = userService.addUser(user);
+        String token = userServiceI.addUser(user);
         String link = "http://localhost:8080/registration/activate?token=" + token;
         mailService.sendSimpleMessage(
                 user.getUserEmail(),
@@ -69,7 +69,7 @@ public class RegistrationService {
     @Transactional
     public void confirmToken(String token){
         log.debug("In the confirmToken method");
-        ConfirmationToken confirmationToken = confirmationTokenService.findByToken(token);
+        ConfirmationToken confirmationToken = confirmationTokenServiceI.findByToken(token);
 
         if(confirmationToken == null){
             log.warn("token {} not found",token);
@@ -80,16 +80,16 @@ public class RegistrationService {
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
             log.info("token {} is expired",token);
-            userService.deleteUserById(confirmationToken.getUser().getId());
-            confirmationTokenService.deleteToken(token);
+            userServiceI.deleteUserById(confirmationToken.getUser().getId());
+            confirmationTokenServiceI.deleteToken(token);
         }
         //confirmationTokenService.updateConfirmedAt(token);
 
         User user = confirmationToken.getUser();
         user.setAccountVerified(true);
         log.info("Saving user {}", user.getUsername());
-        userService.save(user);
-        confirmationTokenService.deleteToken(token);
+        userServiceI.save(user);
+        confirmationTokenServiceI.deleteToken(token);
         log.debug("End of confirmToken method");
 
     }

@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-public interface CityServiceInterface {
+public interface CityService {
     Page<CityDTO> findAllCity(Pageable pageable, int pageNumber, String direction, String sort);
 
     void addCity(City city) throws CityAlreadyExist;
@@ -23,6 +23,4 @@ public interface CityServiceInterface {
     City findCityById(Long id);
 
     void setCityRelevant(Long id);
-
-    CityDTO convertCityToCityDTO(City city);
 }

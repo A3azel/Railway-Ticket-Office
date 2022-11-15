@@ -5,6 +5,7 @@ import com.example.springbootpetproject.customExceptions.stationExceptions.Stati
 import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
+import com.example.springbootpetproject.facade.StationFacade;
 import com.example.springbootpetproject.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,20 +16,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.StationRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.StationServiceInterface;
-
-import java.text.Format;
-import java.text.SimpleDateFormat;
 
 @Service
-public class StationService implements StationServiceInterface {
+public class StationServiceI implements com.example.springbootpetproject.service.serviceInterfaces.StationService {
     private final StationRepository stationRepository;
     private final CityRepository cityRepository;
+    private final StationFacade stationFacade;
 
     @Autowired
-    public StationService(StationRepository stationRepository, CityRepository cityRepository) {
+    public StationServiceI(StationRepository stationRepository, CityRepository cityRepository, StationFacade stationFacade) {
         this.stationRepository = stationRepository;
         this.cityRepository = cityRepository;
+        this.stationFacade = stationFacade;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class StationService implements StationServiceInterface {
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         return stationRepository
                 .getStationByCity_CityName(cityName,changePageable)
-                .map(this::convertStationToStationDTO);
+                .map(stationFacade::convertStationToStationDTO);
     }
 
     @Override
@@ -119,18 +118,4 @@ public class StationService implements StationServiceInterface {
         stationRepository.setStationRelevantByCity(relevant,id);
     }
 
-    @Override
-    public StationDTO convertStationToStationDTO(Station station){
-        StationDTO stationDTO = new StationDTO();
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        stationDTO.setId(station.getId());
-        stationDTO.setCreated(formatter.format(station.getCreated()));
-        stationDTO.setUpdated(formatter.format(station.getUpdated()));
-        stationDTO.setCreatedBy(station.getCreatedBy());
-        stationDTO.setLastModifiedBy(station.getLastModifiedBy());
-        stationDTO.setStationName(station.getStationName());
-        stationDTO.setCityName(station.getCity().getCityName());
-        stationDTO.setRelevant(station.isRelevant());
-        return stationDTO;
-    }
 }

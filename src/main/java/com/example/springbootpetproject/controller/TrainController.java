@@ -2,11 +2,12 @@ package com.example.springbootpetproject.controller;
 
 import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
-import com.example.springbootpetproject.dto.UserCommentsDTO;
+import com.example.springbootpetproject.dto.UserCommentDTO;
 import com.example.springbootpetproject.entity.Route;
-import com.example.springbootpetproject.service.serviceImplementation.RouteService;
-import com.example.springbootpetproject.service.serviceImplementation.TrainService;
-import com.example.springbootpetproject.service.serviceImplementation.UserCommentsService;
+import com.example.springbootpetproject.entity.User;
+import com.example.springbootpetproject.service.serviceImplementation.RouteServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserCommentServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,16 +29,15 @@ import static com.example.springbootpetproject.controller.Paths.All_TRAINS_BETWE
 @Controller
 @RequestMapping("/train")
 public class TrainController {
-
-    public final TrainService trainService;
-    public final UserCommentsService userCommentsService;
-    private final RouteService routeService;
+    private final UserServiceI userServiceI;
+    private final UserCommentServiceI userCommentServiceI;
+    private final RouteServiceI routeServiceI;
 
     @Autowired
-    public TrainController(TrainService trainService, UserCommentsService userCommentsService, RouteService routeService) {
-        this.trainService = trainService;
-        this.userCommentsService = userCommentsService;
-        this.routeService = routeService;
+    public TrainController(UserServiceI userServiceI, UserCommentServiceI userCommentServiceI, RouteServiceI routeServiceI) {
+        this.userServiceI = userServiceI;
+        this.userCommentServiceI = userCommentServiceI;
+        this.routeServiceI = routeServiceI;
     }
 
     @GetMapping("/between/page/{pageNumber}")
@@ -49,7 +51,7 @@ public class TrainController {
 
         Page<RouteDTO> routeDTOPage = null;
             try {
-                routeDTOPage = routeService.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber,direction,sort);
+                routeDTOPage = routeServiceI.getAllWayBetweenCitiesWithTime(cityOfDeparture,cityOfArrival,selectedDatesString,selectedTimeString,pageable,pageNumber,direction,sort);
             } catch (RouteNotFound e) {
                 model.addAttribute("RouteNotFound", e.getMessage());
                 return "mainPage";
@@ -73,12 +75,18 @@ public class TrainController {
     }
 
     @GetMapping("/info")
-    public String getInfoAboutChangedTrain(@RequestParam("id") String id, Model model){
-        Route route = routeService.findRouteById(Long.parseLong(id));
-        List<String> userCommentsList = userCommentsService
+    public String getInfoAboutChangedTrain(@RequestParam("id") String id, Model model, Principal principal, HttpSession session){
+        if(session.getAttribute("username")==null){
+            User user = userServiceI.findUserByUsername(principal.getName());
+            session.setAttribute("username",principal.getName());
+            session.setAttribute("role",user.getUserRole().name());
+            session.setAttribute("balance",user.getUserCountOfMoney());
+        }
+        Route route = routeServiceI.findRouteById(Long.parseLong(id));
+        List<String> userCommentsList = userCommentServiceI
                 .findByTrainNumber(route.getTrain().getTrainNumber())
                 .stream()
-                .map(UserCommentsDTO::getUserComments)
+                .map(UserCommentDTO::getUserComment)
                 .collect(Collectors.toList());
         model.addAttribute("userCommentsList",userCommentsList);
         model.addAttribute("selectedRoute",route);

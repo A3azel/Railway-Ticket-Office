@@ -1,5 +1,5 @@
  <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/CSS/roundButton.css}" rel="stylesheet">
@@ -39,18 +39,28 @@
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                         </li>
                     </ul>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="padding-right: 20px">
-                        <form style="padding: 10px" th:action="@{/registration}" method="get">
-                            <input type="submit" class="btn btn-outline-warning" value="Баланс рахунку">
+                    <div class="d-grid gap-4 d-md-flex justify-content-md-end">
+                        <th:block th:if="${session.username==null}">
+                            <form method="get" th:action="@{/login}">
+                                <button class="btn btn-outline-primary" type="submit">[[#{head.button.login}]]</button>
+                            </form>
+                        </th:block>
+                        <th:block th:unless="${session.username==null}">
+                            <th:block th:if="${session.role=='USER'}">
+                                <form th:action="@{/user}" method="get">
+                                    <input type="submit" class="btn btn-outline-warning" th:value="'Баланс рахунку ' + ${session.balance} + ' ₴'">
+                                </form>
+                                <button class="btn btn-outline-success btn-circle" type="button" style="margin-top: 10px">
+                                    <i class="bi bi-basket2"></i>
+                                </button>
+                            </th:block>
+                            <form method="get" th:action="@{/logout}">
+                                <button class="btn btn-outline-primary" type="submit">[[#{logout}]]</button>
+                            </form>
+                        </th:block>
+                        <form method="get" th:action="@{/registration}">
+                            <button class="btn btn-primary" type="submit">[[#{head.button.singup}]]</button>
                         </form>
-                        <button class="btn btn-outline-success btn-circle" type="button" style="margin-top: 10px">
-                            <i class="bi bi-basket2"></i>
-                        </button>
-                    </div>
-
-                    <div class="d-grid gap-3 d-md-flex justify-content-md-end">
-                        <button class="btn btn-outline-primary" type="button">[[#{head.button.login}]]</button>
-                        <button class="btn btn-primary" type="button">[[#{head.button.singup}]]</button>
                     </div>
                 </div>
             </div>

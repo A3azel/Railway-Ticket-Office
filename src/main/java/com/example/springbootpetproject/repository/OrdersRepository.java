@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.repository;
 
-import com.example.springbootpetproject.entity.Orders;
+import com.example.springbootpetproject.entity.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,17 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrdersRepository extends JpaRepository<Orders,Long> {
-    List<Orders> getAllByUser_Id(Long Id);
+public interface OrdersRepository extends JpaRepository<Order,Long> {
+    List<Order> getAllByUser_Id(Long Id);
 
-    //List<Orders> getAllByUser_username(String username);
+    Page<Order> getAllByUser_username(String username, Pageable pageable);
 
-    //
-    Page<Orders> getAllByUser_username(String username, Pageable pageable);
-
-    Orders getOrdersById(Long Id);
+    Order getOrdersById(Long Id);
 
     boolean existsOrdersByUser_usernameAndRoute_Train_TrainNumber(String username, String trainNumber);
 
-
+    boolean existsOrdersByUser_usernameAndId(String username, Long orderID);
 }

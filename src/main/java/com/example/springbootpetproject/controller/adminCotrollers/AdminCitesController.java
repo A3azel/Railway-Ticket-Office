@@ -4,7 +4,7 @@ import com.example.springbootpetproject.customExceptions.cityExceptions.CityAlre
 import com.example.springbootpetproject.customExceptions.cityExceptions.CityNotFound;
 import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
-import com.example.springbootpetproject.service.serviceImplementation.CityService;
+import com.example.springbootpetproject.service.serviceImplementation.CityServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +22,11 @@ import java.util.List;
 @RequestMapping("/admin/city")
 public class AdminCitesController {
 
-    private final CityService cityService;
+    private final CityServiceI cityServiceI;
 
     @Autowired
-    public AdminCitesController(CityService cityService) {
-        this.cityService = cityService;
+    public AdminCitesController(CityServiceI cityServiceI) {
+        this.cityServiceI = cityServiceI;
     }
 
     @GetMapping("/all/page/{pageNumber}")
@@ -35,7 +35,7 @@ public class AdminCitesController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<CityDTO> cityPage = cityService.findAllCity(pageable,pageNumber,direction,sort);
+        Page<CityDTO> cityPage = cityServiceI.findAllCity(pageable,pageNumber,direction,sort);
         List<CityDTO> cityList = cityPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",cityPage);
@@ -51,7 +51,7 @@ public class AdminCitesController {
     @GetMapping("/find")
     public String findCity(@RequestParam("cityName")String cityName, Model model){
         try {
-            cityService.findByCityName(cityName);
+            cityServiceI.findByCityName(cityName);
         } catch (CityNotFound e) {
             model.addAttribute("CityNotFound", e.getMessage());
             return "forward:/admin/city/all/page/1";
@@ -71,7 +71,7 @@ public class AdminCitesController {
             return "addCity";
         }
         try {
-            cityService.addCity(city);
+            cityServiceI.addCity(city);
         } catch (CityAlreadyExist e) {
             model.addAttribute("CityIsAlreadyExist", e.getMessage());
             return "addCity";
@@ -81,7 +81,7 @@ public class AdminCitesController {
 
     @PostMapping("/relevant/{id}")
     public String setRelevant(@PathVariable("id") Long id){
-        cityService.setCityRelevant(id);
+        cityServiceI.setCityRelevant(id);
         return "redirect:/admin/city/all/page/1";
     }
 

@@ -3,7 +3,8 @@ package com.example.springbootpetproject.controller.adminCotrollers;
 import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
-import com.example.springbootpetproject.service.serviceImplementation.RouteService;
+import com.example.springbootpetproject.facade.RouteFacade;
+import com.example.springbootpetproject.service.serviceImplementation.RouteServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,11 +21,13 @@ import java.util.Map;
 @Controller
 @RequestMapping("/admin/route")
 public class AdminRoutesController {
-    private final RouteService routeService;
+    private final RouteServiceI routeServiceI;
+    private final RouteFacade routeFacade;
 
     @Autowired
-    public AdminRoutesController(RouteService routeService) {
-        this.routeService = routeService;
+    public AdminRoutesController(RouteServiceI routeServiceI, RouteFacade routeFacade) {
+        this.routeServiceI = routeServiceI;
+        this.routeFacade = routeFacade;
     }
 
     @GetMapping("/all/page/{pageNumber}")
@@ -33,7 +36,7 @@ public class AdminRoutesController {
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<RouteDTO> routeDTOPage = routeService.getAll(pageable,pageNumber,direction,sort);
+        Page<RouteDTO> routeDTOPage = routeServiceI.getAll(pageable,pageNumber,direction,sort);
         List<RouteDTO> routeDTOList = routeDTOPage.getContent();
         model.addAttribute("pageNumber",pageNumber);
         model.addAttribute("pageable",routeDTOPage);
@@ -47,7 +50,7 @@ public class AdminRoutesController {
 
     @PostMapping("/delete/{id}")
     public String deleteRoute(@PathVariable("id") Long id){
-        routeService.deleteRoute(id);
+        routeServiceI.deleteRoute(id);
         return "redirect:/admin/route/all/page/1";
     }
 
@@ -55,12 +58,12 @@ public class AdminRoutesController {
     public String getRouteForAdminByID(Model model, @PathVariable("id") Long id){
         Route route = null;
         try {
-            route = routeService.findById(id);
+            route = routeServiceI.findById(id);
         } catch (RouteNotFound e) {
             model.addAttribute("RouteNotFound",e.getMessage());
             return "forward:/admin/route/all/page/1";
         }
-        RouteDTO selectedRoute = routeService.convertRouteToRouteDTO(route);
+        RouteDTO selectedRoute = routeFacade.convertRouteToRouteDTO(route);
         model.addAttribute("routeDTO",selectedRoute);
         return "changeRouteDetails";
     }
@@ -70,7 +73,7 @@ public class AdminRoutesController {
         if(errors.hasErrors()){
             return "changeRouteDetails";
         }
-        Map<String,String> errorsMap = routeService.updateRoute(routeDTO,id);
+        Map<String,String> errorsMap = routeServiceI.updateRoute(routeDTO,id);
         if(!errorsMap.isEmpty()){
             model.mergeAttributes(errorsMap);
             return "changeRouteDetails";
@@ -90,24 +93,24 @@ public class AdminRoutesController {
             return "addRoute";
         }
 
-        Map<String,String> errorsMap = routeService.addRoute(routeDTO);
+        Map<String,String> errorsMap = routeServiceI.addRoute(routeDTO);
         if(!errorsMap.isEmpty()){
             model.mergeAttributes(errorsMap);
             return "addRoute";
         }
-        return "redirect:/admin/route/all/route/page/1";
+        return "redirect:/admin/route/all/page/1";
     }
 
     @GetMapping("/find")
     public String findRouteByID(Model model, @RequestParam("id") Long id){
         Route route = null;
         try {
-            route = routeService.findById(id);
+            route = routeServiceI.findById(id);
         } catch (RouteNotFound e) {
             model.addAttribute("RouteNotFound",e.getMessage());
             return "forward:/admin/route/all/page/1";
         }
-        RouteDTO selectedRoute = routeService.convertRouteToRouteDTO(route);
+        RouteDTO selectedRoute = routeFacade.convertRouteToRouteDTO(route);
         model.addAttribute("routeDTO",selectedRoute);
         return "changeRouteDetails";
     }

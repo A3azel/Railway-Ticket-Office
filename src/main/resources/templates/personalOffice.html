@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" th:href="@{/CSS/personalOffise.css}">
+    <link th:href="@{/CSS/personalOffice.css}" rel="stylesheet">
     <link th:href="@{/CSS/footer.css}" rel="stylesheet">
 </head>
 <body>
@@ -46,7 +46,7 @@
                         <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
                         <div class="d-flex justify-content-center mb-3">
                             <form method="get" th:action="@{/user/myOrders/page/1}">
-                                <button type="submit" class="btn btn-primary">[[#{head.link.orders}]]</button>
+                                <button type="submit" class="btn btn-outline-primary">[[#{head.link.orders}]]</button>
                             </form>
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -141,6 +141,6 @@
 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script th:src="@{/JS/forPersonalOffise.js}"></script>
+<script th:src="@{/JS/personalOffice.js}"></script>
 </body>
 </html>

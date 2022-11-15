@@ -4,8 +4,8 @@ import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketA
 import com.example.springbootpetproject.customExceptions.ticketExeptions.TicketNotFound;
 import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.TicketType;
+import com.example.springbootpetproject.facade.TicketTypeFacade;
 import com.example.springbootpetproject.repository.TicketTypeRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.TicketTypeServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,20 +15,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class TicketTypeService implements TicketTypeServiceInterface {
+public class TicketTypeServiceI implements com.example.springbootpetproject.service.serviceInterfaces.TicketTypeService {
     private final TicketTypeRepository ticketTypeRepository;
+    private final TicketTypeFacade ticketTypeFacade;
 
     @Autowired
-    public TicketTypeService(TicketTypeRepository ticketTypeRepository) {
+    public TicketTypeServiceI(TicketTypeRepository ticketTypeRepository, TicketTypeFacade ticketTypeFacade) {
         this.ticketTypeRepository = ticketTypeRepository;
+        this.ticketTypeFacade = ticketTypeFacade;
     }
 
     @Override
@@ -77,7 +75,7 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         Page<TicketType> ticketTypes = ticketTypeRepository.findAll(changePageable);
-        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypes.map(this::convertTicketTypeToTicketTypeDTO);
+        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypes.map(ticketTypeFacade::convertTicketTypeToTicketTypeDTO);
         return ticketTypeDTOPage;
     }
 
@@ -87,7 +85,7 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         Pageable changePageable = PageRequest.of(pageNumber - 1, pageable.getPageSize()
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         Page<TicketType> ticketTypes = ticketTypeRepository.findAll(changePageable);
-        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypes.map(this::convertTicketTypeToTicketTypeDTO);
+        Page<TicketTypeDTO> ticketTypeDTOPage = ticketTypes.map(ticketTypeFacade::convertTicketTypeToTicketTypeDTO);
         return ticketTypeDTOPage;
     }
 
@@ -97,7 +95,7 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         List<TicketType> ticketTypeList = ticketTypeRepository.findAll();
         return ticketTypeList
                 .stream()
-                .map(this::convertTicketTypeToTicketTypeDTO)
+                .map(ticketTypeFacade::convertTicketTypeToTicketTypeDTO)
                 .collect(Collectors.toList());
     }
 
@@ -138,21 +136,5 @@ public class TicketTypeService implements TicketTypeServiceInterface {
         boolean notIsRelevant = !isRelevant;
         ticketTypeRepository.setTicketRelevant(notIsRelevant,id);
     }
-
-    @Override
-    public TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketType){
-        TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        ticketTypeDTO.setId(ticketType.getId());
-        ticketTypeDTO.setCreated(formatter.format(ticketType.getCreated()));
-        ticketTypeDTO.setUpdated(formatter.format(ticketType.getUpdated()));
-        ticketTypeDTO.setCreatedBy(ticketType.getCreatedBy());
-        ticketTypeDTO.setLastModifiedBy(ticketType.getLastModifiedBy());
-        ticketTypeDTO.setTicketTypeName(ticketType.getTicketTypeName());
-        ticketTypeDTO.setTicketPriceFactor(ticketType.getTicketPriceFactor());
-        ticketTypeDTO.setRelevant(ticketType.isRelevant());
-        return ticketTypeDTO;
-    }
-
 
 }

@@ -5,7 +5,8 @@ import com.example.springbootpetproject.customExceptions.stationExceptions.Stati
 import com.example.springbootpetproject.customExceptions.stationExceptions.StationNotFound;
 import com.example.springbootpetproject.dto.StationDTO;
 import com.example.springbootpetproject.entity.Station;
-import com.example.springbootpetproject.service.serviceImplementation.StationService;
+import com.example.springbootpetproject.facade.StationFacade;
+import com.example.springbootpetproject.service.serviceImplementation.StationServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +24,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/station")
 public class AdminStationController {
-    private final StationService stationService;
+    private final StationServiceI stationServiceI;
+    private final StationFacade stationFacade;
 
     @Autowired
-    public AdminStationController(StationService stationService) {
-        this.stationService = stationService;
+    public AdminStationController(StationServiceI stationServiceI, StationFacade stationFacade) {
+        this.stationServiceI = stationServiceI;
+        this.stationFacade = stationFacade;
     }
 
     @GetMapping("/all/{cityName}/page/{pageNumber}")
@@ -36,7 +39,7 @@ public class AdminStationController {
             , @PathVariable("pageNumber") int pageNumber, @PathVariable("cityName") String cityName
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){
-        Page<StationDTO> stationDTOPage = stationService.getAllStationInCity(cityName,pageable,pageNumber,direction,sort);
+        Page<StationDTO> stationDTOPage = stationServiceI.getAllStationInCity(cityName,pageable,pageNumber,direction,sort);
         List<StationDTO> stationDTOList = stationDTOPage.getContent();
         model.addAttribute("cityName",cityName);
         model.addAttribute("pageNumber",pageNumber);
@@ -51,7 +54,7 @@ public class AdminStationController {
 
     @PostMapping("/delete/{cityName}/{id}")
     public String deleteStation(@PathVariable("id") Long id, @PathVariable("cityName") String cityName){
-        stationService.deleteStation(id);
+        stationServiceI.deleteStation(id);
         return "redirect:/admin/city/all/page/1";
     }
 
@@ -68,12 +71,12 @@ public class AdminStationController {
 
         Station station = null;
         try {
-            station = stationService.findByStationNameAndCityName(stationName,cityName);
+            station = stationServiceI.findByStationNameAndCityName(stationName,cityName);
         } catch (StationNotFound e) {
             model.addAttribute("StationNotFound", e.getMessage());
             return "forward:/admin/station/all/"+cityName+"/page/1";
         }
-        StationDTO selectedStation = stationService.convertStationToStationDTO(station);
+        StationDTO selectedStation = stationFacade.convertStationToStationDTO(station);
         model.addAttribute("stationDTO",selectedStation);
         return "updateStation";
     }
@@ -84,7 +87,7 @@ public class AdminStationController {
             return "addStation";
         }
         try {
-            stationService.addStation(stationDTO);
+            stationServiceI.addStation(stationDTO);
         } catch (StationAlreadyExist e) {
             model.addAttribute("StationAlreadyExist" ,e.getMessage());
             return "addStation";
@@ -99,7 +102,7 @@ public class AdminStationController {
             return "updateStation";
         }
         try {
-            stationService.updateStation(stationDTO,id);
+            stationServiceI.updateStation(stationDTO,id);
         } catch (StationAlreadyExist e) {
             model.addAttribute("StationAlreadyExist",e.getMessage());
             return "updateStation";
@@ -112,7 +115,7 @@ public class AdminStationController {
 
     @PostMapping("/relevant/{cityName}/{id}")
     public String setRelevant(@PathVariable("id") Long id, @PathVariable("cityName") String cityName){
-        stationService.setStationRelevant(id);
+        stationServiceI.setStationRelevant(id);
         System.out.println(cityName);
         return "redirect:/admin/station/all/"+URLEncoder.encode(cityName,StandardCharsets.UTF_8)+"/page/1";
     }

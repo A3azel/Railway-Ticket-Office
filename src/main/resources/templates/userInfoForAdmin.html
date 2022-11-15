@@ -90,26 +90,29 @@
                                 <p class="text-muted mb-0" th:utext = "${selectedUser.userPhone}"></p>
                             </div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">[[#{user.label.balance}]]</p>
+                        <th:block th:if="${selectedUser.userRole.name()=='USER'}">
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">[[#{user.label.balance}]]</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0" th:utext = "${selectedUser.userCountOfMoney} + ' ₴'"></p>
+                                </div>
                             </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0" th:utext = "${selectedUser.userCountOfMoney} + ' ₴'"></p>
-                            </div>
-                        </div>
+                        </th:block>
                     </div>
                 </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                    <form method="get">
-                        <button type="submit"  class="btn btn-outline-secondary">[[#{button.ListOfUserOrders}]]</button>
-                    </form>
-                    <form method="get" th:action="@{'/admin/users/selectedUser/' + ${selectedUser.username} + '/comment/page/1'}">
-                        <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">[[#{button.ListOfUserComments}]]</button>
-                    </form>
-
-                </div>
+                <th:block th:if="${selectedUser.userRole.name()=='USER'}">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <form method="get">
+                            <button type="submit" class="btn btn-outline-secondary">[[#{button.ListOfUserOrders}]]</button>
+                        </form>
+                        <form method="get" th:action="@{'/admin/users/selectedUser/' + ${selectedUser.username} + '/comment/page/1'}">
+                            <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">[[#{button.ListOfUserComments}]]</button>
+                        </form>
+                    </div>
+                </th:block>
             </div>
         </div>
     </main>
@@ -121,6 +124,6 @@
 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script th:src="@{/JS/forPersonalOffise.js}"></script>
+<script th:src="@{/JS/personalOffice.js}"></script>
 </body>
 </html>

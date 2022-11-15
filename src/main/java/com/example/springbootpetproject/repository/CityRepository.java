@@ -25,6 +25,6 @@ public interface CityRepository extends JpaRepository<City,Long> {
     City findCityById(Long id);
 
     @Modifying
-    @Query(value = "UPDATE cities SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
+    @Query(value = "UPDATE city SET relevant = :changedRelevant WHERE id = :id", nativeQuery = true)
     void setCityRelevant(@Param("changedRelevant") boolean changedRelevant, @Param("id") Long id);
 }

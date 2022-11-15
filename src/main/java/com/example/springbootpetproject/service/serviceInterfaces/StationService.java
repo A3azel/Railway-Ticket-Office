@@ -8,7 +8,7 @@ import com.example.springbootpetproject.entity.Station;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface StationServiceInterface {
+public interface StationService {
     void addStation(StationDTO stationDTO) throws StationAlreadyExist;
 
     void deleteStation(Long id);
@@ -28,8 +28,5 @@ public interface StationServiceInterface {
     void setStationRelevant(Long id);
 
     void setStationRelevantByCity(boolean relevant, Long id);
-
-    StationDTO convertStationToStationDTO(Station station);
-
 
 }

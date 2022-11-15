@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.repository;
 
-import com.example.springbootpetproject.entity.UserComments;
+import com.example.springbootpetproject.entity.UserComment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,15 +9,15 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserCommentsRepository extends JpaRepository<UserComments,Long> {
+public interface UserCommentsRepository extends JpaRepository<UserComment,Long> {
 
-    Page<UserComments> findAllByTrain_TrainNumber(String trainNumber, Pageable pageable);
+    Page<UserComment> findAllByTrain_TrainNumber(String trainNumber, Pageable pageable);
 
-    Page<UserComments> findAllByTrain_Id(Long od,Pageable pageable);
+    Page<UserComment> findAllByTrain_Id(Long od, Pageable pageable);
 
-    UserComments findByUserUsernameAndTrainTrainNumber(String username, String trainNumber);
+    UserComment findByUserUsernameAndTrainTrainNumber(String username, String trainNumber);
 
-    List<UserComments> findByTrain_TrainNumber(String trainNumber);
+    List<UserComment> findByTrain_TrainNumber(String trainNumber);
 
-    Page<UserComments> findAllByUserUsername(String userName, Pageable pageable);
+    Page<UserComment> findAllByUserUsername(String userName, Pageable pageable);
 }

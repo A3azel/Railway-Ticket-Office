@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 
-public interface TicketTypeServiceInterface {
+public interface TicketTypeService {
     void addTicketType(TicketType ticketType) throws TicketAlreadyExist;
 
     //void updateTicketInfo(Map<String,String> allParam);
@@ -37,8 +37,4 @@ public interface TicketTypeServiceInterface {
     void deleteTicketById(Long id);
 
     void setTicketRelevant(Long id);
-
-    TicketTypeDTO convertTicketTypeToTicketTypeDTO(TicketType ticketTypeName);
-
-
 }

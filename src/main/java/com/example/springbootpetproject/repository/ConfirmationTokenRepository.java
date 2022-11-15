@@ -12,9 +12,9 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
     ConfirmationToken findByToken(String token);
 
     void deleteByToken(String token);
-
+//?
     @Modifying
-    @Query(value = "UPDATE confirmation_token SET confirmed_at = :updateTime WHERE token = :token", nativeQuery = true)
+    @Query(value = "UPDATE confirmation_token SET expires_at = :updateTime WHERE token = :token", nativeQuery = true)
     int updateConfirmedAt(@Param("token") String token
     , @Param("updateTime")LocalDateTime updateTime);
 

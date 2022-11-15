@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "user_comments")
 @Data
 @NoArgsConstructor
-public class UserComments extends BaseEntity implements Serializable {
+public class UserComment extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -23,7 +23,7 @@ public class UserComments extends BaseEntity implements Serializable {
 
     @Size(max = 5000, message = "Comment cannot be longer than 5000 characters")
     @Column(name = "user_comment")
-    private String userComments;
+    private String userComment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

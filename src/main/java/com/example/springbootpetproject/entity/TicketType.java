@@ -35,6 +35,9 @@ public class TicketType extends BaseEntity implements Serializable {
     private boolean relevant;
 
     @OneToMany(mappedBy = "ticketType")
+    private Set<NumberOfPurchasedTicketsTypes> numberOfPurchasedTicketsTypesSet;
+
+/*    @OneToMany(mappedBy = "ticketType")
     @JsonManagedReference
-    private Set<Orders> ordersSet;
+    private Set<Orders> ordersSet;*/
 }

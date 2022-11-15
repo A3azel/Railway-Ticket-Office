@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-@Table(name = "cities")
+@Table(name = "city")
 //@Data
 //@NoArgsConstructor
 @Getter

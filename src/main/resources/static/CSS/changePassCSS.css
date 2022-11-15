@@ -4,19 +4,12 @@
 
 .pass_show .ptxt {
     position: absolute;
-
     top: 50%;
-
     right: 10px;
-
     z-index: 1;
-
     color: #f36c01;
-
     margin-top: -10px;
-
     cursor: pointer;
-
     transition: 0.3s ease all;
 }
 

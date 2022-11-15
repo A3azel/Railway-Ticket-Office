@@ -22,6 +22,9 @@
                     <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=id'}"></a>[[#{user.order.label.number}]]
                 </th>
                 <th scope="col">
+                    <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=created'}"></a>Дата оформлення
+                </th>
+                <th scope="col">
                     <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=train.trainNumber'}"></a>[[#{label.train.number}]]
                 </th>
                 <th scope="col">[[#{label.route.from.to}]]</th>
@@ -34,8 +37,9 @@
             <tbody>
             <tr th:each="order : ${ordersList}">
                 <td th:utext="${order.id}"></td>
-                <td th:utext="${order.train.trainNumber}"></td>
-                <td th:utext="${order.train.startStation.city.cityName} + '/' + ${order.train.arrivalStation.city.cityName}"></td>
+                <td th:utext="${order.created}"></td>
+                <td th:utext="${order.route.trainNumber}"></td>
+                <td th:utext="${order.route.startCityName} + '/' + ${order.route.arrivalCityName}"></td>
                 <td th:utext="${order.orderPrise}"></td>
                 <td>
                     <form th:action="'/user/myOrders/' + ${order.id}" method="get">

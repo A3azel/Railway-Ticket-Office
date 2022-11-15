@@ -1,12 +1,12 @@
 package com.example.springbootpetproject.controller;
 
 import com.example.springbootpetproject.dto.TicketTypeDTO;
-import com.example.springbootpetproject.entity.Orders;
+import com.example.springbootpetproject.entity.Order;
 import com.example.springbootpetproject.entity.Route;
-import com.example.springbootpetproject.service.serviceImplementation.RouteService;
-import com.example.springbootpetproject.service.serviceImplementation.TicketTypeService;
-import com.example.springbootpetproject.service.serviceImplementation.TrainService;
-import com.example.springbootpetproject.service.serviceImplementation.UserService;
+import com.example.springbootpetproject.service.serviceImplementation.RouteServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.TicketTypeServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.TrainServiceI;
+import com.example.springbootpetproject.service.serviceImplementation.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,23 +21,23 @@ import java.util.List;
 @Controller
 @RequestMapping("/order")
 public class OrderController {
-    private final TrainService trainService;
-    private final TicketTypeService ticketTypeService;
-    private final UserService userService;
-    private final RouteService routeService;
+    private final TrainServiceI trainServiceI;
+    private final TicketTypeServiceI ticketTypeServiceI;
+    private final UserServiceI userServiceI;
+    private final RouteServiceI routeServiceI;
 
     @Autowired
-    public OrderController(TrainService trainService, TicketTypeService ticketTypeService, UserService userService, RouteService routeService) {
-        this.trainService = trainService;
-        this.ticketTypeService = ticketTypeService;
-        this.userService = userService;
-        this.routeService = routeService;
+    public OrderController(TrainServiceI trainServiceI, TicketTypeServiceI ticketTypeServiceI, UserServiceI userServiceI, RouteServiceI routeServiceI) {
+        this.trainServiceI = trainServiceI;
+        this.ticketTypeServiceI = ticketTypeServiceI;
+        this.userServiceI = userServiceI;
+        this.routeServiceI = routeServiceI;
     }
 
     @GetMapping("/{id}")
     public String goToOrder(@PathVariable("id") Long id, Model model){
-        Route selectedRoute = routeService.findRouteById(id);
-        List<TicketTypeDTO> ticketTypeDTOList = ticketTypeService.getAllTicketTypesForOrder();
+        Route selectedRoute = routeServiceI.findRouteById(id);
+        List<TicketTypeDTO> ticketTypeDTOList = ticketTypeServiceI.getAllTicketTypesForOrder();
         model.addAttribute("selectedRoute",selectedRoute);
         model.addAttribute("ticketTypeList",ticketTypeDTOList);
         return "issuingTicket";
@@ -45,7 +45,7 @@ public class OrderController {
 
     @PostMapping("/{id}")
     public String makeAnOrder(@PathVariable("id") Long id, Principal principal){
-        Orders order = new Orders();
+        Order order = new Order();
 
         return "redirect:/order/"+id;
     }

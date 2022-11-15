@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface TrainServiceInterface {
+public interface TrainService {
 
     Page<TrainDTO> getAllTrain(Pageable pageable, int pageNumber, String direction, String sort);
 
@@ -31,8 +31,6 @@ public interface TrainServiceInterface {
     void reduceTheNumberOfCompartmentSeats(String trainNumber, int countOfPurchasedTickets);
 
     void reduceTheNumberOfSuiteSeats(String trainNumber, int countOfPurchasedTickets);
-
-    TrainDTO convertTrainToTrainDTO(Train train);
 
     void setTrainRelevant(Long id);
 }

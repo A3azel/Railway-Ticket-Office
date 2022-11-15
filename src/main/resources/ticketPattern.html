@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 <html lang="en"  xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title th:text="'Order №' + ${selectedOrder.id}"></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" th:href="@{/CSS/stylesForUserSelectedOrder.css}">
-    <link th:href="@{/CSS/footer.css}" rel="stylesheet">
+          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"/>
 </head>
 <body>
 
 <div class="wrapper">
-    <div th:include="header::head"></div>
-
-    <main>
-        <div th:text="#{label.ticket.number} + ' ' + ${selectedOrder.id}">
-
+   <main>
+        <div th:text="'Номер квитка: ' + ${selectedOrder.id}">
         </div>
         <div class="row mainRow">
             <div class="col-lg-6">
@@ -30,82 +25,82 @@
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.id}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.registration.time}]]</p>
+                                <p class="mb-0">Order date</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.created}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.train.number}]]</p>
+                                <p class="mb-0">Train number</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.trainNumber}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.route.from.to}]]</p>
+                                <p class="mb-0">Dispatch city/Arrival city</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedOrder.route.startCityName} + '/' + ${selectedOrder.route.arrivalCityName}"></p>
+                                <p class="text-muted mb-0" th:utext = "${startCityName} + '/' + ${selectedOrder.route.arrivalCityName}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.route.startStation}]]</p>
+                                <p class="mb-0">Dispatch station</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.startStationName}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
+                                <p class="mb-0">Arrival station</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.arrivalStationName}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.route.startTime}]]</p>
+                                <p class="mb-0">Dispatch time</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.departureTime}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.route.arrivalTime }]]</p>
+                                <p class="mb-0">Arrival time</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.arrivalTime}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.route.travelTime}]]</p>
+                                <p class="mb-0">Travel time</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.travelTime}"></p>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Проміжні станції</p>
+                                <p class="mb-0">Intermediate stations</p>
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="station : ${selectedOrder.route.intermediateStations}">
@@ -113,10 +108,10 @@
                                 </ul>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Кількість квитків</p>
+                                <p class="mb-0">Number of tickets</p>
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="ticket : ${selectedOrder.numberOfPurchasedTicketsTypesSet}">
@@ -124,10 +119,10 @@
                                 </ul>
                             </div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{user.order.label.prise}]]</p>
+                                <p class="mb-0">Prise</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.orderPrise}+ ' ₴'"></p>
@@ -136,56 +131,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="row">
-                    <th:block th:if="${comment }!= null">
-                        <form method="post" th:action="@{'/comments/update/' + ${selectedOrder.route.trainNumber}}">
-                            <div class="mb-3">
-                                <label for="changeComment" class="form-label">[[#{label.change.comments}]]</label>
-                                <textarea class="form-control" id="changeComment" rows="6" name="newComment" maxlength="5000" placeholder="Ваш відгук..."></textarea>
-                                <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-primary" style="margin:20px" >[[#{label.change.comments}]]</button>
-                            </div>
-                        </form>
-                        <form method="post" th:action="@{'/comments/delete/' + ${selectedOrder.route.trainNumber}}">
-                            <div class="mb-3">
-                                <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-danger" style="margin-left:20px">[[#{button.delete}]]</button>
-                            </div>
-                        </form>
-                    </th:block>
-                    <th:block th:unless="${comment }!= null">
-                        <form th:action="@{'/comments/add/' + ${selectedOrder.route.trainNumber}}" method="post">
-                            <div class="mb-3">
-                                <label for="comment" class="form-label">[[#{label.add.comments}]]</label>
-                                <textarea class="form-control" id="comment" rows="6" name="userComment" maxlength="5000" placeholder="Ваш відгук...">
-                        </textarea>
-                                <button type="submit" class="btn btn-outline-success" th:value="${selectedOrder.id}" name="id" style="margin:20px">[[#{button.comment.publish}]]</button>
-                            </div>
-                        </form>
-                    </th:block>
-                </div>
-            </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <form method="post" th:action="@{'/user/myOrders/pdf/send/' + ${selectedOrder.id}}">
-                    <button type="submit"  class="btn btn-outline-secondary">Завантажити квиток</button>
-                </form>
-                <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">Відправити квиток на пошту</button>
-            </div>
         </div>
     </main>
-
-    <div th:include="footer::foot"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
 
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<!--th:src="@{/JS/showUserComment.js}" defer="defer"-->
-<script th:inline="javascript">
-    var userComment =  /*[[${comment.userComment}]]*/ {};
-    if(userComment !== 'null'){
-        $('#changeComment').text(userComment);
-    }
-</script>
+
 </body>
 </html>

@@ -87,6 +87,17 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-4">
+                                <p class="mb-0">Проміжні станції</p>
+                            </div>
+                            <div class="col-sm-8">
+                                <ul th:each="station : ${selectedRoute.stationList}">
+                                    <li th:text = "${station.stationName}"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4">
                                 <p class="mb-0">[[#{label.route.numberOfCompartmentFreeSeats}]]</p>
                             </div>
                             <div class="col-sm-8">
@@ -157,7 +168,7 @@
         defer
 ></script>
 
-<script th:inline="javascript"defer="defer">
+<script th:inline="javascript" defer="defer">
     var test =  /*[[${userCommentsList}]]*/ {};
     for (i = 0; i < 1000; i++) {
         (function (i) {

@@ -5,8 +5,8 @@ import com.example.springbootpetproject.customExceptions.cityExceptions.CityNotF
 import com.example.springbootpetproject.dto.CityDTO;
 import com.example.springbootpetproject.entity.City;
 import com.example.springbootpetproject.entity.Station;
+import com.example.springbootpetproject.facade.CityFacade;
 import com.example.springbootpetproject.repository.CityRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.CityServiceInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,19 +17,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
-
 @Service
 @Slf4j
-public class CityService implements CityServiceInterface {
+public class CityServiceI implements com.example.springbootpetproject.service.serviceInterfaces.CityService {
     private final CityRepository cityRepository;
-    private final StationService stationService;
+    private final StationServiceI stationServiceI;
+    private final CityFacade cityFacade;
 
     @Autowired
-    public CityService(CityRepository cityRepository, StationService stationService) {
+    public CityServiceI(CityRepository cityRepository, StationServiceI stationServiceI, CityFacade cityFacade) {
         this.cityRepository = cityRepository;
-        this.stationService = stationService;
+        this.stationServiceI = stationServiceI;
+        this.cityFacade = cityFacade;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class CityService implements CityServiceInterface {
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         Page<City> cityPage = cityRepository.findAll(changePageable);
         log.info("Page<City>: {}", cityPage);
-        Page<CityDTO> cityDTOPage = cityPage.map(this::convertCityToCityDTO);
+        Page<CityDTO> cityDTOPage = cityPage.map(cityFacade::convertCityToCityDTO);
         log.info("Page<City>: {}", cityDTOPage);
         log.debug("End of findAllCity method");
         return cityDTOPage;
@@ -115,26 +114,10 @@ public class CityService implements CityServiceInterface {
         City selectCity = findCityById(id);
         log.info("City wontedCity: {}", selectCity.getCityName());
         for (Station station:selectCity.getStationSet()) {
-            stationService.setStationRelevantByCity(notIsRelevant,station.getId());
+            stationServiceI.setStationRelevantByCity(notIsRelevant,station.getId());
         }
         cityRepository.setCityRelevant(notIsRelevant,id);
         log.info("Set relevant for {}",selectCity.getCityName());
         log.debug("End of setCityRelevant method");
-    }
-
-    @Override
-    public CityDTO convertCityToCityDTO(City city){
-        log.debug("In the convertCityToCityDTO method");
-        CityDTO cityDTO = new CityDTO();
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        cityDTO.setId(city.getId());
-        cityDTO.setCreated(formatter.format(city.getCreated()));
-        cityDTO.setUpdated(formatter.format(city.getUpdated()));
-        cityDTO.setCreatedBy(city.getCreatedBy());
-        cityDTO.setCityName(city.getCityName());
-        cityDTO.setRelevant(city.isRelevant());
-        log.info("CityDTO converted city: {}", cityDTO);
-        log.debug("End of convertCityToCityDTO method");
-        return cityDTO;
     }
 }

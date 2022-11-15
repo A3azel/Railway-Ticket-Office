@@ -84,6 +84,17 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-4">
+                                <p class="mb-0">Проміжні станції</p>
+                            </div>
+                            <div class="col-sm-8">
+                                <ul th:each="station : ${selectedRoute.stationList}">
+                                    <li th:text = "${station.stationName}"></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4">
                                 <p class="mb-0">[[#{label.route.numberOfCompartmentFreeSeats}]]</p>
                             </div>
                             <div class="col-sm-8">

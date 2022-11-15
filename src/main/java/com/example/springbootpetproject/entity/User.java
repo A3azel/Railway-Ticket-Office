@@ -60,7 +60,7 @@ public class User implements Serializable {
     @Column(name = "user_gender_id")
     private UserGender userGender;
 
-    //@Pattern(regexp = "\\(?\\+?[0-9]{1,3}\\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\\w{1,10}\\s?\\d{1,6})?")
+    @Pattern(regexp = "\\(?\\+?[0-9]{1,3}\\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\\w{1,10}\\s?\\d{1,6})?")
     @Column(name = "user_phone")
     private String userPhone;
 
@@ -72,11 +72,11 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
-    private Set<Orders> ordersSet;
+    private Set<Order> ordersSet;
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
-    private Set<UserComments> userCommentsSet;
+    private Set<UserComment> userCommentsSet;
 
     @OneToMany(mappedBy = "user")
     private Set<ConfirmationToken> confirmationTokens;

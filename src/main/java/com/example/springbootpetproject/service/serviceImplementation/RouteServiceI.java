@@ -4,8 +4,8 @@ import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNo
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.entity.Route;
+import com.example.springbootpetproject.facade.RouteFacade;
 import com.example.springbootpetproject.repository.RouteRepository;
-import com.example.springbootpetproject.service.serviceInterfaces.RouteServiceInterface;
 import com.example.springbootpetproject.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,16 +25,18 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class RouteService implements RouteServiceInterface {
+public class RouteServiceI implements com.example.springbootpetproject.service.serviceInterfaces.RouteService {
     private final RouteRepository routeRepository;
-    private final TrainService trainService;
-    private final StationService stationService;
+    private final TrainServiceI trainServiceI;
+    private final StationServiceI stationServiceI;
+    private final RouteFacade routeFacade;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, TrainService trainService, StationService stationService) {
+    public RouteServiceI(RouteRepository routeRepository, TrainServiceI trainServiceI, StationServiceI stationServiceI, RouteFacade routeFacade) {
         this.routeRepository = routeRepository;
-        this.trainService = trainService;
-        this.stationService = stationService;
+        this.trainServiceI = trainServiceI;
+        this.stationServiceI = stationServiceI;
+        this.routeFacade = routeFacade;
     }
 
     @Override
@@ -47,17 +48,20 @@ public class RouteService implements RouteServiceInterface {
             return errorsMap;
         }
         Route route = new Route();
-        route.setStartStation(stationService.findStationByStationName(routeDTO.getStartStationName()));
+        Duration duration = Duration.between(routeDTO.getArrivalTime(),routeDTO.getDepartureTime());
+        LocalTime travelTime = LocalTime.of(duration.toHoursPart(),duration.toMinutesPart());
+
+        route.setStartStation(stationServiceI.findStationByStationName(routeDTO.getStartStationName()));
         route.setDepartureTime(routeDTO.getDepartureTime());
-        route.setTravelTime(routeDTO.getTravelTime());
-        route.setArrivalStation(stationService.findStationByStationName(routeDTO.getArrivalStationName()));
+        route.setTravelTime(travelTime);
+        route.setArrivalStation(stationServiceI.findStationByStationName(routeDTO.getArrivalStationName()));
         route.setArrivalTime(routeDTO.getArrivalTime());
         route.setNumberOfCompartmentFreeSeats((routeDTO.getNumberOfCompartmentFreeSeats()));
         route.setNumberOfSuiteFreeSeats(routeDTO.getNumberOfSuiteFreeSeats());
         route.setPriseOfCompartmentTicket(routeDTO.getPriseOfCompartmentTicket());
         route.setPriseOfSuiteTicket(routeDTO.getPriseOfSuiteTicket());
         try {
-            route.setTrain(trainService.findTrainByTrainNumber(routeDTO.getTrainNumber()));
+            route.setTrain(trainServiceI.findTrainByTrainNumber(routeDTO.getTrainNumber()));
         } catch (TrainNotFound e) {
             e.printStackTrace();
         }
@@ -71,17 +75,20 @@ public class RouteService implements RouteServiceInterface {
     public Map<String,String> updateRoute(RouteDTO routeDTO, Long id) {
         Map<String,String> errorsMap = Validator.routeValidator(routeDTO);
         Route route = findRouteById(id);
-        route.setStartStation(stationService.findStationByStationName(routeDTO.getStartStationName()));
+        Duration duration = Duration.between(routeDTO.getDepartureTime(),routeDTO.getArrivalTime());
+        LocalTime travelTime = LocalTime.of(duration.toHoursPart(),duration.toMinutesPart());
+
+        route.setStartStation(stationServiceI.findStationByStationName(routeDTO.getStartStationName()));
         route.setDepartureTime(routeDTO.getDepartureTime());
-        route.setTravelTime(routeDTO.getTravelTime());
-        route.setArrivalStation(stationService.findStationByStationName(routeDTO.getArrivalStationName()));
+        route.setTravelTime(travelTime);
+        route.setArrivalStation(stationServiceI.findStationByStationName(routeDTO.getArrivalStationName()));
         route.setArrivalTime(routeDTO.getArrivalTime());
         route.setNumberOfCompartmentFreeSeats((routeDTO.getNumberOfCompartmentFreeSeats()));
         route.setNumberOfSuiteFreeSeats(routeDTO.getNumberOfSuiteFreeSeats());
         route.setPriseOfCompartmentTicket(routeDTO.getPriseOfCompartmentTicket());
         route.setPriseOfSuiteTicket(routeDTO.getPriseOfSuiteTicket());
         try {
-            route.setTrain(trainService.findTrainByTrainNumber(routeDTO.getTrainNumber()));
+            route.setTrain(trainServiceI.findTrainByTrainNumber(routeDTO.getTrainNumber()));
         } catch (TrainNotFound e) {
             e.printStackTrace();
         }
@@ -120,7 +127,7 @@ public class RouteService implements RouteServiceInterface {
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         Page<Route> routePage = routeRepository.findAllByStartStation_RelevantIsTrueAndArrivalStation_RelevantIsTrueAndStartStation_City_CityNameAndArrivalStation_City_CityNameAndDepartureTimeBetween(
                 senderCity, cityOfArrival, selectedLocalDateTime, finalLocalDateTime, changePageable);
-        Page<RouteDTO> routeDTOPage = routePage.map(this::convertRouteToRouteDTO);
+        Page<RouteDTO> routeDTOPage = routePage.map(routeFacade::convertRouteToRouteDTO);
         if (routeDTOPage.getContent().size() == 0 || selectedLocalDateTime.isBefore(LocalDateTime.now())){
             throw new RouteNotFound("No routes were found for this request");
         }
@@ -134,7 +141,7 @@ public class RouteService implements RouteServiceInterface {
                 ,direction.equals("asc") ? Sort.by(sort).ascending() : Sort.by(sort).descending());
         return routeRepository
                 .findAll(changePageable)
-                .map(this::convertRouteToRouteDTO);
+                .map(routeFacade::convertRouteToRouteDTO);
     }
 
     @Override
@@ -148,31 +155,4 @@ public class RouteService implements RouteServiceInterface {
     public void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets) {
         routeRepository.reduceNumberOfSuiteFreeSeats(routeId, countOfPurchasedTickets);
     }
-
-    @Override
-    public RouteDTO convertRouteToRouteDTO(Route route){
-        RouteDTO routeDTO = new RouteDTO();
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        routeDTO.setId(route.getId());
-        routeDTO.setCreated(formatter.format(route.getCreated()));
-        routeDTO.setUpdated(formatter.format(route.getUpdated()));
-        routeDTO.setCreatedBy(route.getCreatedBy());
-        routeDTO.setLastModifiedBy(route.getLastModifiedBy());
-        routeDTO.setStartStationName(route.getStartStation().getStationName());
-        routeDTO.setStartCityName(route.getStartStation().getCity().getCityName());
-        routeDTO.setDepartureTime(route.getDepartureTime());
-        routeDTO.setArrivalStationName(route.getArrivalStation().getStationName());
-        routeDTO.setArrivalCityName(route.getArrivalStation().getCity().getCityName());
-        routeDTO.setTravelTime(route.getTravelTime());
-        routeDTO.setArrivalTime(route.getArrivalTime());
-        routeDTO.setNumberOfCompartmentFreeSeats(route.getNumberOfCompartmentFreeSeats());
-        routeDTO.setNumberOfSuiteFreeSeats(route.getNumberOfSuiteFreeSeats());
-        routeDTO.setPriseOfCompartmentTicket(route.getPriseOfCompartmentTicket());
-        routeDTO.setPriseOfSuiteTicket(route.getPriseOfSuiteTicket());
-        routeDTO.setTrainNumber(route.getTrain().getTrainNumber());
-        routeDTO.setNumberOfCompartmentSeats(route.getTrain().getNumberOfCompartmentSeats());
-        routeDTO.setNumberOfSuiteSeats(route.getTrain().getNumberOfSuiteSeats());
-        return routeDTO;
-    }
-
 }

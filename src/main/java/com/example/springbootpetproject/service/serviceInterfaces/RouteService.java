@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 
-public interface RouteServiceInterface {
+public interface RouteService {
     Map<String,String> addRoute(RouteDTO routeDTO);
     Map<String,String> updateRoute(RouteDTO routeDTO, Long id);
     void deleteRoute(Long Id);
@@ -19,5 +19,4 @@ public interface RouteServiceInterface {
     Page<RouteDTO> getAll(Pageable pageable, int pageNumber, String direction, String sort);
     void reduceNumberOfCompartmentFreeSeats(Long routeId, int countOfPurchasedTickets);
     void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets);
-    RouteDTO convertRouteToRouteDTO(Route route);
 }
