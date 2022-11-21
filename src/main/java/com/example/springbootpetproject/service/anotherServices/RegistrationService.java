@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,10 @@ public class RegistrationService {
     public Map<String,String> sendRegistrationConfirmationEmail(User user, String secondPassword, String userGender) {
         log.debug("In the sendRegistrationConfirmationEmail method");
         Map<String,String> errorsMap = new HashMap<>();
+        if(!user.getUserPhone().equals("") && Validator.isPhoneValid(user.getUserPhone())){
+            errorsMap.put("phoneNumberError","invalid phone number");
+            return errorsMap;
+        }
         if(userServiceI.existsUserByUsername(user.getUsername())){
             log.warn("the user with {} name already exist",user.getUsername());
             errorsMap.put("userAlreadyExists","user with selected name already exists");
@@ -53,6 +58,7 @@ public class RegistrationService {
         }
 
         user.setUserRole(UserRole.USER);
+        user.setUserCountOfMoney(BigDecimal.ZERO);
         user.setUserGender(UserGender.valueOf(userGender));
         log.info("Trying to add a user");
         String token = userServiceI.addUser(user);

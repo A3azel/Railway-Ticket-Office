@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.configurtion.CustomBCryptPasswordEncoder;
+import com.example.springbootpetproject.customExceptions.userExceptions.InsufficientFunds;
 import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
@@ -131,7 +132,10 @@ public class UserServiceI implements com.example.springbootpetproject.service.se
 
     @Override
     @Transactional
-    public void spendMoney(BigDecimal money,String userName) {
+    public void spendMoney(BigDecimal money,String userName) throws InsufficientFunds {
+        if(money.compareTo(findUserByUsername(userName).getUserCountOfMoney())>=0){
+            throw new InsufficientFunds("There are not enough funds in the account");
+        }
         userRepository.spendMoney(money,userName);
     }
 

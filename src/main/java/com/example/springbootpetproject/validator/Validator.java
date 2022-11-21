@@ -12,12 +12,15 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Component
 public class Validator {
     private static TrainServiceI trainServiceI;
     private static StationServiceI stationServiceI;
     private static CityServiceI cityServiceI;
+
+    private static final String PHONE_REGEX = "\\(?\\+?[0-9]{1,3}\\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\\w{1,10}\s?\\d{1,6})?";
 
     @Autowired
     public Validator(TrainServiceI trainServiceI, StationServiceI stationServiceI, CityServiceI cityServiceI) {
@@ -28,6 +31,10 @@ public class Validator {
 
     public static boolean isTheSamePassword(String password, String submitPassword){
         return password.equals(submitPassword);
+    }
+
+    public static boolean isPhoneValid(String phoneNumber){
+        return Pattern.matches(PHONE_REGEX,phoneNumber);
     }
 
     public static boolean isPasswordLengthValid(String password){

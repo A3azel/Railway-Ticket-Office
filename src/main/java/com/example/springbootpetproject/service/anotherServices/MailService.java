@@ -36,7 +36,7 @@ public class MailService {
         log.debug("End of sendSimpleMessage method");
     }
 
-    public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment) throws MessagingException {
+    public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment,String fileName) throws MessagingException {
         log.debug("In the sendMessageWithAttachment method");
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -48,7 +48,7 @@ public class MailService {
 
         FileSystemResource file
                 = new FileSystemResource(new File(pathToAttachment));
-        helper.addAttachment("Invoice", file);
+        helper.addAttachment(fileName, file);
 
         javaMailSender.send(message);
         log.info("Message send...");

@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceInterfaces;
 
+import com.example.springbootpetproject.customExceptions.userExceptions.InsufficientFunds;
 import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.User;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,7 @@ public interface UserService {
 
     void topUpAccount(BigDecimal money,String userName);
 
-    void spendMoney(BigDecimal money,String userName);
+    void spendMoney(BigDecimal money,String userName) throws InsufficientFunds;
 
     void setUserVerification(String username);
 

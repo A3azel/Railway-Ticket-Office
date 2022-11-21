@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.entity.User;
+import  com.example.springbootpetproject.entity.User;
 import com.example.springbootpetproject.entity.UserGender;
 import com.example.springbootpetproject.service.anotherServices.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;

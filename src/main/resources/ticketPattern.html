@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8"/>
     <title th:text="'Order №' + ${selectedOrder.id}"></title>
+    <style>
+        body{font-family: "DejaVu Sans", Arial, sans-serif }
+    </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"/>
@@ -11,15 +14,15 @@
 
 <div class="wrapper">
    <main>
-        <div th:text="'Номер квитка: ' + ${selectedOrder.id}">
-        </div>
+        <h1 style="text-align:center" th:text="'Номер квитка: ' + ${selectedOrder.id}">
+        </h1>
         <div class="row mainRow">
             <div class="col-lg-6">
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">ID</p>
+                                <h4 class="mb-0">ID</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.id}"></p>
@@ -28,7 +31,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Order date</p>
+                                <h4 class="mb-0">Дата оформлення</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.created}"></p>
@@ -37,7 +40,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Train number</p>
+                                <h4 class="mb-0">Номер потяга</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.trainNumber}"></p>
@@ -46,7 +49,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Dispatch city/Arrival city</p>
+                                <h4 class="mb-0">Місто відправлення/прибуття</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${startCityName} + '/' + ${selectedOrder.route.arrivalCityName}"></p>
@@ -55,7 +58,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Dispatch station</p>
+                                <h4 class="mb-0">Станція відправлення</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.startStationName}"></p>
@@ -64,7 +67,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Arrival station</p>
+                                <h4 class="mb-0">Станція прибуття</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.arrivalStationName}"></p>
@@ -73,7 +76,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Dispatch time</p>
+                                <h4 class="mb-0">Час відправлення</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.departureTime}"></p>
@@ -82,7 +85,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Arrival time</p>
+                                <h4 class="mb-0">Час прибуття</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.arrivalTime}"></p>
@@ -91,7 +94,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Travel time</p>
+                                <h4 class="mb-0">Час в дорозі</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.route.travelTime}"></p>
@@ -100,29 +103,29 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Intermediate stations</p>
+                                <h4 class="mb-0">Проміжні станції</h4>
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="station : ${selectedOrder.route.intermediateStations}">
-                                    <li th:text = "${station.stationName}"></li>
+                                    <li th:text = "${station}"></li>
                                 </ul>
                             </div>
                         </div>
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Number of tickets</p>
+                                <h4 class="mb-0">Кількість квитків</h4>
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="ticket : ${selectedOrder.numberOfPurchasedTicketsTypesSet}">
-                                    <li th:text = "${ticket.ticketType.ticketTypeName}+ ': '+ ${ticket.countOfPurchasedTickets}"></li>
+                                    <li th:text = "${ticket.ticketType.ticketTypeName}+ ': '+ ${ticket.countOfPurchasedTickets} + '(' + ${ticket.place.getPlace()}+ ')'"></li>
                                 </ul>
                             </div>
                         </div>
                         <hr/>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Prise</p>
+                                <h4 class="mb-0">Ціна</h4>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.orderPrise}+ ' ₴'"></p>

@@ -121,8 +121,11 @@
                                                       th:if="${#fields.hasErrors('userPhone')}"
                                                       th:errors="*{userPhone}" style="color: red">
                                             </span>
+                                                <th:block th:if="${phoneNumberError}">
+                                                <p th:text="${phoneNumberError}" style="color: red"></p>
+                                                </th:block>
                                                 <label class="form-label errorMassage" id="phoneNumberError">
-                                                    invalid phone number Example: 0000000000
+                                                    invalid phone number
                                                 </label>
                                             </div>
                                         </div>

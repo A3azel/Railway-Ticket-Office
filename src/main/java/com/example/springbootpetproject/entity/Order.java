@@ -17,10 +17,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class Order extends BaseEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
 
     @Column(name = "orders_prise")
     private BigDecimal orderPrise;

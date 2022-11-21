@@ -57,7 +57,7 @@ public class UserCommentServiceI implements UserCommentService {
             userComments.setTrain(train);
             userCommentsRepository.save(userComments);
         }
-        throw new IllegalArgumentException("Користувач не робив данного замовлення");
+        //throw new IllegalArgumentException("Користувач не робив данного замовлення");
 
     }
 

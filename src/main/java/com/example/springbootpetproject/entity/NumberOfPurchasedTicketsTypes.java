@@ -3,6 +3,7 @@ package com.example.springbootpetproject.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,5 +25,9 @@ public class NumberOfPurchasedTicketsTypes extends BaseEntity implements Seriali
     @ManyToOne
     @JoinColumn(name = "purchased_tickets_id")
     private Order order;
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "place_id")
+    private TrainPlace place;
 
 }

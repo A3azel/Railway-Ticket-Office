@@ -24,7 +24,7 @@
                                 <p class="mb-0">[[#{label.train.number}]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedRoute.train.trainNumber}"></p>
+                                <p class="text-muted mb-0" th:utext = "${selectedRoute.trainNumber}"></p>
                             </div>
                         </div>
                         <hr>
@@ -33,7 +33,7 @@
                                 <p class="mb-0">[[#{label.route.from.to}]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedRoute.startStation.city.cityName} + '/' + ${selectedRoute.arrivalStation.city.cityName}"></p>
+                                <p class="text-muted mb-0" th:utext = "${selectedRoute.startCityName} + '/' + ${selectedRoute.arrivalCityName}"></p>
                             </div>
                         </div>
                         <hr>
@@ -42,7 +42,7 @@
                                 <p class="mb-0">[[#{label.route.startStation}]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedRoute.startStation.stationName}"></p>
+                                <p class="text-muted mb-0" th:utext = "${selectedRoute.startStationName}"></p>
                             </div>
                         </div>
                         <hr>
@@ -51,7 +51,7 @@
                                 <p class="mb-0">[[#{label.route.arrivalStation}]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedRoute.arrivalStation.stationName}"></p>
+                                <p class="text-muted mb-0" th:utext = "${selectedRoute.arrivalStationName}"></p>
                             </div>
                         </div>
                         <hr>
@@ -60,7 +60,7 @@
                                 <p class="mb-0">[[#{label.route.startTime}]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedRoute.departureTime}"></p>
+                                <p class="text-muted mb-0" th:utext = "${#temporals.format(selectedRoute.departureTime, 'dd-MM-yyyy HH:mm')}"></p>
                             </div>
                         </div>
                         <hr>
@@ -69,7 +69,7 @@
                                 <p class="mb-0">[[#{label.route.arrivalTime}]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedRoute.arrivalTime}"></p>
+                                <p class="text-muted mb-0" th:utext = "${#temporals.format(selectedRoute.arrivalTime, 'dd-MM-yyyy HH:mm')}"></p>
                             </div>
                         </div>
                         <hr>
@@ -87,8 +87,8 @@
                                 <p class="mb-0">Проміжні станції</p>
                             </div>
                             <div class="col-sm-8">
-                                <ul th:each="station : ${selectedRoute.stationList}">
-                                    <li th:text = "${station.stationName}"></li>
+                                <ul th:each="station : ${selectedRoute.intermediateStations}">
+                                    <li th:text = "${station}"></li>
                                 </ul>
                             </div>
                         </div>
@@ -135,30 +135,44 @@
                 <div class="row">
                     <form th:action="@{'/order/' + ${selectedRoute.id}}" method="post">
                         <label>Тип квитка: </label>
-                        <th:block th:each="ticketType:${ticketTypeList}">
-                            <th:block th:if="${ticketType.ticketTypeName}=='Adult'">
-                                <input type="radio" name="ticketType" th:value="${ticketType.ticketPriceFactor}" checked th:text="${ticketType.ticketTypeName}"/>
-                            </th:block>
-                            <th:block th:unless="${ticketType.ticketTypeName} =='Adult'">
-                                <input type ="radio" name="ticketType" th:value="${ticketType.ticketPriceFactor}" th:text="${ticketType.ticketTypeName}"/>
-                            </th:block>
-                        </th:block>
+                        <div class="container">
+                            <div class="row justify-content-start">
+                                <th:block th:each="ticketType:${ticketTypeList}">
+                                <th:block th:if="${ticketType.ticketTypeName}=='Adult'">
+                                    <input type="radio" name="ticketType" th:value="${ticketType.ticketTypeName}" checked th:text="${ticketType.ticketTypeName}"/>
+                                </th:block>
+                                <th:block th:unless="${ticketType.ticketTypeName} =='Adult'">
+                                    <input type ="radio" name="ticketType" th:value="${ticketType.ticketTypeName}" th:text="${ticketType.ticketTypeName}"/>
+                                </th:block>
+                                </th:block>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="countOfTickets">Місце:</label>
+                            <input type ="radio" name="place" th:value="COMPARTMENT" checked th:text="#{label.compartment}"/>
+                            <input type ="radio" name="place" th:value="SUITE" th:text="#{label.suite}"/>
+                        </div>
+
                         <div class="input-group" style="width: 150px">
-                            <!--readonly js-->
                             <label for="countOfTickets">[[#{button.countOfTicket}]]</label>
                             <button type="button" id="minusCount" class="input-group-text">-</button>
-                            <input type="number" class="form-control" id="countOfTickets" name="cityOfDeparture" min="0"/>
+                            <input type="number" class="form-control" id="countOfTickets" name="ticketsCount" min="1"/>
                             <button type="button" id="plusCount" class="input-group-text" >+</button>
                         </div>
-                        <div>
-                            <label for="countOfTickets">Місце</label>
-                            <input type ="radio" name="ticketType" th:value="Купе" th:text="#{label.compartment}"/>
-                            <input type ="radio" name="ticketType" th:value="Люкс" th:text="#{label.suite}"/>
+
+                        <div class="row">
+                            <label>Сума: </label>
+                            <p id="prise">0 ₴</p>
+                            <label>Загальна сумма: </label>
+                            <p id="allPrise">0 ₴</p>
                         </div>
-                        <label>Сума: </label>
+                        <th:block th:if="${insufficientFunds}">
+                            <p th:text="${insufficientFunds}" style="color: red"></p>
+                        </th:block>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                            <button type="button" class="btn btn-outline-primary">[[#{button.add}]]</button>
-                            <button type="submit" class="btn btn-outline-success">[[#{button.by}]]</button>
+                            <button type="submit" name="add" value="add" id="addButton" class="btn btn-outline-primary">[[#{button.add}]]</button>
+                            <button type="submit" name="by" value="by" id="byButton" class="btn btn-outline-success">[[#{button.by}]]</button>
                         </div>
                     </form>
                 </div>
@@ -175,33 +189,133 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <!--th:src="@{/JS/calcPriseOfTickets.js}"-->
 
-<!--<script th:inline="javascript">
-    //let countOfFreeSeats = /*[[${selectedTrain.numberOfFreeSeats}]]*/ {};
+
+
+<script th:inline="javascript">
+    let compartmentFreeSeats = /*[[${selectedRoute.numberOfCompartmentFreeSeats}]]*/ {};
+    let compartmentSeatsPrise = /*[[${selectedRoute.priseOfCompartmentTicket}]]*/ {};
+    let suiteFreeSeats = /*[[${selectedRoute.numberOfSuiteFreeSeats}]]*/ {};
+    let suiteSeatsPrise = /*[[${selectedRoute.priseOfSuiteTicket}]]*/ {};
+    let ticketTypesList = /*[[${ticketTypeList}]]*/ {};
+    let allPriceValue = /*[[${session.allPrice}]]*/ {};
+    let balance = /*[[${session.balance}]]*/ {};
+
     $('#plusCount').click(plus);
     $('#minusCount').click(minus);
-    let count = $('#countOfTickets');
-    count.val(0);
 
-    let numberOfFreeSeats =  /*[[${countSeats}]]*/ {};
+    let count = document.querySelector('#countOfTickets');
+    let res = document.querySelector("#prise");
+    let showAllPrise = document.querySelector("#allPrise");
+    let addButton = document.querySelector("#addButton");
+    let byButton = document.querySelector("#byButton");
+    let place = document.getElementsByName("place");
+    let ticketType = document.getElementsByName("ticketType");
+
+    let ticketPrice = 0;
+    let numberOfFreeSeats;
+    let ticketPriceFactor;
+    let priceOfAddedTickets = 0;
+    let allPrice = 0;
+
+
+    if(allPriceValue !== null){
+        priceOfAddedTickets = Number(allPriceValue);
+    }
+
+    count.value = 1;
+    checkPlace();
+
+    byButton.onclick = checkBalance;
+    addButton.onclick = checkBalance;
+
+    function checkBalance(evt){
+        console.log(Number(balance));
+        if(Number(balance)<allPrice){
+            evt.preventDefault();
+            alert("Недостатньо кошів на рахунку!");
+        }
+    }
+
+    addButton.onclick = () =>{
+        priceOfAddedTickets += Number(count.value) * ticketPrice * ticketPriceFactor;
+    }
+
+    for (let i = 0; i < place.length; i++) {
+        place[i].onclick = checkPlace;
+        res.textContent = Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+        showAllPrise.textContent = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+        allPrice = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor;
+    }
+
+    for (let i = 0; i < ticketType.length; i++) {
+        ticketType[i].onclick = checkTicketType;
+        res.textContent = Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+        showAllPrise.textContent = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+        allPrice = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor;
+    }
+
+    count.oninput = () =>{
+        if(Number(numberOfFreeSeats)<count.value){
+            count.value = numberOfFreeSeats;
+        }
+        res.textContent = Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+        showAllPrise.textContent = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+        allPrice = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor;
+    };
 
     function plus() {
-        if(count.val() < numberOfFreeSeats){
-            count.val(Number($(count).val())+1);
-            //count.attr('readonly',false);
-            //return;
+        if(Number(count.value) < numberOfFreeSeats){
+            count.value = (Number(count.value)+1);
+            console.log(Number(count.value)*ticketPrice);
+            res.textContent = Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+            showAllPrise.textContent = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+            allPrice = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor;
         }
-        //$(count).attr('readonly',true);
     }
 
     function minus() {
-        if(count.val() > 0){
-            count.val(Number($(count).val())-1);
-            //count.attr('readonly',false);
-            //return;
+        if(count.value > 1){
+            count.value = (Number(count.value)-1);
+            res.textContent = Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+            showAllPrise.textContent = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+            allPrice = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor;
         }
-        //$(count).attr('readonly',true);
     }
-</script>-->
 
+    function checkPlace(){
+        for (var i = 0, length = place.length; i < length; i++) {
+            checkTicketType();
+            if (place[i].checked) {
+                if(place[i].value === "COMPARTMENT"){
+                    ticketPrice = Number(compartmentSeatsPrise);
+                    numberOfFreeSeats = Number(compartmentFreeSeats);
+                }else {
+                    ticketPrice = Number(suiteSeatsPrise);
+                    numberOfFreeSeats = Number(suiteFreeSeats);
+                }
+                res.textContent = Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+                showAllPrise.textContent = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+                allPrice = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor;
+                break;
+            }
+        }
+    }
+
+    function checkTicketType() {
+        for (var i = 0, length = ticketType.length; i < length; i++) {
+            if (ticketType[i].checked) {
+                for (const ticket of ticketTypesList) {
+                    if(String(ticket.ticketTypeName)===ticketType[i].value){
+                        ticketPriceFactor = Number(ticket.ticketPriceFactor);
+                    }
+                }
+                res.textContent = Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+                showAllPrise.textContent = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor+ " ₴";
+                allPrice = priceOfAddedTickets + Number(count.value) * ticketPrice * ticketPriceFactor;
+                break;
+            }
+        }
+    }
+</script>
 </body>
 </html>

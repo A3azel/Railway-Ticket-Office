@@ -109,7 +109,7 @@
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="station : ${selectedOrder.route.intermediateStations}">
-                                    <li th:text = "${station.stationName}"></li>
+                                    <li th:text = "${station}"></li>
                                 </ul>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="ticket : ${selectedOrder.numberOfPurchasedTicketsTypesSet}">
-                                    <li th:text = "${ticket.ticketType.ticketTypeName}+ ': '+ ${ticket.countOfPurchasedTickets}"></li>
+                                    <li th:text = "${ticket.ticketType.ticketTypeName}+ ': '+ ${ticket.countOfPurchasedTickets} + ' (' + ${ticket.place.getPlace()}+ ')'"></li>
                                 </ul>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="row">
-                    <th:block th:if="${comment }!= null">
+                    <th:block th:if="${comment}!= null">
                         <form method="post" th:action="@{'/comments/update/' + ${selectedOrder.route.trainNumber}}">
                             <div class="mb-3">
                                 <label for="changeComment" class="form-label">[[#{label.change.comments}]]</label>
@@ -165,10 +165,12 @@
                 </div>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <form method="post" th:action="@{'/user/myOrders/pdf/send/' + ${selectedOrder.id}}">
+                <form method="post" th:action="@{'/user/myOrders/pdf/' + ${selectedOrder.id}}">
                     <button type="submit"  class="btn btn-outline-secondary">Завантажити квиток</button>
                 </form>
-                <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">Відправити квиток на пошту</button>
+                <form method="post" th:action="@{'/user/myOrders/pdf/send/' + ${selectedOrder.id}}">
+                    <button type="submit"  class="btn btn-outline-secondary">Відправити квиток на пошту</button>
+                </form>
             </div>
         </div>
     </main>
@@ -180,11 +182,11 @@
 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<!--th:src="@{/JS/showUserComment.js}" defer="defer"-->
+
 <script th:inline="javascript">
-    var userComment =  /*[[${comment.userComment}]]*/ {};
-    if(userComment !== 'null'){
-        $('#changeComment').text(userComment);
+    let userComment =  /*[[${comment}]]*/ {};
+    if(userComment !== null){
+        $('#changeComment').text(userComment.userComment);
     }
 </script>
 </body>

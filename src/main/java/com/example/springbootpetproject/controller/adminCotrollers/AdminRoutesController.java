@@ -32,7 +32,7 @@ public class AdminRoutesController {
 
     @GetMapping("/all/page/{pageNumber}")
     public String getAllRouteForAdmin(Model model
-            , @PageableDefault(size = 2) Pageable pageable
+            , @PageableDefault(size = 10) Pageable pageable
             , @PathVariable("pageNumber") int pageNumber
             , @RequestParam(required = false, defaultValue = "asc", value = "direction") String direction
             , @RequestParam(required = false, defaultValue = "id",value = "sort") String sort){

@@ -108,9 +108,4 @@ public class TrainServiceI implements com.example.springbootpetproject.service.s
         trainRepository.setTrainRelevant(newRelevant,id);
     }
 
-
-
-    public Train helpToBuildTrain(Train train){
-        return null;
-    }
 }
