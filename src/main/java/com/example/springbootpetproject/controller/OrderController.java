@@ -52,7 +52,6 @@ public class OrderController {
         List<TicketTypeDTO> ticketTypeDTOList = ticketTypeServiceI.getAllTicketTypesForOrder();
         //model.addAttribute("selectedRoute",selectedRoute);
         RouteDTO selectedRouteDTO = routeFacade.convertRouteToRouteDTO(selectedRoute);
-        System.out.println(selectedRouteDTO.getArrivalTime());
         model.addAttribute("selectedRoute",selectedRouteDTO);
         model.addAttribute("ticketTypeList",ticketTypeDTOList);
         return "issuingTicket";

@@ -119,9 +119,6 @@ public class RouteServiceI implements com.example.springbootpetproject.service.s
     @Transactional(readOnly = true)
     public Page<RouteDTO> getAllWayBetweenCitiesWithTime(String senderCity, String cityOfArrival, String selectedDatesString, String selectedTimeString, Pageable pageable
             , int pageNumber, String direction, String sort) throws RouteNotFound {
-        System.out.println(senderCity);
-        System.out.println(cityOfArrival);
-
         LocalDate selectedDates = LocalDate.parse(selectedDatesString);
         LocalTime selectedTime = LocalTime.parse(selectedTimeString);
         LocalDateTime selectedLocalDateTime = LocalDateTime.of(selectedDates,selectedTime);

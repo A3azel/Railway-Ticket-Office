@@ -59,6 +59,7 @@ public class UserController {
             session.setAttribute("role",user.getUserRole().name());
             session.setAttribute("balance",user.getUserCountOfMoney());
         }
+        session.setAttribute("balance",user.getUserCountOfMoney());
         UserDTO selectedUser = userFacade.convertUserToUserDTO(user);
         model.addAttribute("selectedUser",selectedUser);
         if(user.getUserRole().name().equals("USER")){
@@ -137,14 +138,12 @@ public class UserController {
     }
 
     @PostMapping("/topUpAccount")
-    public String topUpTheAccount(HttpServletRequest request,Principal principal, HttpSession session){
-        User user = userServiceI.findUserByUsername(principal.getName());
+    public String topUpTheAccount(HttpServletRequest request,Principal principal){
         String username = principal.getName();
         String moneyString = request.getParameter("countOfMoney");
 
         BigDecimal money = BigDecimal.valueOf(Long.parseLong(moneyString));
         userServiceI.topUpAccount(money,username);
-        session.setAttribute("balance",user.getUserCountOfMoney());
         return "redirect:/user";
     }
 
