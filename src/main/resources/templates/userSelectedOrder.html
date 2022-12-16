@@ -33,7 +33,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">[[#{label.registration.time}]]</p>
+                                <p class="mb-0">[[#{label.order.purchase}]]</p>
                             </div>
                             <div class="col-sm-8">
                                 <p class="text-muted mb-0" th:utext = "${selectedOrder.created}"></p>
@@ -81,7 +81,7 @@
                                 <p class="mb-0">[[#{label.route.startTime}]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedOrder.route.departureTime}"></p>
+                                <p class="text-muted mb-0" th:utext = "${#temporals.format(selectedOrder.route.departureTime, 'dd-MM-yyyy HH:mm' )}"></p>
                             </div>
                         </div>
                         <hr>
@@ -90,7 +90,7 @@
                                 <p class="mb-0">[[#{label.route.arrivalTime }]]</p>
                             </div>
                             <div class="col-sm-8">
-                                <p class="text-muted mb-0" th:utext = "${selectedOrder.route.arrivalTime}"></p>
+                                <p class="text-muted mb-0" th:utext = "${#temporals.format(selectedOrder.route.arrivalTime, 'dd-MM-yyyy HH:mm' )}"></p>
                             </div>
                         </div>
                         <hr>
@@ -105,7 +105,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Проміжні станції</p>
+                                <p class="mb-0">[[#{label.intermediate.stations}]]</p>
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="station : ${selectedOrder.route.intermediateStations}">
@@ -116,7 +116,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-4">
-                                <p class="mb-0">Кількість квитків</p>
+                                <p class="mb-0">[[#{button.countOfTicket}]]</p>
                             </div>
                             <div class="col-sm-8">
                                 <ul th:each="ticket : ${selectedOrder.numberOfPurchasedTicketsTypesSet}">

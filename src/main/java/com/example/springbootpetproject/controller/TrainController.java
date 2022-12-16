@@ -75,13 +75,7 @@ public class TrainController {
     }
 
     @GetMapping("/info")
-    public String getInfoAboutChangedTrain(@RequestParam("id") String id, Model model, Principal principal, HttpSession session){
-        if(session.getAttribute("username")==null){
-            User user = userServiceI.findUserByUsername(principal.getName());
-            session.setAttribute("username",principal.getName());
-            session.setAttribute("role",user.getUserRole().name());
-            session.setAttribute("balance",user.getUserCountOfMoney());
-        }
+    public String getInfoAboutChangedTrain(@RequestParam("id") String id, Model model){
         Route route = routeServiceI.findRouteById(Long.parseLong(id));
         List<String> userCommentsList = userCommentServiceI
                 .findByTrainNumber(route.getTrain().getTrainNumber())

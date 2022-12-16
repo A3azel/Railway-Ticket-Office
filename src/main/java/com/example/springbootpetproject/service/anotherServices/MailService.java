@@ -6,6 +6,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -24,6 +25,7 @@ public class MailService {
         this.javaMailSender = javaMailSender;
     }
 
+    @Async
     public void sendSimpleMessage(String to, String subject, String text) {
         log.debug("In the sendSimpleMessage method");
         SimpleMailMessage message = new SimpleMailMessage();
@@ -36,6 +38,7 @@ public class MailService {
         log.debug("End of sendSimpleMessage method");
     }
 
+    @Async
     public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment,String fileName) throws MessagingException {
         log.debug("In the sendMessageWithAttachment method");
         MimeMessage message = javaMailSender.createMimeMessage();

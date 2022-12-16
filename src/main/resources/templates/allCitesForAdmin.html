@@ -21,13 +21,13 @@
                 <label>
                     <input type="text" name="cityName" class="form-control" th:placeholder="#{placeholder.city.search}"/>
                 </label>
-                <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+                <button type="submit" class="btn btn-outline-success"><i class="bi bi-search"></i>[[#{button.find}]]</button>
                 <th:block th:if="${CityNotFound}">
                     <p th:text="${CityNotFound}" style="color: red"></p>
                 </th:block>
             </form>
             <form th:action="@{/admin/city/add}" method="get">
-                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addCity}]]</button>
+                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-plus-circle"></i>[[#{button.addCity}]]</button>
             </form>
         </div>
 
@@ -49,10 +49,10 @@
                 <td>
                     <div class="d-grid gap-3 d-md-flex justify-content-md-center">
                         <form th:action="@{'/admin/station/all/' +${city.cityName}+ '/page/1'}"  method="get">
-                            <button type="submit" class="btn btn-outline-primary">[[#{button.station.viewStationList}]]</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i> [[#{button.station.viewStationList}]]</button>
                         </form>
                         <form th:action="@{'/admin/station/add/' + ${city.cityName}}" method="get">
-                            <button type="submit" class="btn btn-outline-success btn-rounded"><i class="bi bi-pencil"></i>[[#{button.station.add}]]</button>
+                            <button type="submit" class="btn btn-outline-success btn-rounded"><i class="bi bi-plus-circle"></i>[[#{button.station.add}]]</button>
                         </form>
                         <th:block th:if="${city.isRelevant} == true">
                             <form th:action="@{'/admin/city/relevant/' + ${city.id}}"  method="post">

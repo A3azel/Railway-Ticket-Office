@@ -88,7 +88,7 @@
                 </div>
                 <button type="submit" name="id" th:value="*{id}" class="btn btn-outline-primary">[[#{button.submitData}]]</button>
             </form>
-            <form th:action="@{'/admin/ticket/delete/' + *{id}}"  method="post"  th:object="${ticketTypeDTO}">
+            <form style="padding-top: 10px" th:action="@{'/admin/ticket/delete/' + *{id}}"  method="post"  th:object="${ticketTypeDTO}">
                 <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
             </form>
         </div>

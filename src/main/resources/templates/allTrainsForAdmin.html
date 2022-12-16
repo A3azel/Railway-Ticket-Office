@@ -21,13 +21,13 @@
                 <label>
                     <input type="text" name="wantedTrain" class="form-control" th:placeholder="#{placeholder.train.search}"/>
                 </label>
-                <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+                <button type="submit" class="btn btn-outline-success"><i class="bi bi-search"></i>[[#{button.find}]]</button>
                 <th:block th:if="${TrainNotFound}">
                     <p th:text="${TrainNotFound}" style="color: red"></p>
                 </th:block>
             </form>
             <form th:action="@{/admin/train/add}" method="get">
-                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addTrain}]]</button>
+                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-plus-circle"></i>[[#{button.addTrain}]]</button>
             </form>
         </div>
 
@@ -55,7 +55,7 @@
                     <div class="d-grid gap-4 d-md-flex justify-content-md-center">
                         <form th:action="@{'/admin/train/' + ${train.id}}" method="get">
                             <!--<button type="submit" class="btn btn-outline-primary">[[#{button.updateData}]]</button>-->
-                            <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
+                            <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.updateData}]]</button>
                         </form>
                         <form th:action="@{'/admin/train/all/comment/' + ${train.id} + '/page/1'}" method="get">
                             <!--<button type="submit" class="btn btn btn-outline-info">[[#{button.train.allComments}]]</button>-->

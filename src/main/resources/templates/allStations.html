@@ -22,13 +22,13 @@
                 <label>
                     <input type="text" name="stationName" class="form-control" th:placeholder="#{placeholder.station.search}"/>
                 </label>
-                <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+                <button type="submit" class="btn btn-outline-success"><i class="bi bi-search"></i>[[#{button.find}]]</button>
                 <th:block th:if="${StationNotFound}">
                     <p th:text="${StationNotFound}" style="color: red"></p>
                 </th:block>
             </form>
             <form method="get" th:action="@{'/admin/station/add/' + ${cityName}}">
-                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.station.add}]]</button>
+                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-plus-circle"></i>[[#{button.station.add}]]</button>
             </form>
         </div>
 
@@ -51,7 +51,7 @@
                 <td>
                     <div class="d-grid gap-3 d-md-flex justify-content-md-center">
                         <form  method="get" th:action="@{'/admin/station/find/' + ${station.cityName}}">
-                            <button type="submit" name="stationName" th:value="${station.stationName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
+                            <button type="submit" name="stationName" th:value="${station.stationName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.updateData}]]</button>
                         </form>
                         <th:block th:if="${station.isRelevant} == true">
                             <form th:action="@{'/admin/station/relevant/'+ ${station.cityName}+ '/' + ${station.id}}"  method="post">

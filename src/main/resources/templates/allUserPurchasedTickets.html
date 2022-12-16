@@ -22,7 +22,7 @@
                     <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=id'}"></a>[[#{user.order.label.number}]]
                 </th>
                 <th scope="col">
-                    <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=created'}"></a>Дата оформлення
+                    <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=created'}"></a>[[#{label.order.purchase}]]
                 </th>
                 <th scope="col">
                     <a th:href = "@{'/user/myOrders/page/' + ${pageNumber} + '?direction=' + ${reverseDirection} + '&sort=train.trainNumber'}"></a>[[#{label.train.number}]]

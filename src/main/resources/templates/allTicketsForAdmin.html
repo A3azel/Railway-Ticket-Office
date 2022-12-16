@@ -21,13 +21,13 @@
                 <label>
                     <input type="text" name="ticketName" class="form-control" th:placeholder="#{placeholder.ticket.search}"/>
                 </label>
-                <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+                <button type="submit" class="btn btn-outline-success"><i class="bi bi-search"></i>[[#{button.find}]]</button>
                 <th:block th:if="${TicketNotFound}">
                     <p th:text="${TicketNotFound}" style="color: red"></p>
                 </th:block>
             </form>
             <form method="get" th:action="@{/admin/ticket/add}">
-                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.ticket.add}]]</button>
+                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-plus-circle"></i>[[#{button.ticket.add}]]</button>
             </form>
         </div>
 
@@ -54,7 +54,7 @@
                 <td>
                     <div class="d-grid gap-3 d-md-flex justify-content-md-center">
                         <form  method="get" th:action="@{/admin/ticket/find}">
-                            <button type="submit" name="ticketName" th:value="${ticket.ticketTypeName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
+                            <button type="submit" name="ticketName" th:value="${ticket.ticketTypeName}" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.updateData}]]</button>
                         </form>
                         <!--<form th:action="@{'/admin/ticket/delete/' ${ticket.id}}"  method="post">
                             <button type="submit" class="btn btn-outline-danger">[[#{button.delete}]]</button>

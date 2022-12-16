@@ -91,7 +91,7 @@
                 </div>
                 <button type="submit" name="id" th:value="*{id}" class="btn btn-outline-primary">[[#{button.submitData}]]</button>
             </form>
-            <form th:action="@{'/admin/station/delete/' + *{id}}"  method="post" th:object="${stationDTO}">
+            <form style="padding-top: 10px" th:action="@{'/admin/station/delete/' + *{id}}"  method="post" th:object="${stationDTO}">
                 <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
             </form>
         </div>

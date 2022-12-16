@@ -23,13 +23,13 @@
                 <label>
                     <input type="number" name="id" min="1" class="form-control" th:placeholder="#{placeholder.route.search}"/>
                 </label>
-                <button type="submit" class="btn btn-outline-success">[[#{button.find}]]</button>
+                <button type="submit" class="btn btn-outline-success"><i class="bi bi-search"></i>[[#{button.find}]]</button>
                 <th:block th:if="${RouteNotFound}">
                     <p th:text="${RouteNotFound}" style="color: red"></p>
                 </th:block>
             </form>
             <form th:action="@{/admin/route/add}" method="get">
-                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.addRoute}]]</button>
+                <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-plus-circle"></i>[[#{button.addRoute}]]</button>
             </form>
         </div>
 
@@ -77,7 +77,7 @@
                 <td>
                     <div class="d-grid gap-1 d-md-flex justify-content-md-center">
                         <form method="get" th:action="@{'/admin/route/update/' + ${route.id}}">
-                            <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-search"></i>[[#{button.updateData}]]</button>
+                            <button type="submit" class="btn btn-outline-primary btn-rounded"><i class="bi bi-pencil"></i>[[#{button.updateData}]]</button>
                         </form>
                         <form method="post" th:action="@{'/admin/route/delete/' + ${route.id}}">
                             <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="bi bi-trash"></i>[[#{button.delete}]]</button>
