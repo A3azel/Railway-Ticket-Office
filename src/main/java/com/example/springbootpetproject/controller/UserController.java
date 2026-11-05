@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -115,12 +116,16 @@ public class UserController {
     @GetMapping("/myOrders/{id}")
     public String getMyOrdersById(Model model, @PathVariable("id") long id, Principal principal){
         Order selectedOrder = ordersServiceI.getOrderById(id);
+        // Проверка владельца идёт до любого использования заказа. Раньше она охватывала
+        // только добавление атрибутов: чужой заказ уже был загружен, комментарий запрошен,
+        // а страница отдавалась без данных вместо отказа в доступе.
+        if(selectedOrder == null || !selectedOrder.getUser().getUsername().equals(principal.getName())){
+            throw new AccessDeniedException("Order " + id + " does not belong to " + principal.getName());
+        }
+        model.addAttribute("selectedOrder",orderFacade.convertOrdersToOrdersDTO(selectedOrder));
         UserComment comment = userCommentServiceI.findByUserNameAndTrainNumber(principal.getName(),selectedOrder.getRoute().getTrain().getTrainNumber());
-        if(selectedOrder.getUser().getUsername().equals(principal.getName())){
-            model.addAttribute("selectedOrder",orderFacade .convertOrdersToOrdersDTO(selectedOrder));
-            if(comment!=null){
-                model.addAttribute("comment",commentFacade.convertUserCommentsToUserCommentsDTO(comment));
-            }
+        if(comment!=null){
+            model.addAttribute("comment",commentFacade.convertUserCommentsToUserCommentsDTO(comment));
         }
         return "userSelectedOrder";
     }

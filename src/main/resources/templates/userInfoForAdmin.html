@@ -19,7 +19,7 @@
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <th:block th:switch="${selectedUser.userGender.name()}">
+                        <th:block th:switch="${selectedUser.userGender}">
 
                             <th:block th:case = "'MAN'">
                                 <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
@@ -41,7 +41,7 @@
                         </h5>
                         <p class="text-muted mb-1"  th:utext = "${selectedUser.userRole}"></p>
                         <p class="text-muted mb-4" th:utext = "${selectedUser.username}"></p>
-                        <th:block th:if="${selectedUser.userRole.name()} == 'USER'">
+                        <th:block th:if="${selectedUser.userRole} == 'USER'">
                             <div class="d-flex justify-content-center mb-1">
                                 <form method="post" th:action="@{'/admin/users/selectedUser/changStatus/' + ${selectedUser.username}}">
                                     <button type="submit" th:value="${infoAboutPage}" name="infoAboutPage" class="btn btn-outline-danger">[[#{button.block}]]</button>
@@ -90,7 +90,7 @@
                                 <p class="text-muted mb-0" th:utext = "${selectedUser.userPhone}"></p>
                             </div>
                         </div>
-                        <th:block th:if="${selectedUser.userRole.name()=='USER'}">
+                        <th:block th:if="${selectedUser.userRole=='USER'}">
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
@@ -103,7 +103,7 @@
                         </th:block>
                     </div>
                 </div>
-                <th:block th:if="${selectedUser.userRole.name()=='USER'}">
+                <th:block th:if="${selectedUser.userRole=='USER'}">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                         <form method="get">
                             <button type="submit" class="btn btn-outline-secondary">[[#{button.ListOfUserOrders}]]</button>

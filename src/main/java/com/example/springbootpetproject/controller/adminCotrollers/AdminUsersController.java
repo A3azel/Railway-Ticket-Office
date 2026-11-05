@@ -1,8 +1,10 @@
 package com.example.springbootpetproject.controller.adminCotrollers;
 
+import com.example.springbootpetproject.customExceptions.userExceptions.UserNotFound;
 import com.example.springbootpetproject.dto.UserCommentDTO;
 import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.User;
+import com.example.springbootpetproject.facade.UserFacade;
 import com.example.springbootpetproject.service.serviceImplementation.UserCommentServiceI;
 import com.example.springbootpetproject.service.serviceImplementation.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,13 @@ import java.util.List;
 public class AdminUsersController {
     private final UserServiceI userServiceI;
     private final UserCommentServiceI userCommentServiceI;
+    private final UserFacade userFacade;
 
     @Autowired
-    public AdminUsersController(UserServiceI userServiceI, UserCommentServiceI userCommentServiceI) {
+    public AdminUsersController(UserServiceI userServiceI, UserCommentServiceI userCommentServiceI, UserFacade userFacade) {
         this.userServiceI = userServiceI;
         this.userCommentServiceI = userCommentServiceI;
+        this.userFacade = userFacade;
     }
 
     @GetMapping("/all/page/{pageNumber}")
@@ -52,8 +56,13 @@ public class AdminUsersController {
     @GetMapping("/selectedUser/{userName}")
     public String getSelectedUser(HttpServletRequest request, Model model, @PathVariable("userName") String userName){
         User user = userServiceI.findUserByUsername(userName);
+        if(user == null){
+            throw new UserNotFound("User " + userName + " not found");
+        }
         model.addAttribute("infoAboutPage",request.getParameter("infoAboutPage"));
-        model.addAttribute("selectedUser", user);
+        // Раньше здесь в модель уходила entity User целиком — вместе с полем password,
+        // то есть bcrypt-хеш пароля попадал в шаблон. UserDTO его не содержит.
+        model.addAttribute("selectedUser", userFacade.convertUserToUserDTO(user));
         return "userInfoForAdmin";
     }
 

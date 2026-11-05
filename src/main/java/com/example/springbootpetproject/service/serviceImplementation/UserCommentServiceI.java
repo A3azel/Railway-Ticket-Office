@@ -92,7 +92,7 @@ public class UserCommentServiceI implements UserCommentService {
 
     @Override
     @Transactional
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCommentForAdmin(Long id) {
         userCommentsRepository.deleteById(id);
     }

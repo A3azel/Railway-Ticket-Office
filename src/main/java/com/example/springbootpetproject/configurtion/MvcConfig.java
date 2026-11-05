@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.configurtion;
 
+import com.example.springbootpetproject.security.AuthSessionInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,12 @@ import java.util.Locale;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+
+    private final AuthSessionInterceptor authSessionInterceptor;
+
+    public MvcConfig(AuthSessionInterceptor authSessionInterceptor) {
+        this.authSessionInterceptor = authSessionInterceptor;
+    }
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -67,5 +74,6 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(authSessionInterceptor);
     }
 }

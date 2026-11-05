@@ -7,14 +7,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+// Без prePostEnabled все @PreAuthorize в сервисах — просто декорация: Spring их не
+// применяет, и проверки вида "#username == authentication.principal.username" не работают.
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImp userDetailsServiceImp;
     private final CustomBCryptPasswordEncoder bCryptPasswordEncoder;
@@ -34,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                    .csrf().disable()
+                // CSRF включён. Формы Thymeleaf с th:action получают скрытый токен
+                // автоматически; logout обязан быть POST, иначе Spring его не примет.
                 .authorizeRequests()
                     .antMatchers("/order/**","/user/**").authenticated()/*.hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())*/
                     .antMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
@@ -54,16 +57,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .sessionManagement()
-                    .invalidSessionUrl("/")
-                    .maximumSessions(1)//?
-                    .maxSessionsPreventsLogin(false)
-                    /*.sessionRegistry(sessionRegistry())*/;
+                    // maximumSessions(1) убрано намеренно. Повторный вход того же
+                    // пользователя вытеснял предыдущую сессию, а та затем получала пустой
+                    // ответ 200 (expiredUrl не задан) — в браузере это выглядело как
+                    // «выбросило на главную без авторизации». Вдобавок HttpSessionEventPublisher
+                    // отсутствует, поэтому выход не освобождал слот и ограничение залипало
+                    // до перезапуска приложения. Для нескольких задач ECS оно всё равно
+                    // не работает: SessionRegistry хранится в памяти одного экземпляра.
+                    .invalidSessionUrl("/");
     }
-
-    /*@Bean(name = "sessionRegistry")
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }*/
 
     @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider(){
