@@ -9,6 +9,7 @@ import com.example.springbootpetproject.service.serviceImplementation.UserServic
 import com.example.springbootpetproject.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +26,16 @@ public class RegistrationService {
     private final ConfirmationTokenServiceI confirmationTokenServiceI;
     private final MailService mailService;
 
+    /** Внешний адрес приложения: ALB/домен в проде, localhost при локальном запуске. */
+    private final String baseUrl;
+
     @Autowired
-    public RegistrationService(UserServiceI userServiceI, ConfirmationTokenServiceI confirmationTokenServiceI, MailService mailService) {
+    public RegistrationService(UserServiceI userServiceI, ConfirmationTokenServiceI confirmationTokenServiceI,
+                               MailService mailService, @Value("${app.base-url}") String baseUrl) {
         this.userServiceI = userServiceI;
         this.confirmationTokenServiceI = confirmationTokenServiceI;
         this.mailService = mailService;
+        this.baseUrl = baseUrl;
     }
 
 
@@ -62,7 +68,7 @@ public class RegistrationService {
         user.setUserGender(UserGender.valueOf(userGender));
         log.info("Trying to add a user");
         String token = userServiceI.addUser(user);
-        String link = "http://localhost:8080/registration/activate?token=" + token;
+        String link = baseUrl + "/registration/activate?token=" + token;
         mailService.sendSimpleMessage(
                 user.getUserEmail(),
                 "Registration",

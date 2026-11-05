@@ -2,6 +2,7 @@ package com.example.springbootpetproject.service.serviceImplementation;
 
 import com.example.springbootpetproject.configurtion.CustomBCryptPasswordEncoder;
 import com.example.springbootpetproject.customExceptions.userExceptions.InsufficientFunds;
+import com.example.springbootpetproject.customExceptions.userExceptions.InvalidCountOfMoney;
 import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.ConfirmationToken;
 import com.example.springbootpetproject.entity.User;
@@ -11,6 +12,7 @@ import com.example.springbootpetproject.repository.UserRepository;
 import com.example.springbootpetproject.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,12 +34,18 @@ public class UserServiceI implements com.example.springbootpetproject.service.se
     private final ConfirmationTokenServiceI confirmationTokenServiceI;
     private final UserFacade userFacade;
 
+    /** Потолок разового пополнения. Защита от выставления себе произвольного баланса. */
+    private final BigDecimal maxTopUpAmount;
+
     @Autowired
-    public UserServiceI(UserRepository userRepository, CustomBCryptPasswordEncoder bCryptPasswordEncoder, ConfirmationTokenServiceI confirmationTokenServiceI, UserFacade userFacade) {
+    public UserServiceI(UserRepository userRepository, CustomBCryptPasswordEncoder bCryptPasswordEncoder,
+                        ConfirmationTokenServiceI confirmationTokenServiceI, UserFacade userFacade,
+                        @Value("${app.top-up.max-amount}") BigDecimal maxTopUpAmount) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.confirmationTokenServiceI = confirmationTokenServiceI;
         this.userFacade = userFacade;
+        this.maxTopUpAmount = maxTopUpAmount;
     }
 
     @Override
@@ -124,8 +132,14 @@ public class UserServiceI implements com.example.springbootpetproject.service.se
     @Override
     @Transactional
     public void topUpAccount(BigDecimal money,String userName) {
-        if(money.compareTo(BigDecimal.valueOf(0))<=0){
-            throw new IllegalArgumentException("Гроші не можуть бути відємними");
+        if(money.compareTo(BigDecimal.ZERO) <= 0){
+            throw new InvalidCountOfMoney("The top-up amount must be positive");
+        }
+        // Пополнение не подключено к оплате, поэтому порог сверху — единственное, что
+        // ограничивает баланс, который пользователь может себе выставить.
+        if(money.compareTo(maxTopUpAmount) > 0){
+            log.warn("user {} tried to top up {} which exceeds the limit {}", userName, money, maxTopUpAmount);
+            throw new InvalidCountOfMoney("The top-up amount must not exceed " + maxTopUpAmount);
         }
         userRepository.topUpAccount(money,userName);
     }
@@ -133,10 +147,15 @@ public class UserServiceI implements com.example.springbootpetproject.service.se
     @Override
     @Transactional
     public void spendMoney(BigDecimal money,String userName) throws InsufficientFunds {
-        if(money.compareTo(findUserByUsername(userName).getUserCountOfMoney())>=0){
+        if(money.compareTo(BigDecimal.ZERO) <= 0){
+            throw new InvalidCountOfMoney("The order amount must be positive");
+        }
+        // Достаточность средств проверяет сам UPDATE (условие в запросе), поэтому читать
+        // баланс заранее нельзя: между чтением и списанием его успеет изменить другой заказ.
+        if(userRepository.spendMoney(money,userName) == 0){
+            log.warn("not enough funds on the account of user {}", userName);
             throw new InsufficientFunds("There are not enough funds in the account");
         }
-        userRepository.spendMoney(money,userName);
     }
 
     @Override

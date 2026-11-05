@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.controller;
 
+import com.example.springbootpetproject.customExceptions.userExceptions.InvalidCountOfMoney;
 import com.example.springbootpetproject.dto.OrderDTO;
 import com.example.springbootpetproject.dto.UserDTO;
 import com.example.springbootpetproject.entity.Order;
@@ -138,12 +139,16 @@ public class UserController {
     }
 
     @PostMapping("/topUpAccount")
-    public String topUpTheAccount(HttpServletRequest request,Principal principal){
-        String username = principal.getName();
-        String moneyString = request.getParameter("countOfMoney");
-
-        BigDecimal money = BigDecimal.valueOf(Long.parseLong(moneyString));
-        userServiceI.topUpAccount(money,username);
+    public String topUpTheAccount(@RequestParam("countOfMoney") String countOfMoney, Principal principal){
+        BigDecimal money;
+        try {
+            // BigDecimal вместо Long.parseLong: тот давал NumberFormatException и 500 на
+            // любом нечисловом или дробном вводе, а min="1" в форме проверяется лишь на клиенте.
+            money = new BigDecimal(countOfMoney.trim());
+        } catch (NumberFormatException | NullPointerException e) {
+            throw new InvalidCountOfMoney("The top-up amount must be a number");
+        }
+        userServiceI.topUpAccount(money, principal.getName());
         return "redirect:/user";
     }
 

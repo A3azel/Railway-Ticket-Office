@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.userExceptions;
 
-public class InvalidCountOfMoney extends Throwable{
+public class InvalidCountOfMoney extends RuntimeException{
 
     public InvalidCountOfMoney() {
     }

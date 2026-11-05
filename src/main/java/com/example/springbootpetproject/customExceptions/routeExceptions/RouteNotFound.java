@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.routeExceptions;
 
-public class RouteNotFound extends Throwable{
+public class RouteNotFound extends RuntimeException{
     public RouteNotFound() {
         super();
     }

@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.userExceptions;
 
-public class UserNotFound extends Throwable{
+public class UserNotFound extends RuntimeException{
     public UserNotFound() {
         super();
     }

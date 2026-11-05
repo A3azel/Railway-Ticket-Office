@@ -1,5 +1,6 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
+import com.example.springbootpetproject.customExceptions.routeExceptions.ProblemWithSeatsCount;
 import com.example.springbootpetproject.customExceptions.routeExceptions.RouteNotFound;
 import com.example.springbootpetproject.customExceptions.trainExceptions.TrainNotFound;
 import com.example.springbootpetproject.dto.RouteDTO;
@@ -147,12 +148,26 @@ public class RouteServiceI implements com.example.springbootpetproject.service.s
     @Override
     @Transactional
     public void reduceNumberOfCompartmentFreeSeats(Long routeId, int countOfPurchasedTickets) {
-        routeRepository.reduceNumberOfCompartmentFreeSeats(routeId, countOfPurchasedTickets);
+        validateTicketsCount(countOfPurchasedTickets);
+        if(routeRepository.reduceNumberOfCompartmentFreeSeats(routeId, countOfPurchasedTickets) == 0){
+            log.warn("not enough compartment seats on route {} for {} tickets", routeId, countOfPurchasedTickets);
+            throw new ProblemWithSeatsCount("There are not enough free compartment seats");
+        }
     }
 
     @Override
     @Transactional
     public void reduceNumberOfSuiteFreeSeats(Long routeId, int countOfPurchasedTickets) {
-        routeRepository.reduceNumberOfSuiteFreeSeats(routeId, countOfPurchasedTickets);
+        validateTicketsCount(countOfPurchasedTickets);
+        if(routeRepository.reduceNumberOfSuiteFreeSeats(routeId, countOfPurchasedTickets) == 0){
+            log.warn("not enough suite seats on route {} for {} tickets", routeId, countOfPurchasedTickets);
+            throw new ProblemWithSeatsCount("There are not enough free suite seats");
+        }
+    }
+
+    private void validateTicketsCount(int countOfPurchasedTickets) {
+        if(countOfPurchasedTickets <= 0){
+            throw new ProblemWithSeatsCount("The number of tickets must be positive");
+        }
     }
 }

@@ -124,6 +124,7 @@
                     <button type="submit" id="topUpTheAccount"  class="btn btn-outline-secondary">[[#{user.button.topUpTheAccount}]]</button>
                 </div>
                 <div id="placeToAdd" class="changedMenu">
+                    <p th:if="${purchaseError}" th:text="${purchaseError}" style="color: red"></p>
                     <form method="post" th:action="@{/user/topUpAccount}">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start" style="padding-top: 20px">
                             <input type="number" min="1" class="form-control" name="countOfMoney" style="border-radius:20px;height:40px;width:200px">

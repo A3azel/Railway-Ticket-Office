@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.cityExceptions;
 
-public class InvalidNameOfCity extends Throwable{
+public class InvalidNameOfCity extends RuntimeException{
 
     public InvalidNameOfCity() {
 

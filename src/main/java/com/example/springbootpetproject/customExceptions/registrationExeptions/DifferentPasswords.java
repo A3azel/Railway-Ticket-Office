@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.registrationExeptions;
 
-public class DifferentPasswords extends Throwable{
+public class DifferentPasswords extends RuntimeException{
     public DifferentPasswords() {
     }
 

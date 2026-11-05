@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.routeExceptions;
 
-public class DataCompareError extends Throwable{
+public class DataCompareError extends RuntimeException{
     public DataCompareError() {
         super();
     }

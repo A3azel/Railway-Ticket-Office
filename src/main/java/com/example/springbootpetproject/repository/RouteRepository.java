@@ -30,16 +30,23 @@ public interface RouteRepository extends JpaRepository<Route,Long> {
     Optional<Route> findById(Long Id);
     Route findRouteById(Long Id);
 
-    @Modifying
-    @Query(value = "UPDATE route SET number_of_compartment_free_seats = (number_of_compartment_free_seats - :countOfPurchasedTickets) where id = :routeId",
+    /**
+     * Проверка наличия мест встроена в UPDATE: иначе два параллельных заказа оба видят
+     * свободные места и перепродают их, а запрос без условия уводит счётчик в минус.
+     * Возвращает число затронутых строк: 0 — мест не хватило.
+     */
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE route SET number_of_compartment_free_seats = (number_of_compartment_free_seats - :countOfPurchasedTickets) " +
+            "where id = :routeId AND number_of_compartment_free_seats >= :countOfPurchasedTickets",
             nativeQuery = true)
-    void reduceNumberOfCompartmentFreeSeats(@Param("routeId") Long routeId,
+    int reduceNumberOfCompartmentFreeSeats(@Param("routeId") Long routeId,
                                             @Param("countOfPurchasedTickets") int countOfPurchasedTickets);
 
-    @Modifying
-    @Query(value = "UPDATE route SET number_of_suite_free_seats = (number_of_suite_free_seats - :countOfPurchasedTickets) where id = :routeId",
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE route SET number_of_suite_free_seats = (number_of_suite_free_seats - :countOfPurchasedTickets) " +
+            "where id = :routeId AND number_of_suite_free_seats >= :countOfPurchasedTickets",
             nativeQuery = true)
-    void reduceNumberOfSuiteFreeSeats(@Param("routeId") Long routeId,
+    int reduceNumberOfSuiteFreeSeats(@Param("routeId") Long routeId,
                                             @Param("countOfPurchasedTickets") int countOfPurchasedTickets);
 
 

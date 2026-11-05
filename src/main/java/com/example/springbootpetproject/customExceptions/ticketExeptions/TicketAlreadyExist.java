@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.ticketExeptions;
 
-public class TicketAlreadyExist extends Throwable{
+public class TicketAlreadyExist extends RuntimeException{
     public TicketAlreadyExist() {
         super();
     }

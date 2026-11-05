@@ -33,12 +33,10 @@ public class UserDetailsServiceImp implements UserDetailsService {
         boolean enabled = !user.isAccountVerified();
        /* return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword()
                 ,mapRolesToAuthority(user.getUserRole()));*/
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
+        return org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
                 .password(user.getPassword())
                 .disabled(enabled)
                 .authorities(mapRolesToAuthority(user.getUserRole())).build();
-
-        return userDetails;
     }
 
     //Collection<UserRole> roles

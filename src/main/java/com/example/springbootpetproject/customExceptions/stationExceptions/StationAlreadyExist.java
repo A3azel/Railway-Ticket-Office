@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.stationExceptions;
 
-public class StationAlreadyExist extends Throwable{
+public class StationAlreadyExist extends RuntimeException{
     public StationAlreadyExist() {
         super();
     }

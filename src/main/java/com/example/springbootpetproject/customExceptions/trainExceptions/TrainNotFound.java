@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.trainExceptions;
 
-public class TrainNotFound extends Throwable{
+public class TrainNotFound extends RuntimeException{
     public TrainNotFound() {
         super();
     }

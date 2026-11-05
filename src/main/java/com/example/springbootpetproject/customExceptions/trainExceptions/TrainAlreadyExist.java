@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.trainExceptions;
 
-public class TrainAlreadyExist extends Throwable{
+public class TrainAlreadyExist extends RuntimeException{
 
     public TrainAlreadyExist() {
     }

@@ -1,6 +1,5 @@
 package com.example.springbootpetproject.controller;
 
-import com.example.springbootpetproject.customExceptions.userExceptions.InsufficientFunds;
 import com.example.springbootpetproject.dto.RouteDTO;
 import com.example.springbootpetproject.dto.TicketTypeDTO;
 import com.example.springbootpetproject.entity.*;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -59,60 +57,58 @@ public class OrderController {
 
     @PostMapping(path = "/{id}",params = "by")
     public String makeAnOrder(@PathVariable("id") Long id, Principal principal, @RequestParam("ticketsCount") String ticketCount
-            ,@RequestParam("place") String place,@RequestParam("ticketType") String ticketType, Model model, HttpSession session){
+            ,@RequestParam("place") String place,@RequestParam("ticketType") String ticketType, HttpSession session){
         String username = principal.getName();
-        User user = userServiceI.findUserByUsername(username);
+        // Нехватку средств и мест обрабатывает GlobalExceptionHandler: он возвращает
+        // пользователя на эту же страницу с flash-сообщением. Раньше ошибка ловилась здесь
+        // и клалась в модель перед редиректом, где модель уже не доступна шаблону.
         if(session.getAttribute("ticketsTypesList")!=null){
             List<NumberOfPurchasedTicketsTypes> ticketsTypesList = (List<NumberOfPurchasedTicketsTypes>) session.getAttribute("ticketsTypesList");
-            try {
-                ordersService.addMultipleOrder(username,ticketsTypesList,ticketCount,place,ticketType,id);
-            } catch (InsufficientFunds e) {
-                model.addAttribute("insufficientFunds", e.getMessage());
-                return "redirect:/order/"+id;
-            }
-
+            ordersService.addMultipleOrder(username,ticketsTypesList,ticketCount,place,ticketType,id);
             session.removeAttribute("ticketsTypesList");
-            session.setAttribute("balance",user.getUserCountOfMoney());
+            session.removeAttribute("allPrice");
+            updateBalanceInSession(session, username);
             return "redirect:/user";
         }
-        try {
-            ordersService.addOrder(username,ticketCount,place,ticketType,id);
-        } catch (InsufficientFunds e) {
-            model.addAttribute("insufficientFunds", e.getMessage());
-            session.removeAttribute("ticketsTypesList");
-            return "redirect:/order/"+id;
-        }
+        ordersService.addOrder(username,ticketCount,place,ticketType,id);
         session.removeAttribute("ticketsTypesList");
-        session.setAttribute("balance",user.getUserCountOfMoney());
+        session.removeAttribute("allPrice");
+        updateBalanceInSession(session, username);
         return "redirect:/user";
+    }
+
+    /**
+     * Баланс перечитывается из БД после покупки. Раньше в сессию попадало значение из
+     * объекта User, загруженного до списания, — нативный UPDATE его не обновляет,
+     * и в шапке висела старая сумма.
+     */
+    private void updateBalanceInSession(HttpSession session, String username) {
+        session.setAttribute("balance", userServiceI.findUserByUsername(username).getUserCountOfMoney());
     }
 
     @PostMapping(path = "/{id}", params = "add")
     public String addOrder(@PathVariable("id") Long id, HttpSession session
             ,@RequestParam("place") String place, @RequestParam("ticketType") String ticketType,  @RequestParam("ticketsCount") String ticketCount){
-        if(session.getAttribute("ticketsTypesList")==null){
-            List<NumberOfPurchasedTicketsTypes> ticketsTypesList = new ArrayList<>();
-            TicketType ticket = ticketTypeServiceI.getTicketByTicketType(ticketType);
-            NumberOfPurchasedTicketsTypes tickets = new NumberOfPurchasedTicketsTypes();
-            tickets.setTicketType(ticket);
-            tickets.setPlace(TrainPlace.valueOf(place));
-            tickets.setCountOfPurchasedTickets(Integer.parseInt(ticketCount));
-            ticketsTypesList.add(tickets);
-            BigDecimal price = ordersService.calculateAllPrice(id, place, ticketType, ticketCount);
-            session.setAttribute("ticketsTypesList",ticketsTypesList);
-            session.setAttribute("allPrice", price);
-            return "redirect:/order/"+id;
+        // Цену считаем первой: calculateAllPrice валидирует place и ticketsCount и бросает
+        // ProblemWithSeatsCount, поэтому стоящие ниже valueOf/parseInt уже безопасны.
+        // Раньше они выполнялись раньше любой проверки и давали 500 на кривом вводе.
+        BigDecimal addedPrice = ordersService.calculateAllPrice(id, place, ticketType, ticketCount);
+
+        List<NumberOfPurchasedTicketsTypes> ticketsTypesList =
+                (List<NumberOfPurchasedTicketsTypes>) session.getAttribute("ticketsTypesList");
+        if(ticketsTypesList == null){
+            ticketsTypesList = new ArrayList<>();
         }
-        List<NumberOfPurchasedTicketsTypes> ticketsTypesList = (List<NumberOfPurchasedTicketsTypes>) session.getAttribute("ticketsTypesList");
+
         NumberOfPurchasedTicketsTypes tickets = new NumberOfPurchasedTicketsTypes();
         tickets.setTicketType(ticketTypeServiceI.getTicketByTicketType(ticketType));
         tickets.setPlace(TrainPlace.valueOf(place));
         tickets.setCountOfPurchasedTickets(Integer.parseInt(ticketCount));
         ticketsTypesList.add(tickets);
-        BigDecimal allPrice = BigDecimal.ZERO;
-        for(NumberOfPurchasedTicketsTypes numberOfTickets: ticketsTypesList){
-            allPrice = allPrice.add(ordersService.calculateAllPrice(id,numberOfTickets.getPlace().name(),numberOfTickets.getTicketType().getTicketTypeName(), String.valueOf(numberOfTickets.getCountOfPurchasedTickets())));
-        }
+
+        BigDecimal previousPrice = (BigDecimal) session.getAttribute("allPrice");
+        BigDecimal allPrice = (previousPrice == null ? BigDecimal.ZERO : previousPrice).add(addedPrice);
+
         session.setAttribute("ticketsTypesList",ticketsTypesList);
         session.setAttribute("allPrice", allPrice);
         return "redirect:/order/"+id;

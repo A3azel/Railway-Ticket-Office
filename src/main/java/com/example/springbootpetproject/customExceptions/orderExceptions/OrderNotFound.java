@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.orderExceptions;
 
-public class OrderNotFound extends Throwable{
+public class OrderNotFound extends RuntimeException{
     public OrderNotFound() {
         super();
     }

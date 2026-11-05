@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <!--<link th:href="@{/CSS/radioButton.css}" rel="stylesheet">-->
+    <link th:href="@{/CSS/radioButton.css}" rel="stylesheet">
     <link th:href="@{/CSS/footer.css}" rel="stylesheet">
 </head>
 <body>
@@ -135,40 +135,76 @@
                 <div class="row">
                     <form th:action="@{'/order/' + ${selectedRoute.id}}" method="post">
                         <label>Тип квитка: </label>
-                        <div class="container">
-                            <div class="row justify-content-start">
-                                <th:block th:each="ticketType:${ticketTypeList}">
+                        <!--<div class="container">-->
+                            <!--<div class="row justify-content-start">-->
+                        <!--<div class="row">
+                            <th:block th:each="ticketType:${ticketTypeList}">
                                 <th:block th:if="${ticketType.ticketTypeName}=='Adult'">
-                                        <input type="radio" name="ticketType" th:value="${ticketType.ticketTypeName}" checked th:text="${ticketType.ticketTypeName}"/>
+                                    <input type="radio" class="myRadio" name="ticketType" th:value="${ticketType.ticketTypeName}" checked th:text="${ticketType.ticketTypeName}"/>
                                 </th:block>
                                 <th:block th:unless="${ticketType.ticketTypeName} =='Adult'">
-                                    <input type ="radio" name="ticketType" th:value="${ticketType.ticketTypeName}" th:text="${ticketType.ticketTypeName}"/>
+                                    <input type ="radio" class="myRadio" name="ticketType" th:value="${ticketType.ticketTypeName}" th:text="${ticketType.ticketTypeName}"/>
                                 </th:block>
-                                </th:block>
-                            </div>
+                            </th:block>
                         </div>
+-->
+                            <!--</div>-->
+                        <!--</div>-->
 
-                        <div class="row">
+                        <th:block th:each="ticketType:${ticketTypeList}">
+                            <th:block th:if="${ticketType.ticketTypeName}=='Adult'">
+                                <div class="form-check">
+                                    <input class="form-check-input myRadio" checked type="radio" name="ticketType" th:value="${ticketType.ticketTypeName}" th:id = "${ticketType.ticketTypeName}">
+                                    <label class="form-check-label myRadio" th:text="${ticketType.ticketTypeName}" th:for="${ticketType.ticketTypeName}">
+                                    </label>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${ticketType.ticketTypeName} =='Adult'">
+                                <div class="form-check">
+                                    <input class="form-check-input myRadio" type="radio" name="ticketType" th:value="${ticketType.ticketTypeName}" th:id = "${ticketType.ticketTypeName}">
+                                    <label class="form-check-label myRadio" th:text="${ticketType.ticketTypeName}" th:for="${ticketType.ticketTypeName}">
+                                    </label>
+                                </div>
+                            </th:block>
+                        </th:block>
+
+
+
+                        <!--<div class="row">
                             <label for="countOfTickets">Місце:</label>
-                            <input type ="radio" name="place" th:value="COMPARTMENT" checked th:text="#{label.compartment}"/>
-                            <input type ="radio" name="place" th:value="SUITE" th:text="#{label.suite}"/>
+                            <input type ="radio" class="myRadio" name="place" th:value="COMPARTMENT" checked th:text="#{label.compartment}"/>
+                            <input type ="radio" class="myRadio" name="place" th:value="SUITE" th:text="#{label.suite}"/>
+                        </div>-->
+
+                        <label for="countOfTickets">Місце:</label>
+                        <div class="form-check">
+                            <input class="form-check-input myRadio" th:value="COMPARTMENT" type="radio" name="place" id="flexRadioDefault1" checked>
+                            <label class="form-check-label myRadio" for="flexRadioDefault1">
+                                [[#{label.compartment}]]
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" th:value="SUITE" type="radio" name="place" id="flexRadioDefault2">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                [[#{label.suite}]]
+                            </label>
                         </div>
 
                         <div class="input-group" style="width: 150px">
-                            <label for="countOfTickets">[[#{button.countOfTicket}]]</label>
+                            <label for="countOfTickets" style="padding-bottom: 10px">[[#{button.countOfTicket}]]</label>
                             <button type="button" id="minusCount" class="input-group-text">-</button>
                             <input type="number" class="form-control" id="countOfTickets" name="ticketsCount" min="1"/>
                             <button type="button" id="plusCount" class="input-group-text" >+</button>
                         </div>
 
-                        <div class="row">
+                        <div class="row" style="padding-bottom: 10px">
                             <label>Сума: </label>
                             <p id="prise">0 ₴</p>
                             <label>Загальна сумма: </label>
                             <p id="allPrise">0 ₴</p>
                         </div>
-                        <th:block th:if="${insufficientFunds}">
-                            <p th:text="${insufficientFunds}" style="color: red"></p>
+                        <th:block th:if="${purchaseError}">
+                            <p th:text="${purchaseError}" style="color: red"></p>
                         </th:block>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                             <button type="submit" name="add" value="add" id="addButton" class="btn btn-outline-primary">[[#{button.add}]]</button>

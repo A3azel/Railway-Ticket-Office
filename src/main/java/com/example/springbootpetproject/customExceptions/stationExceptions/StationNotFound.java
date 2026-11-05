@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.stationExceptions;
 
-public class StationNotFound extends Throwable{
+public class StationNotFound extends RuntimeException{
     public StationNotFound() {
         super();
     }

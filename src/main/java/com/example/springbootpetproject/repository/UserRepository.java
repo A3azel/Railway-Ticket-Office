@@ -22,13 +22,19 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Page<User> findAll(Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE user_info SET user_count_of_money = user_count_of_money + :money WHERE username = :userName",nativeQuery = true)
     void topUpAccount(@Param("money")BigDecimal money, @Param("userName") String userName);
 
-    @Modifying
-    @Query(value = "UPDATE user_info SET user_count_of_money = user_count_of_money - :money WHERE username = :userName",nativeQuery = true)
-    void spendMoney(@Param("money")BigDecimal money, @Param("userName") String userName);
+    /**
+     * Условие на баланс стоит в самом UPDATE, а не в Java: проверка и списание должны быть
+     * одной атомарной операцией, иначе два параллельных заказа оба проходят проверку и
+     * уводят баланс в минус. Возвращает число затронутых строк: 0 — денег не хватило.
+     */
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE user_info SET user_count_of_money = user_count_of_money - :money " +
+            "WHERE username = :userName AND user_count_of_money >= :money", nativeQuery = true)
+    int spendMoney(@Param("money")BigDecimal money, @Param("userName") String userName);
 
     @Modifying
     @Query(value = "UPDATE user_info SET acount_verified = :newVerificationStatus WHERE username = :userName", nativeQuery = true)

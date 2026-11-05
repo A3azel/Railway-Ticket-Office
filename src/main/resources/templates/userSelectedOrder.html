@@ -15,9 +15,8 @@
     <div th:include="header::head"></div>
 
     <main>
-        <div th:text="#{label.ticket.number} + ' ' + ${selectedOrder.id}">
-
-        </div>
+        <h3 style="text-align: center" th:text="#{label.ticket.number} + ' ' + ${selectedOrder.id}">
+        </h3>
         <div class="row mainRow">
             <div class="col-lg-6">
                 <div class="card mb-4">
@@ -141,7 +140,7 @@
                     <th:block th:if="${comment}!= null">
                         <form method="post" th:action="@{'/comments/update/' + ${selectedOrder.route.trainNumber}}">
                             <div class="mb-3">
-                                <label for="changeComment" class="form-label">[[#{label.change.comments}]]</label>
+                                <label style="text-align: center" for="changeComment" class="form-label">[[#{label.change.comments}]]</label>
                                 <textarea class="form-control" id="changeComment" rows="6" name="newComment" maxlength="5000" placeholder="Ваш відгук..."></textarea>
                                 <button type="submit" th:value="${selectedOrder.id}" name="id" class="btn btn-outline-primary" style="margin:20px" >[[#{label.change.comments}]]</button>
                             </div>
@@ -166,10 +165,10 @@
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <form method="post" th:action="@{'/user/myOrders/pdf/' + ${selectedOrder.id}}">
-                    <button type="submit"  class="btn btn-outline-secondary">Завантажити квиток</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{button.ticket.download}]]</button>
                 </form>
                 <form method="post" th:action="@{'/user/myOrders/pdf/send/' + ${selectedOrder.id}}">
-                    <button type="submit"  class="btn btn-outline-secondary">Відправити квиток на пошту</button>
+                    <button type="submit"  class="btn btn-outline-secondary">[[#{button.ticket.sent.to.email}]]</button>
                 </form>
             </div>
         </div>

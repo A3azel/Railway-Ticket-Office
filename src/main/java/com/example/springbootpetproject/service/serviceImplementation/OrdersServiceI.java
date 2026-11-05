@@ -1,6 +1,7 @@
 package com.example.springbootpetproject.service.serviceImplementation;
 
 
+import com.example.springbootpetproject.customExceptions.routeExceptions.ProblemWithSeatsCount;
 import com.example.springbootpetproject.customExceptions.userExceptions.InsufficientFunds;
 import com.example.springbootpetproject.dto.OrderDTO;
 import com.example.springbootpetproject.dto.RouteDTO;
@@ -22,11 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootpetproject.repository.OrdersRepository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class OrdersServiceI implements com.example.springbootpetproject.service.serviceInterfaces.OrdersService {
+    /** Потолок на один заказ: защита от запроса вида ticketsCount=1000000 в обход формы. */
+    private static final int MAX_TICKETS_PER_ORDER = 10;
+
     private final OrdersRepository ordersRepository;
     private final OrderFacade orderFacade;
     private final UserService userService;
@@ -50,34 +55,27 @@ public class OrdersServiceI implements com.example.springbootpetproject.service.
     @Override
     @Transactional
     public void addOrder(String username, String ticketCount, String place, String ticketType, Long routeID) throws InsufficientFunds {
-        Order order = new Order();
-        NumberOfPurchasedTicketsTypes ticketsCount = new NumberOfPurchasedTicketsTypes();
+        int ticketsNumber = parseTicketsCount(ticketCount);
+        TrainPlace trainPlace = parsePlace(place);
 
         Route selectedRoute = routeService.findRouteById(routeID);
         TicketType ticket = ticketTypeService.getTicketByTicketType(ticketType);
+
+        BigDecimal orderPrice = calculateAllPrice(routeID, trainPlace.name(), ticketType, String.valueOf(ticketsNumber));
+
+        Order order = new Order();
         order.setUser(userService.findUserByUsername(username));
         order.setRoute(selectedRoute);
-        BigDecimal placePrice = BigDecimal.ONE;
-        switch (place) {
-            case "COMPARTMENT" -> placePrice = selectedRoute.getPriseOfCompartmentTicket();
-            case "SUITE" -> placePrice = selectedRoute.getPriseOfSuiteTicket();
-        }
-        BigDecimal ticketPriseFactor = BigDecimal.valueOf(ticket.getTicketPriceFactor());
-        BigDecimal orderPrice = placePrice.multiply(BigDecimal.valueOf(Long.parseLong(ticketCount))).multiply(ticketPriseFactor);
         order.setOrderPrise(orderPrice);
-        userService.spendMoney(orderPrice,username);
 
+        chargeAndReserve(username, routeID, orderPrice, List.of(new SeatsToReserve(trainPlace, ticketsNumber)));
 
         ordersRepository.save(order);
 
-        switch (place) {
-            case "COMPARTMENT" -> routeService.reduceNumberOfCompartmentFreeSeats(routeID,Integer.parseInt(ticketCount));
-            case "SUITE" -> routeService.reduceNumberOfSuiteFreeSeats(routeID,Integer.parseInt(ticketCount));
-        }
-
-        ticketsCount.setPlace(TrainPlace.valueOf(place));
+        NumberOfPurchasedTicketsTypes ticketsCount = new NumberOfPurchasedTicketsTypes();
+        ticketsCount.setPlace(trainPlace);
         ticketsCount.setTicketType(ticket);
-        ticketsCount.setCountOfPurchasedTickets(Integer.parseInt(ticketCount));
+        ticketsCount.setCountOfPurchasedTickets(ticketsNumber);
         ticketsCount.setOrder(order);
         numberService.addNumberOfPurchasedTickets(ticketsCount);
     }
@@ -86,36 +84,93 @@ public class OrdersServiceI implements com.example.springbootpetproject.service.
     @Transactional
     public void addMultipleOrder(String username, List<NumberOfPurchasedTicketsTypes> ticketsTypesList,
              String ticketCount, String place, String ticketType, Long routeID) throws InsufficientFunds {
-        Order order = new Order();
-        NumberOfPurchasedTicketsTypes ticketsCount = new NumberOfPurchasedTicketsTypes();
+        int ticketsNumber = parseTicketsCount(ticketCount);
+        TrainPlace trainPlace = parsePlace(place);
 
         Route selectedRoute = routeService.findRouteById(routeID);
         TicketType ticket = ticketTypeService.getTicketByTicketType(ticketType);
-        ticketsCount.setPlace(TrainPlace.valueOf(place));
-        ticketsCount.setTicketType(ticket);
-        ticketsCount.setCountOfPurchasedTickets(Integer.parseInt(ticketCount));
-        ticketsTypesList.add(ticketsCount);
 
+        NumberOfPurchasedTicketsTypes lastAddedTickets = new NumberOfPurchasedTicketsTypes();
+        lastAddedTickets.setPlace(trainPlace);
+        lastAddedTickets.setTicketType(ticket);
+        lastAddedTickets.setCountOfPurchasedTickets(ticketsNumber);
+        ticketsTypesList.add(lastAddedTickets);
+
+        // Начинаем с ZERO: было BigDecimal.ONE, из-за чего каждый мультизаказ
+        // стоил на 1 больше суммы билетов.
+        BigDecimal orderPrice = BigDecimal.ZERO;
+        List<SeatsToReserve> seatsToReserve = new ArrayList<>();
+        for (NumberOfPurchasedTicketsTypes tickets : ticketsTypesList){
+            orderPrice = orderPrice.add(calculateAllPrice(routeID, tickets.getPlace().name(),
+                    tickets.getTicketType().getTicketTypeName(), String.valueOf(tickets.getCountOfPurchasedTickets())));
+            seatsToReserve.add(new SeatsToReserve(tickets.getPlace(), tickets.getCountOfPurchasedTickets()));
+        }
+
+        Order order = new Order();
         order.setUser(userService.findUserByUsername(username));
         order.setRoute(selectedRoute);
-        BigDecimal orderPrice = BigDecimal.ONE;
-
-        for (NumberOfPurchasedTicketsTypes ticketsNumber : ticketsTypesList){
-            orderPrice = orderPrice.add(calculateAllPrice(routeID,ticketsNumber.getPlace().name(),ticketsNumber.getTicketType().getTicketTypeName(), String.valueOf(ticketsNumber.getCountOfPurchasedTickets())));
-            switch (ticketsNumber.getPlace().name()) {
-                case "COMPARTMENT" -> routeService.reduceNumberOfCompartmentFreeSeats(routeID,ticketsNumber.getCountOfPurchasedTickets());
-                case "SUITE" -> routeService.reduceNumberOfSuiteFreeSeats(routeID,ticketsNumber.getCountOfPurchasedTickets());
-            }
-        }
         order.setOrderPrise(orderPrice);
-        userService.spendMoney(orderPrice,username);
+
+        chargeAndReserve(username, routeID, orderPrice, seatsToReserve);
 
         ordersRepository.save(order);
 
-        for (NumberOfPurchasedTicketsTypes ticketsNumber : ticketsTypesList){
-            ticketsNumber.setOrder(order);
-            numberService.addNumberOfPurchasedTickets(ticketsNumber);
+        for (NumberOfPurchasedTicketsTypes tickets : ticketsTypesList){
+            tickets.setOrder(order);
+            numberService.addNumberOfPurchasedTickets(tickets);
         }
+    }
+
+    /** Сколько мест какого типа нужно списать с маршрута. */
+    private record SeatsToReserve(TrainPlace place, int count) {}
+
+    /**
+     * Списание денег и мест. Порядок (сначала счёт, потом места) одинаков во всех
+     * методах сознательно: параллельные заказы захватывают строки в одной
+     * последовательности и не встают в deadlock. Раньше в мультизаказе места
+     * уменьшались до проверки средств и при нехватке денег оставались списанными.
+     */
+    private void chargeAndReserve(String username, Long routeID, BigDecimal orderPrice,
+                                  List<SeatsToReserve> seatsToReserve) throws InsufficientFunds {
+        userService.spendMoney(orderPrice, username);
+        for (SeatsToReserve seats : seatsToReserve){
+            switch (seats.place()) {
+                case COMPARTMENT -> routeService.reduceNumberOfCompartmentFreeSeats(routeID, seats.count());
+                case SUITE -> routeService.reduceNumberOfSuiteFreeSeats(routeID, seats.count());
+                default -> throw new ProblemWithSeatsCount("Unsupported place type: " + seats.place());
+            }
+        }
+    }
+
+    private int parseTicketsCount(String ticketCount) {
+        int parsed;
+        try {
+            parsed = Integer.parseInt(ticketCount);
+        } catch (NumberFormatException e) {
+            throw new ProblemWithSeatsCount("The number of tickets must be an integer");
+        }
+        if(parsed <= 0 || parsed > MAX_TICKETS_PER_ORDER){
+            throw new ProblemWithSeatsCount("The number of tickets must be between 1 and " + MAX_TICKETS_PER_ORDER);
+        }
+        return parsed;
+    }
+
+    /**
+     * TrainPlace содержит служебное значение S, которое не является покупаемым типом места:
+     * с ним цена считалась по ветке default (то есть ноль), а места не списывались вовсе.
+     * Поэтому проверяем не только принадлежность enum, но и сам тип.
+     */
+    private TrainPlace parsePlace(String place) {
+        TrainPlace trainPlace;
+        try {
+            trainPlace = TrainPlace.valueOf(place);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new ProblemWithSeatsCount("Unknown place type: " + place);
+        }
+        if(trainPlace != TrainPlace.COMPARTMENT && trainPlace != TrainPlace.SUITE){
+            throw new ProblemWithSeatsCount("Unsupported place type: " + place);
+        }
+        return trainPlace;
     }
 
     @Override
@@ -162,12 +217,13 @@ public class OrdersServiceI implements com.example.springbootpetproject.service.
     public BigDecimal calculateAllPrice(Long id, String place, String ticketType, String ticketCount){
         TicketType ticket = ticketTypeService.getTicketByTicketType(ticketType);
         BigDecimal priceFactor = BigDecimal.valueOf(ticket.getTicketPriceFactor());
-        BigDecimal ticketCountValue = BigDecimal.valueOf(Long.parseLong(ticketCount));
+        BigDecimal ticketCountValue = BigDecimal.valueOf(parseTicketsCount(ticketCount));
         RouteDTO routeDTO = routeFacade.convertRouteToRouteDTO(routeService.findRouteById(id));
-        BigDecimal placePrice = switch (place) {
-            case "COMPARTMENT" -> routeDTO.getPriseOfCompartmentTicket();
-            case "SUITE" -> routeDTO.getPriseOfSuiteTicket();
-            default -> BigDecimal.ZERO;
+        // default раньше возвращал ZERO, то есть неизвестный тип места давал бесплатный билет.
+        BigDecimal placePrice = switch (parsePlace(place)) {
+            case COMPARTMENT -> routeDTO.getPriseOfCompartmentTicket();
+            case SUITE -> routeDTO.getPriseOfSuiteTicket();
+            default -> throw new ProblemWithSeatsCount("Unsupported place type: " + place);
         };
         return priceFactor.multiply(ticketCountValue).multiply(placePrice);
     }

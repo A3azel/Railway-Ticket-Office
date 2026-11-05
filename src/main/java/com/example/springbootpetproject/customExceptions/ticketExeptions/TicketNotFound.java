@@ -1,6 +1,6 @@
 package com.example.springbootpetproject.customExceptions.ticketExeptions;
 
-public class TicketNotFound extends Throwable{
+public class TicketNotFound extends RuntimeException{
     public TicketNotFound() {
         super();
     }
