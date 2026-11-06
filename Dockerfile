@@ -1,5 +1,5 @@
 # ---- Этап сборки ----
-FROM maven:3.9-eclipse-temurin-18 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Сначала копируем pom для кэширования зависимостей
@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn -B clean package -DskipTests
 
 # ---- Этап запуска ----
-FROM eclipse-temurin:18-jre
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Копируем собранный jar из этапа сборки
