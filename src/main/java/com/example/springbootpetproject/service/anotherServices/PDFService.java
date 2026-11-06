@@ -15,7 +15,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

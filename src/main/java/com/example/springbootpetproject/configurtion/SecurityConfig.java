@@ -6,18 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-// Без prePostEnabled все @PreAuthorize в сервисах — просто декорация: Spring их не
+// Без этой аннотации все @PreAuthorize в сервисах — просто декорация: Spring их не
 // применяет, и проверки вида "#username == authentication.principal.username" не работают.
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+// В Spring Security 6 на смену @EnableGlobalMethodSecurity(prePostEnabled = true).
+@EnableMethodSecurity
+public class SecurityConfig {
     private final UserDetailsServiceImp userDetailsServiceImp;
     private final CustomBCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -27,44 +27,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    // change configure() method
-    /*@Bean
+    /**
+     * В Spring Security 6 WebSecurityConfigurerAdapter удалён, конфигурация задаётся
+     * бином SecurityFilterChain. Правила доступа те же, что и до миграции:
+     * authorizeRequests/antMatchers заменены на authorizeHttpRequests/requestMatchers.
+     */
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return null;
-    }*/
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
         http
                 // CSRF включён. Формы Thymeleaf с th:action получают скрытый токен
                 // автоматически; logout обязан быть POST, иначе Spring его не примет.
-                .authorizeRequests()
-                    .antMatchers("/order/**","/user/**").authenticated()/*.hasAnyRole(UserRole.ADMIN.name(),UserRole.USER.name())*/
-                    .antMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
-                    .anyRequest()
-                    .permitAll()
-                    .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .failureUrl("/login/error")
-                    .permitAll()
-                    .and()
-                .logout()
-                    .invalidateHttpSession(true)
-                    .clearAuthentication(true)
-                    /*.deleteCookies("JSESSIONID")*/
-                    .logoutSuccessUrl("/")
-                    .permitAll()
-                .and()
-                    .sessionManagement()
-                    // maximumSessions(1) убрано намеренно. Повторный вход того же
-                    // пользователя вытеснял предыдущую сессию, а та затем получала пустой
-                    // ответ 200 (expiredUrl не задан) — в браузере это выглядело как
-                    // «выбросило на главную без авторизации». Вдобавок HttpSessionEventPublisher
-                    // отсутствует, поэтому выход не освобождал слот и ограничение залипало
-                    // до перезапуска приложения. Для нескольких задач ECS оно всё равно
-                    // не работает: SessionRegistry хранится в памяти одного экземпляра.
-                    .invalidSessionUrl("/");
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/order/**", "/user/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
+                        .anyRequest().permitAll())
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .failureUrl("/login/error")
+                        .permitAll())
+                .logout(logout -> logout
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutSuccessUrl("/")
+                        .permitAll())
+                // maximumSessions(1) убрано намеренно. Повторный вход того же
+                // пользователя вытеснял предыдущую сессию, а та затем получала пустой
+                // ответ 200 (expiredUrl не задан) — в браузере это выглядело как
+                // «выбросило на главную без авторизации». Вдобавок HttpSessionEventPublisher
+                // отсутствует, поэтому выход не освобождал слот и ограничение залипало
+                // до перезапуска приложения. Для нескольких задач ECS оно всё равно
+                // не работает: SessionRegistry хранится в памяти одного экземпляра.
+                .sessionManagement(session -> session
+                        .invalidSessionUrl("/"));
+        return http.build();
     }
 
     @Bean

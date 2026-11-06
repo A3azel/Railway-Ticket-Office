@@ -15,7 +15,7 @@ create table user_gender(
 );
 
 create table user_info(
-                          id int primary key auto_increment,
+                          id bigint primary key auto_increment,
                           username varchar(64) not null,
                           first_name varchar(64) not null,
                           last_name varchar(64) not null,
@@ -35,12 +35,12 @@ create table confirmation_token(
                                    token varchar(256) not null,
                                    created_at datetime not null,
                                    expires_at datetime not null,
-                                   user_id int not null,
+                                   user_id bigint not null,
                                    foreign key(user_id) references user_info(id)
 );
 
 create table city(
-                     id int primary key auto_increment,
+                     id bigint primary key auto_increment,
                      created timestamp not null,
                      updated timestamp not null,
                      created_by varchar(64)not null,
@@ -50,19 +50,19 @@ create table city(
 );
 
 create table station(
-                        id int primary key auto_increment,
+                        id bigint primary key auto_increment,
                         created timestamp not null,
                         updated timestamp not null,
                         created_by varchar(64)not null,
                         last_modified_by varchar(64)not null,
                         station_name varchar(248) not null,
-                        city_id int not null,
+                        city_id bigint not null,
                         relevant boolean,
                         foreign key(city_id) references city(id) on delete cascade
 );
 
 create table train_info(
-                           id int primary key auto_increment,
+                           id bigint primary key auto_increment,
                            created timestamp not null,
                            updated timestamp not null,
                            created_by varchar(64)not null,
@@ -74,17 +74,17 @@ create table train_info(
 );
 
 create table route(
-                      id int primary key auto_increment,
+                      id bigint primary key auto_increment,
                       created timestamp not null,
                       updated timestamp not null,
                       created_by varchar(64)not null,
                       last_modified_by varchar(64)not null,
-                      start_station_id int not null,
+                      start_station_id bigint not null,
                       departure_time datetime not null,
                       travel_time time not null,
-                      arrival_station_id int not null,
+                      arrival_station_id bigint not null,
                       arrival_time datetime not null,
-                      train_id int not null,
+                      train_id bigint not null,
                       number_of_compartment_free_seats int not null,
                       number_of_suite_free_seats int not null,
                       prise_of_compartment_ticket decimal(8, 2) NOT NULL,
@@ -95,8 +95,8 @@ create table route(
 );
 
 create table intermediate_stations(
-                                      route_id int not null,
-                                      station_id int not null,
+                                      route_id bigint not null,
+                                      station_id bigint not null,
                                       foreign key(route_id) references route(id) on delete cascade ,
                                       foreign key(station_id) references station(id) on delete cascade
 );
@@ -108,14 +108,14 @@ create table user_comments(
                               created_by varchar(64)not null,
                               last_modified_by varchar(64)not null,
                               user_comment varchar(5000),
-                              user_id int,
-                              train_id int,
+                              user_id bigint,
+                              train_id bigint,
                               foreign key (user_id) references user_info(id),
                               foreign key (train_id) references train_info(id)
 );
 
 create table ticket_type(
-                            id int primary key auto_increment,
+                            id bigint primary key auto_increment,
                             created timestamp not null,
                             updated timestamp not null,
                             created_by varchar(64)not null,
@@ -127,14 +127,14 @@ create table ticket_type(
 );
 
 create table purchased_tickets(
-                                  id int primary key auto_increment,
+                                  id bigint primary key auto_increment,
                                   created timestamp not null,
                                   updated timestamp not null,
                                   created_by varchar(64)not null,
                                   last_modified_by varchar(64)not null,
                                   orders_prise decimal(8,2) not null,
-                                  user_id int not null,
-                                  route_id int not null,
+                                  user_id bigint not null,
+                                  route_id bigint not null,
                                   foreign key (user_id) references user_info(id),
                                   foreign key (route_id) references route(id)
 );
@@ -151,8 +151,8 @@ create table tickets_count(
                               created_by varchar(64)not null,
                               last_modified_by varchar(64)not null,
                               count_of_purchased_tickets int not null,
-                              ticket_type_id int not null,
-                              purchased_tickets_id int not null,
+                              ticket_type_id bigint not null,
+                              purchased_tickets_id bigint not null,
                               place_id int not null,
                               foreign key (ticket_type_id) references ticket_type(id),
                               foreign key (purchased_tickets_id) references purchased_tickets(id),

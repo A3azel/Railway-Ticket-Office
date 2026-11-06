@@ -2,7 +2,7 @@ package com.example.springbootpetproject.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
