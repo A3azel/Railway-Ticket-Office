@@ -1,6 +1,10 @@
+-- Test data for Railway Ticket Office. File encoding: UTF-8.
+-- Test accounts (username / password): TestUser / testuser, TestUser2 / testuser2, TestAdmin / testadmin
+SET NAMES utf8mb4;
+
 drop database if exists Railway_Ticket_Office;
 
-create database if not exists Railway_Ticket_Office;
+create database if not exists Railway_Ticket_Office character set utf8mb4 collate utf8mb4_0900_ai_ci;
 
 USE Railway_Ticket_Office;
 
@@ -162,57 +166,57 @@ create table tickets_count(
 
 insert into city(created_by, last_modified_by, created, updated, city_name, relevant)
     value
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Êè¿â',true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Ëüâ³â',true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Õàğê³â',true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Îäåñà',true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kyiv',true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Lviv',true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kharkiv',true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Odesa',true),
 
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Æèòîìèğ',true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Õåğñîí',true);
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Zhytomyr',true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kherson',true);
 
 insert into station(created_by, last_modified_by, created, updated, station_name, city_id, relevant)
     value
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Êè¿â Öåíòğ',1,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Êè¿â Ñõ³ä',1,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Êè¿â çàõ³ä',1,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kyiv Central',1,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kyiv East',1,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kyiv West',1,true),
 
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Ëüâ³â Öåíòğ',2,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Ëüâ³â Ñõ³ä',2,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Lviv Central',2,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Lviv East',2,true),
 
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Õàğê³â Öåíòğ',3,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Õàğê³â Çàõ³ä',3,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kharkiv Central',3,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kharkiv West',3,true),
 
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Îäåñà Öåíòğ',4,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Îäåñà Ñõ³ä',4,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Îäåñà Çàõ³ä',4,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Odesa Central',4,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Odesa East',4,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Odesa West',4,true),
 
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Æèòîìèğ Öåíòèğ',5,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Zhytomyr Central',5,true),
 
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Õåğñîí Öåíòèğ',6,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Õåğñîí Ñõ³ä',6,true);
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kherson Central',6,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Kherson East',6,true);
 
 insert into train_info(created_by, last_modified_by, created, updated, train_number, number_of_compartment_seats, number_of_suite_seats,relevant)
     value
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','O-113',100,50,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','K-114',80,40,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','K-128',270,100,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','P-88',185,75,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','K-128',90,45,true);
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','O-113',100,50,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','K-114',80,40,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','K-128',270,100,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','P-88',185,75,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','K-128',90,45,true);
 
 
 insert into route(created_by, last_modified_by, created,updated, start_station_id, departure_time, travel_time,
                   arrival_station_id, arrival_time, train_id, number_of_compartment_free_seats, number_of_suite_free_seats,
                   prise_of_compartment_ticket, prise_of_suite_ticket)
     value
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',1,'2022-11-27 19:15:06','05:30:00',4,'2022-11-28 02:30:09',1,100,50,800.00,1000.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',1,'2022-11-27 19:15:06','07:30:00',8,'2022-11-28 02:30:09',2,70,30,700.00,1200.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',5,'2022-11-27 19:15:06','07:30:00',6,'2022-11-28 02:30:09',3,270,100,850.00,1350.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',5,'2022-11-27 19:15:06','07:30:00',3,'2022-11-28 02:30:09',4,185,75,900.00,1400.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',10,'2022-11-27 19:15:06','07:30:00',1,'2022-11-28 02:30:09',5,90,45,650.00,1100.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',7,'2022-11-24 19:15:06','07:30:00',4,'2022-11-25 02:30:09',3,270,100,550.00,950.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',2,'2022-11-25 19:15:06','07:30:00',9,'2022-11-26 02:30:09',2,80,40,770.00,1340.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',4,'2022-11-23 19:15:06','07:30:00',7,'2022-11-24 02:30:09',5,90,45,880.00,1220.00),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17',1,'2022-11-27 19:15:06','06:00:00',9,'2022-11-28 02:30:09',3,80,40,900.00,1400.00);
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',1,'2026-12-21 19:15:00','05:30:00',4,'2026-12-22 00:45:00',1,100,50,800.00,1000.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',1,'2026-12-23 08:40:00','07:30:00',8,'2026-12-23 16:10:00',2,70,30,700.00,1200.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',5,'2026-12-26 22:05:00','07:30:00',6,'2026-12-27 05:35:00',3,270,100,850.00,1350.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',5,'2026-12-29 07:20:00','07:30:00',3,'2026-12-29 14:50:00',4,185,75,900.00,1400.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',10,'2027-01-02 18:00:00','07:30:00',1,'2027-01-03 01:30:00',5,90,45,650.00,1100.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',7,'2027-01-05 21:30:00','07:30:00',4,'2027-01-06 05:00:00',3,270,100,550.00,950.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',2,'2027-01-08 06:45:00','07:30:00',9,'2027-01-08 14:15:00',2,80,40,770.00,1340.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',4,'2027-01-12 13:10:00','07:30:00',7,'2027-01-12 20:40:00',5,90,45,880.00,1220.00),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00',1,'2027-01-15 19:15:00','06:00:00',9,'2027-01-16 01:15:00',3,80,40,900.00,1400.00);
 
 insert into intermediate_stations(route_id, station_id)
     value
@@ -234,10 +238,10 @@ insert into place(place)
 
 insert into ticket_type(created_by, last_modified_by, created, updated, ticket_type, ticket_price_factor, relevant)
     value
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Adult',1.00,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Children',0.85,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Pensioner',0.80,true),
-    ('TestAdmin','TestAdmin','2022-11-21 20:59:17','2022-11-21 20:59:17','Student',0.90,true);
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Adult',1.00,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Children',0.85,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Pensioner',0.80,true),
+    ('TestAdmin','TestAdmin','2026-11-21 12:00:00','2026-11-21 12:00:00','Student',0.90,true);
 
 insert into user_info(username, first_name, last_name, user_password, acount_verified, role_id, user_gender_id, user_phone, user_email)
     value
@@ -248,7 +252,7 @@ insert into user_info(username, first_name, last_name, user_password, acount_ver
 
 insert into user_comments(created_by, last_modified_by, created, updated, user_comment, user_id, train_id)
     value
-    ('TestUser','TestUser','2022-11-21 20:59:17','2022-11-21 20:59:17','Test comment1',1,1),
-    ('TestUser','TestUser','2022-11-21 20:59:17','2022-11-21 20:59:17','Test comment3',1,2),
-    ('TestUser','TestUser','2022-11-21 20:59:17','2022-11-21 20:59:17','Test comment4',1,3);
+    ('TestUser','TestUser','2026-11-21 12:00:00','2026-11-21 12:00:00','Test comment1',1,1),
+    ('TestUser','TestUser','2026-11-21 12:00:00','2026-11-21 12:00:00','Test comment3',1,2),
+    ('TestUser','TestUser','2026-11-21 12:00:00','2026-11-21 12:00:00','Test comment4',1,3);
 
