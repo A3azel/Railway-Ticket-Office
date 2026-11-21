@@ -17,6 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,9 +30,11 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.example.springbootpetproject.controller.Paths.PERSONAL_OFFICE_PAGE;
 
@@ -137,10 +144,23 @@ public class UserController {
         return "redirect:/user/myOrders/"+id;
     }
 
+    /**
+     * Раньше PDF только создавался на диске сервера, а пользователя возвращало на страницу заказа —
+     * файл до него не доходил. Теперь: в AWS — редирект на временную ссылку S3 (браузер качает
+     * файл напрямую из бакета, приложение не гоняет байты через себя), локально — отдаём файл сами.
+     */
     @PostMapping("/myOrders/pdf/{id}")
-    public String generateAndDownloadPDF(@PathVariable("id") long id, Principal principal){
-        pdfService.generateTicket(id,principal.getName());
-        return "redirect:/user/myOrders/"+id;
+    public ResponseEntity<byte[]> generateAndDownloadPDF(@PathVariable("id") long id, Principal principal){
+        String username = principal.getName();
+        Optional<URI> url = pdfService.downloadUrl(id, username);
+        if (url.isPresent()) {
+            return ResponseEntity.status(HttpStatus.SEE_OTHER).location(url.get()).build();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment().filename(username + "_" + id + "_ticket.pdf").build().toString())
+                .body(pdfService.ticketBytes(id, username));
     }
 
     @PostMapping("/topUpAccount")

@@ -3,7 +3,7 @@ package com.example.springbootpetproject.service.anotherServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import java.io.File;
 
 @Service
 @Slf4j
@@ -45,7 +44,7 @@ public class MailService {
     }
 
     @Async
-    public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment,String fileName) throws MessagingException {
+    public void sendMessageWithAttachment(String to, String subject, String text, byte[] attachment, String fileName) throws MessagingException {
         log.debug("In the sendMessageWithAttachment method");
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -54,10 +53,8 @@ public class MailService {
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(text);
-
-        FileSystemResource file
-                = new FileSystemResource(new File(pathToAttachment));
-        helper.addAttachment(fileName, file);
+        // Вложение из памяти: PDF лежит в S3, локального файла больше нет
+        helper.addAttachment(fileName, new ByteArrayResource(attachment), "application/pdf");
 
         javaMailSender.send(message);
         log.info("Message send...");

@@ -15,76 +15,86 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
+import com.example.springbootpetproject.service.storage.TicketStorage;
 import jakarta.mail.MessagingException;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.net.URI;
+import java.util.Optional;
 
+/**
+ * Генерирует PDF-билет и кладёт его в {@link TicketStorage} (S3 в AWS, папка локально).
+ * Ключ включает имя пользователя, а сам PDF создаётся только после проверки, что заказ
+ * принадлежит этому пользователю, — чужой билет по ключу не получить.
+ */
 @Service
 public class PDFService {
     private final MailService mailService;
     private final OrdersServiceI ordersServiceI;
     private final OrderFacade orderFacade;
-
-    @Value("${pdf.path}")
-    private String pdfPath;
+    private final TicketStorage ticketStorage;
 
     @Value("${fonts.path}")
     private String fontsPath;
 
-    @Value("${pdf.path.forEmail}")
-    private String pdfPathForEmail;
-
-    public PDFService(MailService mailService, OrdersServiceI ordersServiceI, OrderFacade orderFacade) {
+    public PDFService(MailService mailService, OrdersServiceI ordersServiceI, OrderFacade orderFacade,
+                      TicketStorage ticketStorage) {
         this.mailService = mailService;
         this.ordersServiceI = ordersServiceI;
         this.orderFacade = orderFacade;
+        this.ticketStorage = ticketStorage;
     }
 
-    public void generateTicket(Long id, String username){
-        String ticketPDF = parseThymeleafTemplate(id,username);
-        try {
-            generatePdfFromHtml(ticketPDF,id,username);
-        } catch (IOException | DocumentException e) {
-            e.printStackTrace();
-        }
+    /** Ключ объекта: tickets/<username>/<orderId>.pdf */
+    static String ticketKey(Long id, String username) {
+        return "tickets/" + username + "/" + id + ".pdf";
     }
 
-    public File returnPDF(Long id, String username){
-        String ticketPDFPath = pdfPathForEmail + username + "_" + id + "_ticket.pdf";
-        if(!new File(ticketPDFPath).exists()){
-            generateTicket(id,username);
+    static String fileName(Long id, String username) {
+        return username + "_" + id + "_ticket.pdf";
+    }
+
+    /** Создаёт билет, если его ещё нет в хранилище, и возвращает ключ. */
+    public String ensureTicket(Long id, String username) {
+        String key = ticketKey(id, username);
+        if (!ticketStorage.exists(key)) {
+            String html = parseThymeleafTemplate(id, username);
+            ticketStorage.save(key, generatePdfFromHtml(html));
         }
-        File file = new File(ticketPDFPath);
-        return file;
+        return key;
+    }
+
+    /** Ссылка на скачивание из хранилища (S3 presigned URL) или пусто для локального хранилища. */
+    public Optional<URI> downloadUrl(Long id, String username) {
+        return ticketStorage.downloadUrl(ensureTicket(id, username), fileName(id, username));
+    }
+
+    public byte[] ticketBytes(Long id, String username) {
+        return ticketStorage.load(ensureTicket(id, username));
     }
 
     @PreAuthorize("#username == authentication.principal.username")
     public void sendTicket(Long id, String username, String email){
-        String ticketPDFPath = pdfPathForEmail + username + "_" + id + "_ticket.pdf";
-        if(!new File(ticketPDFPath).exists()){
-            generateTicket(id,username);
-        }
-        String filename =  username + "_" + id + "_ticket.pdf";
+        byte[] pdf = ticketBytes(id, username);
         try {
-            mailService.sendMessageWithAttachment(email,"Railway-Ticket-Office","Your ticket",ticketPDFPath,filename);
+            mailService.sendMessageWithAttachment(email, "Railway-Ticket-Office", "Your ticket",
+                    pdf, fileName(id, username));
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("cannot send ticket " + id, e);
         }
     }
 
-    public void generatePdfFromHtml(String html, Long id, String username) throws IOException, DocumentException {
-        String outputFolder = pdfPath + username + "_" + id + "_ticket.pdf";
-        OutputStream outputStream = new FileOutputStream(outputFolder);
-
-        ITextRenderer renderer = new ITextRenderer();
-        renderer.getFontResolver().addFont(fontsPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-        renderer.setDocumentFromString(html);
-        renderer.layout();
-        renderer.createPDF(outputStream);
-
-        outputStream.close();
+    byte[] generatePdfFromHtml(String html) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.getFontResolver().addFont(fontsPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+            renderer.setDocumentFromString(html);
+            renderer.layout();
+            renderer.createPDF(outputStream);
+            return outputStream.toByteArray();
+        } catch (IOException | DocumentException e) {
+            throw new IllegalStateException("cannot render ticket PDF", e);
+        }
     }
 
     private String parseThymeleafTemplate(Long id, String username) {

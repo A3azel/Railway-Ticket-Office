@@ -27,7 +27,6 @@ RUN mkdir -p /app/pdf
 
 # Пути по умолчанию под контейнер (переопределяемы через окружение ECS/compose)
 ENV PDF_PATH=/app/pdf/ \
-    PDF_PATH_FOR_EMAIL=/app/pdf/ \
     FONTS_PATH=/app/fonts/DejaVuSans.ttf
 
 # Запуск от непривилегированного пользователя
