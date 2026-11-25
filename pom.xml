@@ -104,6 +104,11 @@
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>s3</artifactId>
 		</dependency>
+		<!--AWS SES: отправка писем через API-->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>sesv2</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
