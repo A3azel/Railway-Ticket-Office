@@ -1,0 +1,74 @@
+# Сборка образа и деплой в ECS Fargate при каждом push в main.
+# Доступ к AWS — через OIDC: GitHub выдаёт токен, AWS меняет его на временные креды
+# роли railway-github-deploy. Постоянных ключей в секретах репозитория нет.
+name: Deploy to ECS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}        # ручной запуск из вкладки Actions
+
+permissions:
+  id-token: write              # разрешить запросить OIDC-токен
+  contents: read
+
+concurrency:                   # два деплоя одновременно не идут
+  group: deploy-railway
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-north-1
+  ROLE_ARN: arn:aws:iam::745600962934:role/railway-github-deploy
+  ECR_REPOSITORY: railway-app
+  ECS_CLUSTER: railway
+  ECS_SERVICE: railway-service
+  TASK_FAMILY: railway
+  CONTAINER_NAME: railway-app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image (tag = short commit SHA)
+        id: image
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+        run: |
+          IMAGE="$REGISTRY/$ECR_REPOSITORY:${GITHUB_SHA::7}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "$TASK_FAMILY" \
+            --query taskDefinition > task-definition.json
+
+      - name: Put new image into task definition
+        id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.image.outputs.image }}
+
+      - name: Register revision and update service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          service: ${{ env.ECS_SERVICE }}
+          wait-for-service-stability: true

@@ -21,6 +21,6 @@ public class LoginController {
     public String loginError(Model model){
         String errorMessage = "Invalid username or password";
         model.addAttribute("errorMessage", errorMessage);
-        return "login";
+        return "redirect:/login";
     }
 }
